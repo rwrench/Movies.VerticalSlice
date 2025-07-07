@@ -1,0 +1,6 @@
+@Movies.VerticalSlice.Api_HostAddress = http://localhost:5100
+
+GET {{Movies.VerticalSlice.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
