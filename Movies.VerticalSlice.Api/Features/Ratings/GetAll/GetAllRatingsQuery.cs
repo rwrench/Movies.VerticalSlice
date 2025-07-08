@@ -2,7 +2,5 @@
 
 namespace Movies.VerticalSlice.Api.Features.Ratings.GetAll;
 
-public record GetAllRatingsQuery(
-    Guid id
-    ): IRequest<IEnumerable<MovieRatingWithNameDto>>;
+public record GetAllRatingsQuery(): IRequest<IEnumerable<MovieRatingWithNameDto>>;
 

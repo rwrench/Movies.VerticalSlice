@@ -9,12 +9,13 @@ namespace Movies.VerticalSlice.Api.Features.Ratings.GetAll
         {
             CreateMap<MovieRating, RatingDto>();
             CreateMap<(MovieRating Rating, Movie Movie), MovieRatingWithNameDto>()
-              .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Rating.Id))
-              .ForMember(dest => dest.MovieId, opt => opt.MapFrom(src => src.Rating.MovieId))
-              .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => src.Rating.Rating))
-              .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Rating.UserId))
-              .ForMember(dest => dest.DateUpdated, opt => opt.MapFrom(src => src.Rating.DateUpdated))
-              .ForMember(dest => dest.MovieName, opt => opt.MapFrom(src => src.Movie.Title));
+                .ConstructUsing(src => new MovieRatingWithNameDto(
+                    src.Rating.Id,
+                    src.Rating.MovieId,
+                    src.Rating.Rating,
+                    src.Rating.UserId,
+                    src.Rating.DateUpdated ?? DateTime.UtcNow,
+                    src.Movie.Title));
         }
     }
 }

@@ -5,6 +5,6 @@ public record MovieRatingWithNameDto(
     Guid Id,
     Guid MovieId,
     float Rating,
-    Guid UserId,
+    Guid? UserId,
     DateTime DateUpdated,
     string MovieName);
