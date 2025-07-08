@@ -1,13 +1,11 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Movies.VerticalSlice.Api.Data.Database;
-using Movies.VerticalSlice.Api.Features.Movies.Create;
-using Movies.VerticalSlice.Api.Features.Movies.Delete;
+using Movies.VerticalSlice.Api.Features.Movies;
 using Movies.VerticalSlice.Api.Features.Movies.GetAll;
-using Movies.VerticalSlice.Api.Features.Movies.Update;
-using Movies.VerticalSlice.Api.Features.Ratings.Create;
+using Movies.VerticalSlice.Api.Features.Ratings;
 using Movies.VerticalSlice.Api.Features.Ratings.GetAll;
+using Movies.VerticalSlice.Api.Features.Users;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -51,14 +49,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 // Map movie endpoints
-app.MapCreateMovie();
-app.MapGetAllMovies();  
-app.MapUpdateMovie(); // Ensure this is called after Create and GetAll  
-app.MapDeleteMovie(); // Ensure this is called after Create and GetAll
-app.MapRateMovie(); // Ensure this is called after Create and GetAll    
-app.MapGetAllRatings(); // Ensure this is called after Create and GetAll
-
-
+app.MapMovieEndpoints(); // Ensure this is called first
+app.MapRatingsEndpoints(); // Ratings endpoints can be mapped after movies
+app.MapUserEndpoints(); // User endpoints can be mapped last    
 app.Run();
 
 
