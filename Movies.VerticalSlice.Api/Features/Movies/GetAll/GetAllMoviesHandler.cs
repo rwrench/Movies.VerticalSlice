@@ -64,6 +64,12 @@ public class GetAllMoviesHandler : IRequestHandler<GetAllMoviesQuery, IEnumerabl
                 .Skip((query.Page.Value - 1) * query.PageSize.Value)
                 .Take(query.PageSize.Value);
         }
+        else
+        {
+            moviesQuery = moviesQuery
+                .Skip(0)
+                .Take(10); // Default to first 10 if no pagination is specified
+        }
 
         var movies = await moviesQuery.AsNoTracking().ToListAsync(token);
 

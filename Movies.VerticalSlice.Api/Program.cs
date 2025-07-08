@@ -56,7 +56,6 @@ app.MapGetAllMovies();
 app.MapUpdateMovie(); // Ensure this is called after Create and GetAll  
 app.MapDeleteMovie(); // Ensure this is called after Create and GetAll
 app.MapRateMovie(); // Ensure this is called after Create and GetAll    
-app.MapGe
 
 
 
