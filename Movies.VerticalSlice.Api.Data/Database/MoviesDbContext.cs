@@ -7,7 +7,7 @@ using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Movies.VerticalSlice.Api.Data;
+namespace Movies.VerticalSlice.Api.Data.Database;
 
 public class MoviesDbContext : DbContext
 {

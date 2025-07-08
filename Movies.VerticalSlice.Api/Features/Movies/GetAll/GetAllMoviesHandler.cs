@@ -1,21 +1,29 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Movies.VerticalSlice.Api.Data;
+using Movies.VerticalSlice.Api.Data.Database;
 
 namespace Movies.VerticalSlice.Api.Features.Movies.GetAll;
 
-public class GetAllMoviesHandler : IRequestHandler<GetAllMoviesQuery, List<MovieDto>>
+public class GetAllMoviesHandler : IRequestHandler<GetAllMoviesQuery, IEnumerable<MovieDto>>
 {
     private readonly MoviesDbContext _context;
     private readonly ILogger<GetAllMoviesHandler> _logger;
+    readonly IMapper _mapper;
 
-    public GetAllMoviesHandler(MoviesDbContext context, ILogger<GetAllMoviesHandler> logger)
+    public GetAllMoviesHandler(
+        MoviesDbContext context, 
+        ILogger<GetAllMoviesHandler> logger,
+        IMapper mapper)
     {
         _context = context;
         _logger = logger;
+        _mapper = mapper;
     }
 
-    public async Task<List<MovieDto>> Handle(GetAllMoviesQuery query, CancellationToken token)
+    public async Task<IEnumerable<MovieDto>> Handle(
+        GetAllMoviesQuery query, 
+        CancellationToken token)
     {
         var moviesQuery = _context.Movies.AsQueryable();
 
@@ -35,10 +43,10 @@ public class GetAllMoviesHandler : IRequestHandler<GetAllMoviesQuery, List<Movie
         {
             moviesQuery = query.SortField.ToLowerInvariant() switch
             {
-                "title" => query.SortOrder == Movies.GetAll.SortOrder.Ascending
+                "title" => query.SortOrder == SortOrder.Ascending
                     ? moviesQuery.OrderBy(m => m.Title)
                     : moviesQuery.OrderByDescending(m => m.Title),
-                "yearofrelease" => query.SortOrder == Movies.GetAll.SortOrder.Ascending
+                "yearofrelease" => query.SortOrder == SortOrder.Ascending
                     ? moviesQuery.OrderBy(m => m.YearOfRelease)
                     : moviesQuery.OrderByDescending(m => m.YearOfRelease),
                 _ => moviesQuery.OrderBy(m => m.Title)
@@ -59,15 +67,12 @@ public class GetAllMoviesHandler : IRequestHandler<GetAllMoviesQuery, List<Movie
 
         var movies = await moviesQuery.AsNoTracking().ToListAsync(token);
 
-        var result = movies.Select(m => new MovieDto(
-            m.MovieId,
-            m.Title,
-            m.Slug,
-            m.YearOfRelease,
-            m.Genres
-        )).ToList();
+         var result = movies.Select(x => 
+               _mapper.Map<MovieDto>(x)).AsEnumerable();
 
-        _logger.LogInformation("Retrieved {Count} movies", result.Count);
+        _logger.LogInformation("Retrieved {result} movies", result.Count());
         return result;
     }
+
+
 }

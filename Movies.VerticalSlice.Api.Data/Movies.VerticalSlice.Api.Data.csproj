@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\.dockerignore" Link=".dockerignore">
+    <None Include="..\.dockerignore" Link="Database\.dockerignore">
       <DependentUpon>$(DockerDefaultDockerfile)</DependentUpon>
     </None>
   </ItemGroup>

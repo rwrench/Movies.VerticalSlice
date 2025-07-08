@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using MediatR;
-using Movies.VerticalSlice.Api.Data;
+using Movies.VerticalSlice.Api.Data.Database;
 using Movies.VerticalSlice.Api.Data.Models;
 
 namespace Movies.VerticalSlice.Api.Features.Movies.Create

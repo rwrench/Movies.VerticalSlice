@@ -1,6 +1,6 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using Movies.VerticalSlice.Api.Data;
+using Movies.VerticalSlice.Api.Data.Database;
 using Movies.VerticalSlice.Api.Features.Movies.Create;
 using Movies.VerticalSlice.Api.Features.Movies.Delete;
 using Movies.VerticalSlice.Api.Features.Movies.GetAll;

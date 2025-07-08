@@ -1,4 +1,4 @@
-﻿namespace Movies.VerticalSlice.Api.Data;
+﻿namespace Movies.VerticalSlice.Api.Data.Models;
 
 public class User
 {

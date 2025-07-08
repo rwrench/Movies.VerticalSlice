@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Movies.VerticalSlice.Api.Data;
+using Movies.VerticalSlice.Api.Data.Database;
 
 namespace Movies.VerticalSlice.Api.Features.Movies.Update;
 
