@@ -1,11 +1,13 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Movies.VerticalSlice.Api.Data.Database;
 using Movies.VerticalSlice.Api.Features.Movies.Create;
 using Movies.VerticalSlice.Api.Features.Movies.Delete;
 using Movies.VerticalSlice.Api.Features.Movies.GetAll;
 using Movies.VerticalSlice.Api.Features.Movies.Update;
-
+using Movies.VerticalSlice.Api.Features.Ratings.Create;
+using Movies.VerticalSlice.Api.Features.Ratings.GetAll;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -15,8 +17,12 @@ builder.Services.AddDbContext<MoviesDbContext>(options =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile<MoviesProfile>();
+    cfg.AddProfile<RatingsProfile>();    
+});
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
-
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 var app = builder.Build();
 
@@ -49,6 +55,8 @@ app.MapCreateMovie();
 app.MapGetAllMovies();  
 app.MapUpdateMovie(); // Ensure this is called after Create and GetAll  
 app.MapDeleteMovie(); // Ensure this is called after Create and GetAll
+app.MapRateMovie(); // Ensure this is called after Create and GetAll    
+app.MapGe
 
 
 

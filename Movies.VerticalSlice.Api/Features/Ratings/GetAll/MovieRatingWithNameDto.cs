@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Movies.VerticalSlice.Api.Features.Ratings.GetAll;
 
-namespace Movies.VerticalSlice.Api.Features.Ratings.GetAll
-{
-    public class MovieRatingWithNameDto
-    {
-    }
-}
+
+public record MovieRatingWithNameDto(
+    Guid Id,
+    Guid MovieId,
+    float Rating,
+    Guid UserId,
+    DateTime DateUpdated,
+    string MovieName);
