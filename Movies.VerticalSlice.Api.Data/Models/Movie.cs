@@ -9,7 +9,11 @@ public partial class Movie
     public string Slug => GenerateSlug();
     public required int YearOfRelease { get; set; }
     public required List<string> Genres { get; set; } = new();
+    
     public Guid? UserId { get; set; }
+    public User? User { get; set; }
+
+    public DateTime? DateUpdated { get; set; }
 
     private string GenerateSlug()
     {

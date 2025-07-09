@@ -21,11 +21,25 @@ public class MoviesDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        // Movie 1 - * MovieRating
+        // Movie -> User relationship (using navigation properties)
+        modelBuilder.Entity<Movie>()
+            .HasOne(m => m.User)
+            .WithMany()
+            .HasForeignKey(m => m.UserId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        // MovieRating -> Movie relationship (using navigation properties)
         modelBuilder.Entity<MovieRating>()
-            .HasOne<Movie>()
+            .HasOne(r => r.Movie)
             .WithMany()
             .HasForeignKey(r => r.MovieId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        // MovieRating -> User relationship (using navigation properties)
+        modelBuilder.Entity<MovieRating>()
+            .HasOne(r => r.User)
+            .WithMany()
+            .HasForeignKey(r => r.UserId)
             .OnDelete(DeleteBehavior.NoAction);
 
         // Add indexes for Movies table
@@ -45,5 +59,10 @@ public class MoviesDbContext : DbContext
         modelBuilder.Entity<Movie>()
             .HasIndex(m => new { m.YearOfRelease, m.Title })
             .HasDatabaseName("IX_Movies_Year_Title");
+
+        // Add index for MovieRating UserId
+        modelBuilder.Entity<MovieRating>()
+            .HasIndex(r => r.UserId)
+            .HasDatabaseName("IX_Ratings_UserId");
     }
 }
