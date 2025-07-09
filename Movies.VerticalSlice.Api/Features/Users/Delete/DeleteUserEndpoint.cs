@@ -27,6 +27,7 @@ public static class DeleteUserEndpoint
         })
         .WithName("DeleteUser")
         .WithTags("Users")
-        .WithOpenApi();
+        .WithOpenApi()
+        .RequireAuthorization();
     }
 }

@@ -16,6 +16,7 @@ public static class GetAllRatingsEndpoint
         })
         .WithName("GetAllRatings")
         .WithTags("Ratings")
-        .WithOpenApi();
+        .WithOpenApi()
+        .RequireAuthorization();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Movies.VerticalSlice.Api.Features.Users.Login;
 
 namespace Movies.VerticalSlice.Api.Features.Movies.Create
 {
@@ -24,7 +25,11 @@ namespace Movies.VerticalSlice.Api.Features.Movies.Create
             })
             .WithName("CreateMovie")
             .WithTags("Movies")
-            .WithOpenApi();
+            .WithOpenApi()
+            .RequireAuthorization()
+            .Produces(StatusCodes.Status201Created)
+            .Produces(StatusCodes.Status401Unauthorized)
+            .Produces(StatusCodes.Status400BadRequest);
         }
     }
 }

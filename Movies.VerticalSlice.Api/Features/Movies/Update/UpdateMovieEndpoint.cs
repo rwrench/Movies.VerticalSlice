@@ -28,6 +28,10 @@ public static class UpdateMovieEndpoint
         })
         .WithName("UpdateMovie")
         .WithTags("Movies")
-        .WithOpenApi();
+        .WithOpenApi()
+        .Produces(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status404NotFound)
+        .RequireAuthorization();
     }
 }

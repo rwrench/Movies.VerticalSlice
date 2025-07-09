@@ -21,6 +21,10 @@ public static class RateMovieCommandEndpoint
         })
         .WithName("CreateRating")
         .WithTags("Ratings")
+        .RequireAuthorization()
+        .Produces(StatusCodes.Status201Created)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status400BadRequest)
         .WithOpenApi();
     }
 }

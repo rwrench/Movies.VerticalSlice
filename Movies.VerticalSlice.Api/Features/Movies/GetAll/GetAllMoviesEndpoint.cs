@@ -28,6 +28,7 @@ public static class GetAllMoviesEndpoint
             return Results.Ok(movies);
         })
         .WithName("GetAllMovies")
+        .Produces(StatusCodes.Status200OK)
         .WithTags("Movies")
         .WithOpenApi();
     }

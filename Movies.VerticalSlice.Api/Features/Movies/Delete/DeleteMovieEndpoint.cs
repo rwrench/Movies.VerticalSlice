@@ -20,6 +20,10 @@ namespace Movies.VerticalSlice.Api.Features.Movies.Delete
             })
             .WithName("DeleteMovie")
             .WithTags("Movies")
+            .RequireAuthorization()
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized)
+            .Produces(StatusCodes.Status404NotFound)
             .WithOpenApi();
         }
     }

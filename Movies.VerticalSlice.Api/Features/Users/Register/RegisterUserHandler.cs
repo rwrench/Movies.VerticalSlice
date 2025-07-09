@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Movies.VerticalSlice.Api.Data.Database;
 using Movies.VerticalSlice.Api.Data.Models;
+using Movies.VerticalSlice.Api.Services;
 
 namespace Movies.VerticalSlice.Api.Features.Users.Register;
 
@@ -11,15 +12,18 @@ public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, Guid>
     private readonly MoviesDbContext _context;
     private readonly IValidator<RegisterUserCommand> _validator;
     private readonly ILogger<RegisterUserHandler> _logger;
+    private readonly IPasswordService _passwordService;
 
     public RegisterUserHandler(
         MoviesDbContext context,
         IValidator<RegisterUserCommand> validator,
-        ILogger<RegisterUserHandler> logger)
+        ILogger<RegisterUserHandler> logger,
+        IPasswordService passwordService)
     {
         _context = context;
         _validator = validator;
         _logger = logger;
+        _passwordService = passwordService;
     }
 
     public async Task<Guid> Handle(RegisterUserCommand command, 
@@ -52,7 +56,7 @@ public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, Guid>
             UserId = Guid.NewGuid(),
             UserName = command.UserName,
             Email = command.Email,
-            Password = command.Password // Note: In production, hash the password before storing
+            Password = _passwordService.HashPassword(command.Password)
         };
 
         _context.Users.Add(user);
