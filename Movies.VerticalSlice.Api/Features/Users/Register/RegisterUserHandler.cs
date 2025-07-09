@@ -22,7 +22,8 @@ public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, Guid>
         _logger = logger;
     }
 
-    public async Task<Guid> Handle(RegisterUserCommand command, CancellationToken cancellationToken)
+    public async Task<Guid> Handle(RegisterUserCommand command, 
+        CancellationToken cancellationToken)
     {
         await _validator.ValidateAndThrowAsync(command, cancellationToken);
 

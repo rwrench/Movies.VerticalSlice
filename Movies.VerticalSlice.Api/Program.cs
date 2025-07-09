@@ -6,7 +6,11 @@ using Movies.VerticalSlice.Api.Features.Movies.GetAll;
 using Movies.VerticalSlice.Api.Features.Ratings;
 using Movies.VerticalSlice.Api.Features.Ratings.GetAll;
 using Movies.VerticalSlice.Api.Features.Users;
+using Movies.VerticalSlice.Api.Services;
 var builder = WebApplication.CreateBuilder(args);
+
+// Register password service
+builder.Services.AddScoped<IPasswordService, PasswordService>();
 
 // Add services to the container.
 builder.Services.AddDbContext<MoviesDbContext>(options =>
