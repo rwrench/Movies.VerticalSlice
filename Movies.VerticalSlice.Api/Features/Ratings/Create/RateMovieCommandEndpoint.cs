@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Movies.VerticalSlice.Api.Services;
 
 
 namespace Movies.VerticalSlice.Api.Features.Ratings.Create;
@@ -12,9 +13,16 @@ public static class RateMovieCommandEndpoint
             Guid id,
             [FromBody] RateMovieRequest request,
             IMediator mediator,
+            UserContextService userContextService,
             CancellationToken token) =>
         {
-            var command = new RateMovieCommand(id, request.Rating, request.UserId, request.DateUpdated);
+            var userId = userContextService.GetCurrentUserId();
+            if (userId == null) throw new UnauthorizedAccessException();
+            var command = new RateMovieCommand(
+                id, 
+                request.Rating, 
+                userId.Value,
+                request.DateUpdated);
             var ratingsId = await mediator.Send(command, token);
 
             return Results.Created();

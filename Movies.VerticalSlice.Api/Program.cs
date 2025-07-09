@@ -83,6 +83,8 @@ builder.Services.AddAutoMapper(cfg =>
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<UserContextService>();
 var app = builder.Build();
 
 // Ensure database is created

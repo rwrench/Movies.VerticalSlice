@@ -1,4 +1,6 @@
 ﻿using MediatR;
+using Movies.VerticalSlice.Api.Data.Models;
+using Movies.VerticalSlice.Api.Services;
 
 namespace Movies.VerticalSlice.Api.Features.Movies.Delete
 {
@@ -9,9 +11,12 @@ namespace Movies.VerticalSlice.Api.Features.Movies.Delete
             app.MapDelete("/api/movies/{id:guid}", async (
                 Guid id,
                 IMediator mediator,
+                UserContextService userContextService,
                 CancellationToken token) =>
             {
-                var command = new DeleteMovieCommand(id,null);
+                var userId = userContextService.GetCurrentUserId();
+                if (userId == null) throw new UnauthorizedAccessException();
+                var command = new DeleteMovieCommand(id);
                 var result = await mediator.Send(command, token);
 
                 return result

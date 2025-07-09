@@ -35,6 +35,7 @@ public class UpdateMovieHandler : IRequestHandler<UpdateMovieCommand, bool>
         movie.YearOfRelease = command.YearOfRelease;
         movie.Genres = command.Genres;
         movie.UserId = command.UserId;
+        movie.DateUpdated = DateTime.Now;
 
         var affectedRows = await _context.SaveChangesAsync(token);
 

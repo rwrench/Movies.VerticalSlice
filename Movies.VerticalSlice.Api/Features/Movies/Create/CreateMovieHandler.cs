@@ -28,13 +28,16 @@ namespace Movies.VerticalSlice.Api.Features.Movies.Create
                 Title = command.Title,
                 YearOfRelease = command.YearOfRelease,
                 Genres = command.Genres,
-                UserId = command.UserId
+                UserId = command.UserId,
+                DateUpdated = DateTime.Now   
             };
 
             _context.Movies.Add(movie);
             await _context.SaveChangesAsync(token);
 
-            _logger.LogInformation("Created movie {Title} with ID {MovieId}", command.Title, movie.MovieId);
+            _logger.LogInformation("Created movie {Title} with ID {MovieId}",
+                command.Title, 
+                movie.MovieId);
             return movie.MovieId;
         }
     }

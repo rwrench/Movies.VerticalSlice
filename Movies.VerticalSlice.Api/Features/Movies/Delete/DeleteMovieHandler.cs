@@ -17,14 +17,15 @@ namespace Movies.VerticalSlice.Api.Features.Movies.Delete
             _logger = logger;
         }
 
-        public async Task<bool> Handle(DeleteMovieCommand command, CancellationToken cancellationToken)
+        public async Task<bool> Handle(
+            DeleteMovieCommand command,
+            CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Attempting to delete movie with ID: {MovieId}, UserId: {UserId}",
-                command.MovieId, command.UserId);
+            _logger.LogInformation("Attempting to delete movie with ID: {MovieId}",
+                command.MovieId);
 
             var movie = await _context.Movies
-                .Where(m => m.MovieId == command.MovieId &&
-                    (command.UserId == null || m.UserId == command.UserId))
+                .Where(m => m.MovieId == command.MovieId)
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (movie == null)
@@ -36,7 +37,9 @@ namespace Movies.VerticalSlice.Api.Features.Movies.Delete
             _context.Movies.Remove(movie);
             var affectedRows = await _context.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation("Successfully deleted movie with ID: {MovieId}", command.MovieId);
+            _logger.LogInformation(
+                "Successfully deleted movie with ID: {MovieId}", 
+                command.MovieId);
             return affectedRows > 0;
         }
     }
