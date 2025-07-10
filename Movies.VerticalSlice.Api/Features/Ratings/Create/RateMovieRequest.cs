@@ -3,5 +3,5 @@
 public record RateMovieRequest(
     float Rating,
     Guid MovieId,
-    Guid UserId, 
+    string UserId, 
     DateTime DateUpdated);

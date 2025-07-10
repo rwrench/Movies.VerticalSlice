@@ -6,5 +6,5 @@ public record CreateMovieCommand(
 string Title,
 int YearOfRelease,
 List<string> Genres,
-Guid? UserId = null
+string? UserId = null
 ) : IRequest<Guid>;

@@ -4,5 +4,5 @@ namespace Movies.VerticalSlice.Api.Services;
 
 public interface IJwtService
 {
-    string GenerateToken(User user);
+    string GenerateToken(ApplicationUser user);
 }

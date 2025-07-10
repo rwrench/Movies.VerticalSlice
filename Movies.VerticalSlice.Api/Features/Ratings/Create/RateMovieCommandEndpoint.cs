@@ -21,7 +21,7 @@ public static class RateMovieCommandEndpoint
             var command = new RateMovieCommand(
                 id, 
                 request.Rating, 
-                userId.Value,
+                userId,
                 request.DateUpdated);
             var ratingsId = await mediator.Send(command, token);
 

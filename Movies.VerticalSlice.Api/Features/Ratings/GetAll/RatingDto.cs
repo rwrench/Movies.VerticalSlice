@@ -4,6 +4,6 @@ public record RatingDto(
     Guid Id, 
     Guid MovieId, 
     float Rating, 
-    Guid UserId, 
+    string UserId, 
     DateTime DateLastUpdated);
 

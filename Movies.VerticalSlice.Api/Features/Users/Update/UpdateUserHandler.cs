@@ -46,7 +46,7 @@ public class UpdateUserHandler : IRequestHandler<UpdateUserCommand, bool>
         if (!string.IsNullOrEmpty(command.Email) && user.Email != command.Email)
         {
             var existingUserWithEmail = await _context.Users
-                .AnyAsync(u => u.Email == command.Email && u.UserId != user.UserId, 
+                .AnyAsync(u => u.Email == command.Email && u.Id != user.Id, 
                     cancellationToken);
 
             if (existingUserWithEmail)
@@ -63,7 +63,7 @@ public class UpdateUserHandler : IRequestHandler<UpdateUserCommand, bool>
         // Update password if provided
         if (!string.IsNullOrEmpty(command.Password))
         {
-            user.Password = _passwordService.HashPassword(command.Password);
+            user.PasswordHash = _passwordService.HashPassword(command.Password);
         }
 
         var affectedRows = await _context.SaveChangesAsync(cancellationToken);

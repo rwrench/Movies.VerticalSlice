@@ -2,4 +2,4 @@ using MediatR;
 
 namespace Movies.VerticalSlice.Api.Features.Users.Delete;
 
-public record DeleteUserCommand(Guid UserId) : IRequest<bool>;
+public record DeleteUserCommand(string UserId) : IRequest<bool>;

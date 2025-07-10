@@ -10,9 +10,9 @@ public class UserContextService
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public Guid? GetCurrentUserId()
+    public string? GetCurrentUserId()
     {
         var userId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        return userId != null ? Guid.Parse(userId) : null;
+        return userId != null ? userId : null;
     }
 }

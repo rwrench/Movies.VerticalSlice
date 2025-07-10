@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Movies.VerticalSlice.Api.Data.Models;
 using System;
 using System.Collections.Generic;
@@ -9,25 +10,19 @@ using System.Threading.Tasks;
 
 namespace Movies.VerticalSlice.Api.Data.Database;
 
-public class MoviesDbContext : DbContext
+public class MoviesDbContext : IdentityDbContext<ApplicationUser>
 {
     public MoviesDbContext(DbContextOptions<MoviesDbContext> options) : base(options) { }
 
     public DbSet<Movie> Movies { get; set; }
     public DbSet<MovieRating> Ratings { get; set; }
-    public DbSet<User> Users { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        // Movie -> User relationship (using navigation properties)
-        modelBuilder.Entity<Movie>()
-            .HasOne(m => m.User)
-            .WithMany()
-            .HasForeignKey(m => m.UserId)
-            .OnDelete(DeleteBehavior.NoAction);
-
+        
         // MovieRating -> Movie relationship (using navigation properties)
         modelBuilder.Entity<MovieRating>()
             .HasOne(r => r.Movie)
@@ -35,12 +30,7 @@ public class MoviesDbContext : DbContext
             .HasForeignKey(r => r.MovieId)
             .OnDelete(DeleteBehavior.NoAction);
 
-        // MovieRating -> User relationship (using navigation properties)
-        modelBuilder.Entity<MovieRating>()
-            .HasOne(r => r.User)
-            .WithMany()
-            .HasForeignKey(r => r.UserId)
-            .OnDelete(DeleteBehavior.NoAction);
+      
 
         // Add indexes for Movies table
         modelBuilder.Entity<Movie>()
@@ -51,18 +41,11 @@ public class MoviesDbContext : DbContext
             .HasIndex(m => m.YearOfRelease)
             .HasDatabaseName("IX_Movies_YearOfRelease");
 
-        modelBuilder.Entity<Movie>()
-            .HasIndex(m => m.UserId)
-            .HasDatabaseName("IX_Movies_UserId");
-
+    
         // Composite index for common queries
         modelBuilder.Entity<Movie>()
             .HasIndex(m => new { m.YearOfRelease, m.Title })
             .HasDatabaseName("IX_Movies_Year_Title");
 
-        // Add index for MovieRating UserId
-        modelBuilder.Entity<MovieRating>()
-            .HasIndex(r => r.UserId)
-            .HasDatabaseName("IX_Ratings_UserId");
     }
 }

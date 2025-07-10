@@ -7,7 +7,7 @@ using Movies.VerticalSlice.Api.Services;
 
 namespace Movies.VerticalSlice.Api.Features.Users.Register;
 
-public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, Guid>
+public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, string>
 {
     private readonly MoviesDbContext _context;
     private readonly IValidator<RegisterUserCommand> _validator;
@@ -26,7 +26,7 @@ public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, Guid>
         _passwordService = passwordService;
     }
 
-    public async Task<Guid> Handle(RegisterUserCommand command, 
+    public async Task<string> Handle(RegisterUserCommand command, 
         CancellationToken cancellationToken)
     {
         await _validator.ValidateAndThrowAsync(command, cancellationToken);
@@ -51,19 +51,19 @@ public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, Guid>
             throw new InvalidOperationException("A user with this username already exists");
         }
 
-        var user = new User
+        var user = new ApplicationUser
         {
-            UserId = Guid.NewGuid(),
+            Id = Guid.NewGuid().ToString(),
             UserName = command.UserName,
             Email = command.Email,
-            Password = _passwordService.HashPassword(command.Password)
+            PasswordHash = _passwordService.HashPassword(command.Password)
         };
 
         _context.Users.Add(user);
         await _context.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation("User registered successfully: {UserId}, {UserName}", user.UserId, user.UserName);
+        _logger.LogInformation("User registered successfully: {UserId}, {UserName}", user.Id, user.UserName);
 
-        return user.UserId;
+        return user.Id;
     }
 }

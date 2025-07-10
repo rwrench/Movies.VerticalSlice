@@ -9,7 +9,7 @@ public record LoginCommand(
 
 public record LoginResponse(
     string Token,
-    Guid UserId,
-    string UserName,
-    string Email
+    string UserId,
+    string? UserName,
+    string? Email
 );

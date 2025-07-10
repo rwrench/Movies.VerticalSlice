@@ -22,7 +22,7 @@ public static class UpdateMovieEndpoint
                 request.Title,
                 request.YearOfRelease,
                 request.Genres,
-                userId!.Value);
+                userId);
 
             var result = await mediator.Send(command, token);
 

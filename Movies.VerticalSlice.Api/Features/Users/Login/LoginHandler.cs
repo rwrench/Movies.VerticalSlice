@@ -35,7 +35,7 @@ public class LoginHandler : IRequestHandler<LoginCommand, LoginResponse>
         var user = await _context.Users
             .FirstOrDefaultAsync(u => u.Email == command.Email, cancellationToken);
 
-        if (user == null || !_passwordService.VerifyPassword(command.Password, user.Password))
+        if (user == null || !_passwordService.VerifyPassword(command.Password, user.PasswordHash!))
         {
             _logger.LogWarning("Login failed for email: {Email}", command.Email);
             throw new UnauthorizedAccessException("Invalid email or password");
@@ -45,6 +45,6 @@ public class LoginHandler : IRequestHandler<LoginCommand, LoginResponse>
 
         _logger.LogInformation("User logged in successfully: {Email}", command.Email);
 
-        return new LoginResponse(token, user.UserId, user.UserName, user.Email);
+        return new LoginResponse(token, user.Id, user.UserName, user.Email);
     }
 }

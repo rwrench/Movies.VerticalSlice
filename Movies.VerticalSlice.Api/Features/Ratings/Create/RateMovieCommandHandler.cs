@@ -35,11 +35,7 @@ public class RateMovieCommandHandler : IRequestHandler<RateMovieCommand, bool>
         var movieExists = await _context.Movies
             .AnyAsync(m => m.MovieId == command.MovieId, cancellationToken);
 
-        //if (!movieExists)
-        //{
-        //    _logger.LogWarning("Movie not found with ID: {MovieId}", command.MovieId);
-        //    return false;
-        //}
+      
         // Check if user already rated this movie
         var existingRating = await _context.Ratings
             .FirstOrDefaultAsync(r => r.MovieId == command.MovieId 
