@@ -1,0 +1,17 @@
+﻿﻿@using System.Collections.Generic
+@using Microsoft.AspNetCore.Components
+
+
+@if (Genres is not null && Genres.Any())
+{
+    <span>@string.Join(", ", Genres)</span>
+}
+else
+{
+    <span>-</span>
+}
+
+@code {
+    [Parameter]
+    public List<string>? Genres { get; set; }
+}

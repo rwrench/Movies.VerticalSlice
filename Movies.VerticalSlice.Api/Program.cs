@@ -1,5 +1,6 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Movies.VerticalSlice.Api.Configuration;
@@ -75,11 +76,6 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-builder.Services.AddAutoMapper(cfg =>
-{
-    cfg.AddProfile<MoviesProfile>();
-    cfg.AddProfile<RatingsProfile>();    
-});
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
@@ -95,6 +91,12 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod()
             .AllowCredentials());
 });
+
+builder.Services.Configure<JsonOptions>(options =>
+{
+    options.SerializerOptions.PropertyNamingPolicy = null;
+});
+
 var app = builder.Build();
 
 // Ensure database is created
@@ -122,6 +124,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // Add authentication and authorization middleware
+app.UseCors("AllowBlazorClient");
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -130,7 +133,8 @@ app.MapMovieEndpoints();
 app.MapRatingsEndpoints();
 app.MapUserEndpoints();
 
-app.UseCors("AllowBlazorClient");
+
+
 app.Run();
 
 

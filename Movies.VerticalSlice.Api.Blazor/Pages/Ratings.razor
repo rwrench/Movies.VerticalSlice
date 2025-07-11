@@ -1,29 +1,31 @@
 ﻿@page "/ratings"
 @using Telerik.Blazor.Components
-@inject HttpClient Http
-
-<TelerikGrid Data="@ratingsData" Height="400px" Pageable="true" Sortable="true">
+@inject IHttpClientFactory HttpClientFactory
+<TelerikGrid Data="@ratings" Height="400px" Pageable="true" Sortable="true">
     <GridColumns>
-        <GridColumn Field="MovieTitle" Title="Movie" />
-        <GridColumn Field="UserName" Title="User" />
-        <GridColumn Field="Score" Title="Score" />
-        <GridColumn Field="Comment" Title="Comment" />
+        <GridColumn Field="Id" Title="Id" />
+        <GridColumn Field="MovieName" Title="MovieName" />
+        <GridColumn Field="Rating" Title="Rating" />
+        <GridColumn Field="DateUpdated" Title="DateUpdated" />
     </GridColumns>
 </TelerikGrid>
 
 @code {
-    private List<RatingDto> ratingsData = new();
+    private List<MovieRatingWithNameDto> ratings = new();
+    private HttpClient Http => HttpClientFactory.CreateClient("AuthorizedClient");
 
     protected override async Task OnInitializedAsync()
     {
-        ratingsData = await Http.GetFromJsonAsync<List<RatingDto>>("api/ratings");
+        ratings = await Http.GetFromJsonAsync<List<MovieRatingWithNameDto>>("api/movies/ratings") 
+            ?? new List<MovieRatingWithNameDto>();
     }
 
-    public class RatingDto
-    {
-        public string MovieTitle { get; set; }
-        public string UserName { get; set; }
-        public int Score { get; set; }
-        public string Comment { get; set; }
-    }
+
+    public record MovieRatingWithNameDto(
+        Guid Id,
+        Guid MovieId,
+        float Rating,
+        string UserId,
+        DateTime DateUpdated,
+        string MovieName);
 }

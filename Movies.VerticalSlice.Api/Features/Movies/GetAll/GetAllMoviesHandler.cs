@@ -1,7 +1,7 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Movies.VerticalSlice.Api.Data.Database;
+using System.Linq;
 
 namespace Movies.VerticalSlice.Api.Features.Movies.GetAll;
 
@@ -9,16 +9,13 @@ public class GetAllMoviesHandler : IRequestHandler<GetAllMoviesQuery, IEnumerabl
 {
     private readonly MoviesDbContext _context;
     private readonly ILogger<GetAllMoviesHandler> _logger;
-    readonly IMapper _mapper;
 
     public GetAllMoviesHandler(
         MoviesDbContext context, 
-        ILogger<GetAllMoviesHandler> logger,
-        IMapper mapper)
+        ILogger<GetAllMoviesHandler> logger)
     {
         _context = context;
         _logger = logger;
-        _mapper = mapper;
     }
 
     public async Task<IEnumerable<MovieDto>> Handle(
@@ -64,18 +61,22 @@ public class GetAllMoviesHandler : IRequestHandler<GetAllMoviesQuery, IEnumerabl
                 .Skip((query.Page.Value - 1) * query.PageSize.Value)
                 .Take(query.PageSize.Value);
         }
-        else
-        {
-            moviesQuery = moviesQuery
-                .Skip(0)
-                .Take(10); // Default to first 10 if no pagination is specified
-        }
+        //else
+        //{
+        //    moviesQuery = moviesQuery
+        //        .Skip(0)
+        //        .Take(100); // Default to first 100 if no pagination is specified
+        //}
 
         var movies = await moviesQuery.AsNoTracking().ToListAsync(token);
 
-         var result = movies.Select(x => 
-               _mapper.Map<MovieDto>(x)).AsEnumerable();
-
+        var result = movies.Select(x => new MovieDto(
+              x.MovieId,
+              x.Title,
+              x.Slug,
+              x.YearOfRelease,
+              x.Genres 
+          )).AsEnumerable();
         _logger.LogInformation("Retrieved {result} movies", result.Count());
         return result;
     }

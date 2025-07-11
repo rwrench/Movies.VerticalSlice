@@ -18,4 +18,8 @@
     <PackageReference Include="Telerik.UI.for.Blazor" Version="9.1.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Shared\" />
+  </ItemGroup>
+
 </Project>

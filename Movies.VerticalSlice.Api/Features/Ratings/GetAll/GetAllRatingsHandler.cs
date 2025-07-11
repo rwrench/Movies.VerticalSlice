@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Movies.VerticalSlice.Api.Data.Database;
 
@@ -10,15 +9,12 @@ public class GetAllRatingsHandler :
 {
     private readonly MoviesDbContext _context;
     private readonly ILogger<GetAllRatingsHandler> _logger;
-    private readonly IMapper _mapper;
 
     public GetAllRatingsHandler(MoviesDbContext context, 
-        ILogger<GetAllRatingsHandler> logger,
-        IMapper mapper)
+        ILogger<GetAllRatingsHandler> logger)
     {
         _context = context;
         _logger = logger;
-        _mapper = mapper;   
     }
 
     public async  Task<IEnumerable<MovieRatingWithNameDto>> Handle(
@@ -33,8 +29,15 @@ public class GetAllRatingsHandler :
                 (rating, movie) => new { Rating = rating, Movie = movie })
             .ToListAsync(cancellationToken);
 
-        var result = ratingsWithMovies.Select(x =>
-            _mapper.Map<MovieRatingWithNameDto>((x.Rating, x.Movie)));
+        var result = ratingsWithMovies.Select(x => new MovieRatingWithNameDto(
+              x.Rating.Id,
+                x.Rating.MovieId,
+                x.Rating.Rating,
+                x.Rating.UserId,
+                x.Rating.DateUpdated,
+                x.Movie.Title,
+                x.Movie.Genres)).AsEnumerable();
+
 
         _logger.LogInformation("Retrieved {Count} movie ratings", result.Count());
         return result;

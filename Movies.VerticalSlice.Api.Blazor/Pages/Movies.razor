@@ -1,43 +1,64 @@
 ﻿@page "/movies"
 @using Telerik.Blazor
 @using Telerik.Blazor.Components
-@inject HttpClient Http
 
-<TelerikGrid Data="@moviesData"
-             Height="400px"
+@inject IHttpClientFactory HttpClientFactory
+<PageTitle>Movies</PageTitle>
+
+<h2>Movies</h2>
+
+@if (!string.IsNullOrEmpty(statusMessage))
+{
+    <div class="alert @(isError ? "alert-danger" : "alert-success")" role="alert">
+        @statusMessage
+    </div>
+}
+
+<TelerikGrid Data="@movies"
              Pageable="true"
+             PageSize="20"
              Sortable="true"
-             Resizable="true">
+             Height="80vh"
+             FilterMode="Telerik.Blazor.GridFilterMode.FilterRow"
+             EditMode="GridEditMode.Inline"
+             Resizable="true"
+             @ref="gridRef">
+    <GridToolBarTemplate>
+        <GridCommandButton Command="Add">Add Movie</GridCommandButton>
+    </GridToolBarTemplate>
     <GridColumns>
-        <GridColumn Field="movieId" Title="Id" />
-        <GridColumn Field="title" Title="Title" />
-        <GridColumn Field="slug" Title="Slug" />
-        <GridColumn Field="yearOfRelease" Title="Year" />
+        <GridColumn Field="Title" Title="Title" Editable="true" Width="400px" />
+        <GridColumn Field="YearOfRelease" Title="Year" Editable="true" Width="100px" />
+        <GridColumn Field="Genres" Title="Year" Editable="true" Width="100px" />
+        <GridCommandColumn Width="280px">
+            <GridCommandButton Command="Edit" ShowInEdit="false">Edit</GridCommandButton>
+            <GridCommandButton Command="Delete" ShowInEdit="false">Delete</GridCommandButton>
+            <GridCommandButton Command="Save" ShowInEdit="true">Save</GridCommandButton>
+            <GridCommandButton Command="Cancel" ShowInEdit="true">Cancel</GridCommandButton>
+        </GridCommandColumn>
     </GridColumns>
 </TelerikGrid>
-
 @code {
-    private List<MovieDto> moviesData = new();  
+    private HttpClient Http => HttpClientFactory.CreateClient("AuthorizedClient");
     private List<MovieDto> movies = new();
     private TelerikGrid<MovieDto>? gridRef;
     private string statusMessage = "";
     private bool isError = false;
 
-    public class MovieDto
-    {
-        public Guid movieId { get; set; }
-        public string title { get; set; }
-        public string slug { get; set; }
-        public int yearOfRelease { get; set; }
-        public string[] genres { get; set; }
-    }
+    public record MovieDto(
+      Guid MovieId,
+      string Title,
+      string Slug,
+      int YearOfRelease,
+      string Genres
+  );
 
     protected override async Task OnInitializedAsync()  
     {  
         try {  
         {
             var result = await Http.GetFromJsonAsync<List<MovieDto>>("api/movies");
-            moviesData = result ?? new List<MovieDto>();
+            movies = result ?? new List<MovieDto>();
             SetStatusMessage($"Loaded {movies.Count} movies", false);
         }
         }  
@@ -54,7 +75,7 @@
         try  
         {  
             var result = await Http.GetFromJsonAsync<List<MovieDto>>("api/movies");
-            moviesData = result ?? new List<MovieDto>();
+            movies = result ?? new List<MovieDto>();
             SetStatusMessage($"Loaded {movies.Count} movies", false);  
         }  
         catch (Exception ex)  

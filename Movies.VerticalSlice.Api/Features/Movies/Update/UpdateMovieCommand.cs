@@ -6,6 +6,6 @@ public record UpdateMovieCommand(
     Guid MovieId,
     string Title,
     int YearOfRelease,
-    List<string> Genres,
+    string Genres,
     string UserId
 ) : IRequest<bool>;

@@ -5,5 +5,5 @@ public record MovieDto(
     string Title,
     string Slug,
     int YearOfRelease,
-    List<string> Genres
+    string Genres
 );

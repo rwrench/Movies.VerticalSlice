@@ -26,19 +26,19 @@ public class CreateMovieValidator : AbstractValidator<CreateMovieCommand>
             .LessThanOrEqualTo(DateTime.UtcNow.Year + 5)
             .WithMessage("Year of release cannot be more than 5 years in the future");
 
-        RuleFor(x => x.Genres)
-            .NotNull()
-            .WithMessage("Genres list cannot be null")
-            .Must(genres => genres.Count > 0)
-            .WithMessage("At least one genre is required")
-            .Must(genres => genres.Count <= 10)
-            .WithMessage("Cannot have more than 10 genres");
+        //RuleFor(x => x.Genres)
+        //    .NotNull()
+        //    .WithMessage("Genres list cannot be null")
+        //    .Must(genres => genres.Count > 0)
+        //    .WithMessage("At least one genre is required")
+        //    .Must(genres => genres.Count <= 10)
+        //    .WithMessage("Cannot have more than 10 genres");
 
-        RuleForEach(x => x.Genres)
-            .NotEmpty()
-            .WithMessage("Genre names cannot be empty")
-            .MaximumLength(50)
-            .WithMessage("Genre names cannot exceed 50 characters");
+        //RuleForEach(x => x.Genres)
+        //    .NotEmpty()
+        //    .WithMessage("Genre names cannot be empty")
+        //    .MaximumLength(50)
+        //    .WithMessage("Genre names cannot exceed 50 characters");
     }
 
     private async Task<bool> BeUniqueTitle(CreateMovieCommand command, string title, CancellationToken token)

@@ -3,6 +3,6 @@
 public record UpdateMovieRequest(
 string Title,
 int YearOfRelease,
-List<string> Genres,
+string Genres,
 Guid? UserId = null
 );

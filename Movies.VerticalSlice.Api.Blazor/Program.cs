@@ -26,4 +26,6 @@ builder.Services.AddHttpClient("AuthorizedClient", client =>
     client.BaseAddress = new Uri("https://localhost:7299/");
 }).AddHttpMessageHandler<JwtAuthorizationMessageHandler>();
 
+
+
 await builder.Build().RunAsync();

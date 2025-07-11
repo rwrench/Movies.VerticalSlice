@@ -39,7 +39,7 @@
 
 @if (isAuthenticated)
 {
-    <span>Hello, @userName!</span>
+    <span>@userName</span>
     <button class="nav-link btn btn-link" @onclick="Logout">Log out</button>
 }
 else

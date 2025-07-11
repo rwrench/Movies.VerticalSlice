@@ -1,4 +1,6 @@
-﻿@inherits LayoutComponentBase
+﻿@using Telerik.Blazor.Components
+@inherits LayoutComponentBase
+
 <div class="page">
     <div class="sidebar">
         <NavMenu />
@@ -11,7 +13,9 @@
         </div>
 
         <article class="content px-4">
-            @Body
+            <TelerikRootComponent>
+                @Body
+            </TelerikRootComponent>
         </article>
     </main>
 </div>

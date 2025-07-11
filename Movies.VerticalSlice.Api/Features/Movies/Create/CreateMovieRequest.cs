@@ -3,7 +3,7 @@
     public record CreateMovieRequest(
         string Title,
         int YearOfRelease,
-        List<string> Genres,
+        string Genres,
         Guid? UserId = null
     );
 
