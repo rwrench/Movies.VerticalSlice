@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Movies.VerticalSlice.Api.Data\Movies.VerticalSlice.Api.Data.csproj" />
+    <ProjectReference Include="..\Movies.VerticalSlice.Api.Shared\Movies.VerticalSlice.Api.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

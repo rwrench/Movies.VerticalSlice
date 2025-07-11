@@ -1,6 +1,6 @@
 ﻿@page "/login"
 @using global::Movies.VerticalSlice.Api.Blazor.Authentication
-@inject HttpClient Http
+@inject IHttpClientFactory HttpClientFactory
 @inject JwtAuthenticationStateProvider AuthProvider
 @inject NavigationManager Nav
 
@@ -13,7 +13,7 @@
 
 @code {
     string email = "", password = "", error = "";
-
+    HttpClient Http => HttpClientFactory.CreateClient("AuthorizedClient");
     private async Task LoginAsync()
     {
         var response = await Http.PostAsJsonAsync("api/users/login", new { Email = email, Password = password });

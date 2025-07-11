@@ -1,4 +1,4 @@
-﻿namespace Movies.VerticalSlice.Api.Features.Ratings.Create;
+﻿namespace Movies.VerticalSlice.Api.Shared.Requests;
 
 public record RateMovieRequest(
     float Rating,

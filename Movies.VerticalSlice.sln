@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movies.VerticalSlice.Api.Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movies.VerticalSlice.Api.Blazor", "Movies.VerticalSlice.Api.Blazor\Movies.VerticalSlice.Api.Blazor.csproj", "{E7E93FE0-0FAC-4437-8A73-674DBFBD2A82}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movies.VerticalSlice.Api.Shared", "Movies.VerticalSlice.Api.Shared\Movies.VerticalSlice.Api.Shared.csproj", "{1969DE29-22CB-4EA0-9DAD-63E84EFFE106}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{E7E93FE0-0FAC-4437-8A73-674DBFBD2A82}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7E93FE0-0FAC-4437-8A73-674DBFBD2A82}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7E93FE0-0FAC-4437-8A73-674DBFBD2A82}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1969DE29-22CB-4EA0-9DAD-63E84EFFE106}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1969DE29-22CB-4EA0-9DAD-63E84EFFE106}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1969DE29-22CB-4EA0-9DAD-63E84EFFE106}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1969DE29-22CB-4EA0-9DAD-63E84EFFE106}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

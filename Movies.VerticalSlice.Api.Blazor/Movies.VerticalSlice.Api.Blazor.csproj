@@ -22,4 +22,8 @@
     <Folder Include="Shared\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Movies.VerticalSlice.Api.Shared\Movies.VerticalSlice.Api.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

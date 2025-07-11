@@ -1,4 +1,4 @@
-﻿namespace Movies.VerticalSlice.Api.Features.Ratings.GetAll;
+﻿namespace Movies.VerticalSlice.Api.Shared.Dtos;
 
 public record RatingDto(
     Guid Id, 

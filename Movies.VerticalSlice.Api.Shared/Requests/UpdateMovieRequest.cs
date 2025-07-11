@@ -1,4 +1,4 @@
-﻿namespace Movies.VerticalSlice.Api.Features.Movies.Update;
+﻿namespace Movies.VerticalSlice.Api.Shared.Requests;
 
 public record UpdateMovieRequest(
 string Title,

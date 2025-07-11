@@ -1,8 +1,11 @@
 ﻿@page "/movies"
 @using Telerik.Blazor
 @using Telerik.Blazor.Components
+@using global::Movies.VerticalSlice.Api.Blazor.Services
+@using global::Movies.VerticalSlice.Api.Shared.Dtos
 
 @inject IHttpClientFactory HttpClientFactory
+@inject MovieService MovieService
 <PageTitle>Movies</PageTitle>
 
 <h2>Movies</h2>
@@ -22,7 +25,13 @@
              FilterMode="Telerik.Blazor.GridFilterMode.FilterRow"
              EditMode="GridEditMode.Inline"
              Resizable="true"
-             @ref="gridRef">
+             @ref="gridRef"
+             OnUpdate="OnUpdateHandler"
+             OnDelete="OnDeleteHandler"
+             OnCreate="@OnCreateHandler"
+             OnEdit="@OnEditHandler"
+             OnCancel="@OnCancelHandler">
+
     <GridToolBarTemplate>
         <GridCommandButton Command="Add">Add Movie</GridCommandButton>
     </GridToolBarTemplate>
@@ -45,46 +54,57 @@
     private string statusMessage = "";
     private bool isError = false;
 
-    public record MovieDto(
-      Guid MovieId,
-      string Title,
-      string Slug,
-      int YearOfRelease,
-      string Genres
-  );
+
 
     protected override async Task OnInitializedAsync()  
-    {  
-        try {  
-        {
-            var result = await Http.GetFromJsonAsync<List<MovieDto>>("api/movies");
-            movies = result ?? new List<MovieDto>();
-            SetStatusMessage($"Loaded {movies.Count} movies", false);
-        }
-        }  
-        catch (Exception ex)  
-        {  
-            statusMessage = "Error loading movies: " + ex.Message;  
-            isError = true;  
-        }
-      
+    {
+        await LoadMoviesAsync();
     }  
 
-    async Task LoadMoviesAsync()  
-    {  
-        try  
-        {  
-            var result = await Http.GetFromJsonAsync<List<MovieDto>>("api/movies");
-            movies = result ?? new List<MovieDto>();
-            SetStatusMessage($"Loaded {movies.Count} movies", false);  
-        }  
-        catch (Exception ex)  
-        {  
-            SetStatusMessage($"Error loading movies: {ex.Message}", true);  
-        }  
+    async Task OnUpdateHandler(GridCommandEventArgs args)
+    {
+        if (args.Item is not MovieDto updatedMovie) return;
+        await MovieService.UpdateAsync(updatedMovie.MovieId, updatedMovie);
+        await LoadMoviesAsync();
     }
 
-    private void SetStatusMessage(string message, bool error)
+    async Task OnDeleteHandler(GridCommandEventArgs args)
+    {
+        if (args.Item is not MovieDto updatedMovie) return;
+        await MovieService.DeleteAsync(updatedMovie.MovieId);
+        await LoadMoviesAsync();
+    }
+
+    async Task OnCreateHandler(GridCommandEventArgs args)
+    {
+        if (args.Item is not MovieDto newMovie) return;
+        await MovieService.CreateAsync(newMovie);
+        await LoadMoviesAsync();
+    }
+    Task OnEditHandler(GridCommandEventArgs e)
+    {
+        return Task.CompletedTask;
+    }
+
+    Task OnCancelHandler(GridCommandEventArgs e)
+    {
+        ClearStatusMessage();
+        return Task.CompletedTask;
+    }
+    async Task LoadMoviesAsync()
+    {
+        try
+        {
+            movies = await MovieService.GetAllAsync() ?? new List<MovieDto>();
+            SetStatusMessage($"Loaded {movies.Count} movies", false);
+        }
+        catch (Exception ex)
+        {
+            SetStatusMessage($"Error loading movies: {ex.Message}", true);
+        }
+    }
+
+    void SetStatusMessage(string message, bool error)
     {
         statusMessage = message;
         isError = error;
@@ -93,9 +113,10 @@
         Task.Delay(5000).ContinueWith(_ => ClearStatusMessage());
     }
 
-    private void ClearStatusMessage()
+    void ClearStatusMessage()
     {
         statusMessage = "";
         StateHasChanged();
     }
 }
+ 

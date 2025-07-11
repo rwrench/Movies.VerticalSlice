@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Movies.VerticalSlice.Api.Features.Users.Login;
 using Movies.VerticalSlice.Api.Services;
+using Movies.VerticalSlice.Api.Shared.Requests;
 
 namespace Movies.VerticalSlice.Api.Features.Movies.Create
 {
