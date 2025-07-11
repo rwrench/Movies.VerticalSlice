@@ -1,0 +1,35 @@
+﻿@page "/login"
+@using Movies.VerticalSlice.Api.Blazor.Authentication
+@* @using Movies.VerticalSlice.Api.Blazor.Authentication *@
+@inject HttpClient Http
+@inject JwtAuthenticationStateProvider AuthProvider
+@inject NavigationManager Nav
+
+<h3>Login</h3>
+@if (!string.IsNullOrEmpty(error)) { <div class="text-danger">@error</div> }
+
+<input @bind="email" placeholder="Email" />
+<input @bind="password" placeholder="Password" type="password" />
+<button @onclick="LoginAsync">Login</button>
+
+@code {
+    private string email, password, error;
+
+    private async Task LoginAsync()
+    {
+        var response = await Http.PostAsJsonAsync("api/users/login", new { Email = email, Password = password });
+        if (response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadFromJsonAsync<LoginResult>();
+            await AuthProvider.SetTokenAsync(result!.Token);
+            error = "";
+            Nav.NavigateTo("/");
+        }
+        else
+        {
+            error = "Invalid login";
+        }
+    }
+
+    private class LoginResult { public string Token { get; set; } }
+}

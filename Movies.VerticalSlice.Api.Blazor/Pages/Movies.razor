@@ -1,0 +1,28 @@
+﻿@page "/movies"
+@inject HttpClient Http
+
+
+<TelerikGrid Data="@moviesData" Height="400px" Pageable="true" Sortable="true">  
+    <GridColumns>  
+        <GridColumn Field="Title" Title="Title" />  
+        <GridColumn Field="YearOfRelease" Title="Year" />  
+        <GridColumn Field="Genre" Title="Genre" />  
+    </GridColumns>  
+</TelerikGrid>  
+
+@code {  
+    private List<MovieDto> moviesData = new();  
+
+    protected override async Task OnInitializedAsync()  
+    {  
+        var result = await Http.GetFromJsonAsync<List<MovieDto>>("api/movies");  
+        moviesData = result ?? new List<MovieDto>();  
+    }  
+
+    public class MovieDto  
+    {  
+        public string Title { get; set; }  
+        public int YearOfRelease { get; set; }  
+        public string Genre { get; set; }  
+    }  
+}
