@@ -1,19 +1,48 @@
 ﻿@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Movies.VerticalSlice.Api.Blazor.Authentication
+@inject JwtAuthenticationStateProvider AuthProvider
 @inject NavigationManager Navigation
 
-<AuthorizeView>
-    <Authorized>
-        Hello, @context.User.Identity?.Name!
-        <button class="nav-link btn btn-link" @onclick="BeginLogOut">Log out</button>
-    </Authorized>
-    <NotAuthorized>
-        <a href="authentication/login">Log in</a>
-    </NotAuthorized>
-</AuthorizeView>
+@code {
+    private bool isAuthenticated;
+    private string? userName;
 
-@code{
-    public void BeginLogOut()
+    protected override async Task OnInitializedAsync()
     {
-        Navigation.NavigateToLogout("authentication/logout");
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        isAuthenticated = user.Identity?.IsAuthenticated ?? false;
+        userName = user.Identity?.Name;
+        AuthProvider.AuthenticationStateChanged += OnAuthStateChanged;
     }
+
+    private async void OnAuthStateChanged(Task<AuthenticationState> task)
+    {
+        var authState = await task;
+        var user = authState.User;
+        isAuthenticated = user.Identity?.IsAuthenticated ?? false;
+        userName = user.Identity?.Name;
+        StateHasChanged();
+    }
+
+    private async Task Logout()
+    {
+        await AuthProvider.SetTokenAsync(""); // or your logout logic
+        Navigation.NavigateTo("/");
+    }
+
+    public void Dispose()
+    {
+        AuthProvider.AuthenticationStateChanged -= OnAuthStateChanged;
+    }
+}
+
+@if (isAuthenticated)
+{
+    <span>Hello, @userName!</span>
+    <button class="nav-link btn btn-link" @onclick="Logout">Log out</button>
+}
+else
+{
+    <a href="/login">Log in</a>
 }

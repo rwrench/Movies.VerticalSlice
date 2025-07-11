@@ -1,28 +1,80 @@
 ﻿@page "/movies"
+@using Telerik.Blazor
+@using Telerik.Blazor.Components
 @inject HttpClient Http
 
+<TelerikGrid Data="@moviesData"
+             Height="400px"
+             Pageable="true"
+             Sortable="true"
+             Resizable="true">
+    <GridColumns>
+        <GridColumn Field="movieId" Title="Id" />
+        <GridColumn Field="title" Title="Title" />
+        <GridColumn Field="slug" Title="Slug" />
+        <GridColumn Field="yearOfRelease" Title="Year" />
+    </GridColumns>
+</TelerikGrid>
 
-<TelerikGrid Data="@moviesData" Height="400px" Pageable="true" Sortable="true">  
-    <GridColumns>  
-        <GridColumn Field="Title" Title="Title" />  
-        <GridColumn Field="YearOfRelease" Title="Year" />  
-        <GridColumn Field="Genre" Title="Genre" />  
-    </GridColumns>  
-</TelerikGrid>  
-
-@code {  
+@code {
     private List<MovieDto> moviesData = new();  
+    private List<MovieDto> movies = new();
+    private TelerikGrid<MovieDto>? gridRef;
+    private string statusMessage = "";
+    private bool isError = false;
+
+    public class MovieDto
+    {
+        public Guid movieId { get; set; }
+        public string title { get; set; }
+        public string slug { get; set; }
+        public int yearOfRelease { get; set; }
+        public string[] genres { get; set; }
+    }
 
     protected override async Task OnInitializedAsync()  
     {  
-        var result = await Http.GetFromJsonAsync<List<MovieDto>>("api/movies");  
-        moviesData = result ?? new List<MovieDto>();  
+        try {  
+        {
+            var result = await Http.GetFromJsonAsync<List<MovieDto>>("api/movies");
+            moviesData = result ?? new List<MovieDto>();
+            SetStatusMessage($"Loaded {movies.Count} movies", false);
+        }
+        }  
+        catch (Exception ex)  
+        {  
+            statusMessage = "Error loading movies: " + ex.Message;  
+            isError = true;  
+        }
+      
     }  
 
-    public class MovieDto  
+    async Task LoadMoviesAsync()  
     {  
-        public string Title { get; set; }  
-        public int YearOfRelease { get; set; }  
-        public string Genre { get; set; }  
-    }  
+        try  
+        {  
+            var result = await Http.GetFromJsonAsync<List<MovieDto>>("api/movies");
+            moviesData = result ?? new List<MovieDto>();
+            SetStatusMessage($"Loaded {movies.Count} movies", false);  
+        }  
+        catch (Exception ex)  
+        {  
+            SetStatusMessage($"Error loading movies: {ex.Message}", true);  
+        }  
+    }
+
+    private void SetStatusMessage(string message, bool error)
+    {
+        statusMessage = message;
+        isError = error;
+        StateHasChanged();
+
+        Task.Delay(5000).ContinueWith(_ => ClearStatusMessage());
+    }
+
+    private void ClearStatusMessage()
+    {
+        statusMessage = "";
+        StateHasChanged();
+    }
 }

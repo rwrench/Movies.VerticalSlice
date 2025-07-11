@@ -85,6 +85,16 @@ builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<UserContextService>();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowBlazorClient",
+        policy => policy
+            .WithOrigins("https://localhost:7089") // Blazor client URL/port
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials());
+});
 var app = builder.Build();
 
 // Ensure database is created
@@ -120,7 +130,7 @@ app.MapMovieEndpoints();
 app.MapRatingsEndpoints();
 app.MapUserEndpoints();
 
-
+app.UseCors("AllowBlazorClient");
 app.Run();
 
 

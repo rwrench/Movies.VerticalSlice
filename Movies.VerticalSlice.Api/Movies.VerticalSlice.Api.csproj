@@ -30,4 +30,8 @@
     <Folder Include="Features\Users\Shared\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="..\Movies.VerticalSlice.Api.Blazor\Pages\Component.razor" Link="Component.razor" />
+  </ItemGroup>
+
 </Project>
