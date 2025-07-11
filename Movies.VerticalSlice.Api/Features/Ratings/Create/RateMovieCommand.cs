@@ -5,7 +5,7 @@ namespace Movies.VerticalSlice.Api.Features.Ratings.Create;
 public record RateMovieCommand(
     Guid MovieId, 
     float Rating, 
-    string UserId, 
-    DateTime DateUpdated) : IRequest<bool>;
+    DateTime DateUpdated,
+    string? UserId = null) : IRequest<bool>;
 
 

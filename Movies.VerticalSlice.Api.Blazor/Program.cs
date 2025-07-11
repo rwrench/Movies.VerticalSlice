@@ -9,10 +9,6 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-// Register HttpClient
-//builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7299/") });
-
-
 // Register JWT Auth
 builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<JwtAuthenticationStateProvider>();
@@ -26,6 +22,8 @@ builder.Services.AddHttpClient("AuthorizedClient", client =>
 }).AddHttpMessageHandler<JwtAuthorizationMessageHandler>();
 
 builder.Services.AddScoped<MovieService>();
+builder.Services.AddScoped<RatingsService>();
+
 // Register Telerik
 builder.Services.AddTelerikBlazor();
 

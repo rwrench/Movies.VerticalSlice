@@ -4,7 +4,7 @@ public record CreateMovieRequest(
     string Title,
     int YearOfRelease,
     string Genres,
-    Guid? UserId = null
+    string? UserId = null
 );
 
 
