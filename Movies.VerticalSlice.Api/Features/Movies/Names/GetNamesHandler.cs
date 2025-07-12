@@ -25,13 +25,12 @@ namespace Movies.VerticalSlice.Api.Features.Movies.Names
             CancellationToken token)
         {
             var moviesQuery = _context.Movies.AsQueryable();
-
-            // Apply filters
             if (!string.IsNullOrWhiteSpace(query.Title))
             {
-                moviesQuery = moviesQuery.Where(m => m.Title.StartsWith(query.Title));
+                moviesQuery = moviesQuery.Where(m => m.Title.StartsWith(query.Title)).Take(100);
             }
-            var movies = await moviesQuery.AsNoTracking().ToListAsync(token);
+            var movies = await moviesQuery.AsNoTracking().OrderBy(x => x.Title)
+                .ToListAsync(token);
 
             var result = movies.Select(x => new MovieNameDto (
                   x.MovieId,

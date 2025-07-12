@@ -1,6 +1,6 @@
 ﻿namespace Movies.VerticalSlice.Api.Shared.Requests;
 
-public record RateMovieRequest(
+public record CreateRatingRequest(
     Guid MovieId,
     float Rating,
     DateTime? DateUpdated,

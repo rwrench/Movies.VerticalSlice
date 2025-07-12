@@ -20,7 +20,7 @@ namespace Movies.VerticalSlice.Api.Blazor.Services
 
         public async Task<HttpResponseMessage> CreateAsync(MovieRatingWithNameDto rating)
         {
-            var ratingsToCreate = new RateMovieRequest(
+            var ratingsToCreate = new CreateRatingRequest(
                 rating.MovieId,
                 rating.Rating,
                 rating.DateUpdated
@@ -29,6 +29,19 @@ namespace Movies.VerticalSlice.Api.Blazor.Services
             return await _httpClient.PostAsJsonAsync("api/movies/ratings", ratingsToCreate);
         }
 
+        public async Task<HttpResponseMessage> UpdateAsync(
+            MovieRatingWithNameDto rating)
+        {
+
+            var ratingsToUpdate = new UpdateRatingsRequest(
+                rating.MovieId,
+                rating.Rating,
+                rating.DateUpdated
+            );
+
+            return await _httpClient.PutAsJsonAsync($"api/movies/ratings/{rating.Id}",
+                ratingsToUpdate);
+        }
 
         public async Task<HttpResponseMessage> DeleteAsync(Guid id)
         {

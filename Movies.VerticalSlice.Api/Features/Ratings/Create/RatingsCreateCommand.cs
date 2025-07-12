@@ -2,7 +2,7 @@
 
 namespace Movies.VerticalSlice.Api.Features.Ratings.Create;
 
-public record RateMovieCommand(
+public record RatingsCreateCommand(
     Guid MovieId, 
     float Rating, 
     DateTime DateUpdated,
