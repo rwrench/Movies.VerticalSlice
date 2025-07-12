@@ -42,7 +42,7 @@ public class GetAllRatingsHandler :
                 x.Rating.DateUpdated,
                 x.Movie.Title,
                 x.Movie.Genres,
-                x.User.UserName!)).AsEnumerable();
+                x.User.UserName!)).OrderBy(x => x.MovieName).AsEnumerable();
 
 
         _logger.LogInformation("Retrieved {Count} movie ratings", result.Count());

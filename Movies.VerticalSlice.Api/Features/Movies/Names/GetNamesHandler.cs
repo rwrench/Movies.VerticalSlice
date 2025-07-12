@@ -27,7 +27,11 @@ namespace Movies.VerticalSlice.Api.Features.Movies.Names
             var moviesQuery = _context.Movies.AsQueryable();
             if (!string.IsNullOrWhiteSpace(query.Title))
             {
-                moviesQuery = moviesQuery.Where(m => m.Title.StartsWith(query.Title)).Take(100);
+                moviesQuery = moviesQuery
+                    .Where(m => m.Title.StartsWith(query.Title))
+                    .OrderBy(m => m.Title)
+                    .ThenBy(m => m.YearOfRelease)
+                    .Take(100);
             }
             var movies = await moviesQuery.AsNoTracking().OrderBy(x => x.Title)
                 .ToListAsync(token);

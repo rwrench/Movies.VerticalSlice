@@ -2,11 +2,10 @@
 @using Telerik.Blazor
 @using Telerik.Blazor.Components  
 @using Telerik.DataSource
-@using Telerik.DataSource.Extensions
 @using global::Movies.VerticalSlice.Api.Blazor.Services  
 @using global::Movies.VerticalSlice.Api.Shared.Dtos  
 @inject IHttpClientFactory HttpClientFactory  
-@inject RatingsService RatingsService  
+@inject RatingsService RatingsService 
 
 <TelerikGrid Data="@ratings"
              Pageable="true"
@@ -39,6 +38,7 @@
                                              @bind-Value="rating.MovieId"
                                              Filterable="true"
                                              OnRead="@OnMovieComboBoxRead"
+                                             OnChange="OnMovieComboBoxChange"
                                              Placeholder="Select a movie" />
                     }
                 }
@@ -64,24 +64,49 @@
     private TelerikGrid<MovieRatingWithNameDto>? gridRef;
     private string statusMessage = "";  
     private bool isError = false;  
-    bool isCreating = false;
+    private MovieRatingWithNameDto? selectedMovie = null;
 
     private List<MovieNameDto> movieNames = new();
 
-    private async Task OnMovieComboBoxRead(ComboBoxReadEventArgs args)
+    async Task OnMovieComboBoxRead(ComboBoxReadEventArgs args)
     {
         string filter = args.Request.Filters
             .OfType<FilterDescriptor>()
             .FirstOrDefault()?.Value?.ToString() ?? string.Empty;
 
-
+        if (string.IsNullOrWhiteSpace(filter))
+        {
+            filter = selectedMovie?.MovieName ?? string.Empty;
+        }
         movieNames = await RatingsService.GetAllMovieNamesAsync(filter) 
             ?? new List<MovieNameDto>();
 
         args.Data = movieNames;
     }
 
-  
+    void OnMovieComboBoxChange(object args)
+    {
+        Guid? selectedMovieId = null;
+
+        if (args is Guid guid)
+        {
+            selectedMovieId = guid;
+        }
+        else if (args is string movieIdString && Guid.TryParse(movieIdString, out Guid movieId))
+        {
+            selectedMovieId = movieId;
+        }
+
+        if (selectedMovieId.HasValue)
+        {
+            var movie = movieNames.FirstOrDefault(m => m.Id == selectedMovieId.Value);
+            if (selectedMovie != null)
+            {
+                selectedMovie.MovieId = selectedMovieId.Value;
+                selectedMovie.MovieName = movie?.Name ?? string.Empty;
+            }
+        }
+    }
     protected override async Task OnInitializedAsync()  
     {  
         await LoadRatingsAsync();  
@@ -89,7 +114,6 @@
 
     async Task OnUpdateHandler(GridCommandEventArgs args)  
     {  
-        isCreating = false;
         if (args.Item is not MovieRatingWithNameDto rating) return;
         await RatingsService.UpdateAsync(rating);
         await LoadRatingsAsync();
@@ -97,7 +121,6 @@
 
     async Task OnCreateHandler(GridCommandEventArgs args)
     {
-        isCreating = true;
         if (args.Item is not MovieRatingWithNameDto rating) return;
         await RatingsService.CreateAsync(rating);
         await LoadRatingsAsync();
@@ -112,6 +135,7 @@
 
     Task OnEditHandler(GridCommandEventArgs e)  
     {  
+        selectedMovie = e.Item as MovieRatingWithNameDto;
         return Task.CompletedTask;  
     }  
 
@@ -162,5 +186,6 @@
         statusMessage = "";  
         StateHasChanged();  
     }  
-   
+
+ 
 }
