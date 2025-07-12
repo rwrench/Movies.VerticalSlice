@@ -1,6 +1,7 @@
 ﻿@page "/ratings"  
 @using Telerik.Blazor
 @using Telerik.Blazor.Components  
+@using Telerik.DataSource
 @using global::Movies.VerticalSlice.Api.Blazor.Services  
 @using global::Movies.VerticalSlice.Api.Shared.Dtos  
 @inject IHttpClientFactory HttpClientFactory  
@@ -25,8 +26,22 @@
         <GridCommandButton Command="Add">Add Rating</GridCommandButton>
     </GridToolBarTemplate>
     <GridColumns>  
-        <GridColumn Field="Id" Title="Id" Width="300px" />
-        <GridColumn Field="MovieName" Title="MovieName" Width="400px"/>  
+        <GridColumn Field="MovieName" Title="MovieName" Width="400px">
+            <EditorTemplate Context="context">
+                @{
+                    var rating = context as MovieRatingWithNameDto;
+                    if (rating != null)
+                    {
+                        <TelerikComboBox Data="@movieNames"
+                                         TextField="Name"
+                                         ValueField="Id"
+                                         @bind-Value="rating.MovieId"
+                                         Filterable="true"
+                                         OnRead="@OnMovieComboBoxRead"/>
+                    }
+                }
+            </EditorTemplate>
+        </GridColumn>
         <GridColumn Field="Rating" Title="Rating" Width="100px"/>  
         <GridColumn Field="DateUpdated" Title="DateUpdated" Width="300px" />
         <GridCommandColumn Width="280px">
@@ -40,13 +55,33 @@
 
 </TelerikGrid>  
   
-@code {  
+@code {
     private List<MovieRatingWithNameDto> ratings = new();  
     private HttpClient Http => HttpClientFactory.CreateClient("AuthorizedClient");  
     private TelerikGrid<MovieRatingWithNameDto>? gridRef;
     private string statusMessage = "";  
     private bool isError = false;  
-  
+
+    private List<MovieNameDto> movieNames = new();
+
+    private async Task OnMovieComboBoxRead(ComboBoxReadEventArgs args)
+    {
+        string filter = string.Empty;
+        var data = args.Request.Filters.FirstOrDefault();
+        if (data is null)
+        {
+            filter = string.Empty;
+            return; 
+        }
+        else if (data is FilterDescriptor item)
+        {
+            FilterDescriptor currFilter = (FilterDescriptor)item;
+            filter = currFilter.Value.ToString() ?? string.Empty;    
+        }
+        movieNames = await RatingsService.GetAllMovieNamesAsync(filter) ?? new List<MovieNameDto>();
+        args.Data = movieNames;
+    }
+
     protected override async Task OnInitializedAsync()  
     {  
         await LoadRatingsAsync();  

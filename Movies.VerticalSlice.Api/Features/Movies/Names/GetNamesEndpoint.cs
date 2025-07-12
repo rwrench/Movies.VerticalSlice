@@ -5,10 +5,10 @@ using Movies.VerticalSlice.Api.Shared.Requests;
 
 namespace Movies.VerticalSlice.Api.Features.Movies.Names;
 
-public static class GetAllNamesEndpoint
+public static class GetNamesEndpoint
 
 {
-    public static void MapGetAllNames(this IEndpointRouteBuilder app)
+    public static void MapGetNames(this IEndpointRouteBuilder app)
     {
         app.MapGet("/api/movies/names", async (
             string title,
@@ -19,10 +19,9 @@ public static class GetAllNamesEndpoint
             var movieNames = await mediator.Send(query, token);
             return Results.Ok(movieNames);
         })
-        .WithName("GetAllRatings")
-        .WithTags("Ratings")
-        .WithOpenApi()
-        .RequireAuthorization();
+        .WithName("GetNames")
+        .WithTags("Movies")
+        .WithOpenApi();
     }
 }
 

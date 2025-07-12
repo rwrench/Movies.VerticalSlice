@@ -37,7 +37,11 @@ namespace Movies.VerticalSlice.Api.Blazor.Services
 
         public async Task<List<MovieNameDto>?> GetAllMovieNamesAsync(string title)
         {
-            var result = await _httpClient.GetFromJsonAsync<List<MovieNameDto>>("api/movies/names/");
+            var url = string.IsNullOrWhiteSpace(title)
+                 ? "api/movies/names/"
+                 : $"api/movies/names?title={Uri.EscapeDataString(title)}";
+
+            var result = await _httpClient.GetFromJsonAsync<List<MovieNameDto>>(url);
             return result ?? new List<MovieNameDto>();
         }
     }

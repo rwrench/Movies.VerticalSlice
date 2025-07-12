@@ -33,7 +33,7 @@ namespace Movies.VerticalSlice.Api.Features.Movies.Names
             }
             var movies = await moviesQuery.AsNoTracking().ToListAsync(token);
 
-            var result = movies.Select(x => new MovieNameDto(
+            var result = movies.Select(x => new MovieNameDto (
                   x.MovieId,
                   x.Title
               )).AsEnumerable();

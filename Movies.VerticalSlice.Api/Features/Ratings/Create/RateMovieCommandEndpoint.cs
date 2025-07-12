@@ -10,8 +10,7 @@ public static class RateMovieCommandEndpoint
 {
     public static void MapRateMovie(this IEndpointRouteBuilder app)
     {
-        app.MapPost("/api/movies/ratings/{id:guid}", async (
-            Guid id,
+        app.MapPost("/api/movies/ratings/", async (
             [FromBody] RateMovieRequest request,
             IMediator mediator,
             UserContextService userContextService,
@@ -20,7 +19,7 @@ public static class RateMovieCommandEndpoint
             var userId = userContextService.GetCurrentUserId();
             if (userId == null) throw new UnauthorizedAccessException();
             var command = new RateMovieCommand(
-                id, 
+                request.MovieId, 
                 request.Rating, 
                 request.DateUpdated ?? DateTime.Now,
                 userId);

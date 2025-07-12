@@ -1,16 +1,12 @@
 ﻿namespace Movies.VerticalSlice.Api.Shared.Dtos;
 
-
-public record MovieRatingWithNameDto(
-    Guid Id,
-    Guid MovieId,
-    float Rating,
-    string? UserId,
-    DateTime? DateUpdated,
-    string MovieName,
-    string Genres)
+public class MovieRatingWithNameDto
 {
-    public MovieRatingWithNameDto() : this(default, default, 0, default, default, string.Empty, string.Empty)
-    {
-    }
+    public Guid Id { get; set; }
+    public Guid MovieId { get; set; } // <-- must be settable!
+    public float Rating { get; set; }
+    public string? UserId { get; set; }
+    public DateTime? DateUpdated { get; set; }
+    public string MovieName { get; set; } = string.Empty;
+    public string Genres { get; set; } = string.Empty;
 }

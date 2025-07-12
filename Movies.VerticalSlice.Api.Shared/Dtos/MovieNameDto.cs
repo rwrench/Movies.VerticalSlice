@@ -14,5 +14,11 @@ namespace Movies.VerticalSlice.Api.Shared.Dtos
         {
           
         }
+
+        public MovieNameDto(Guid id, string name)
+        {
+            Id = id;
+            Name = name;
+        }
     }
 }
