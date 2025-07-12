@@ -35,6 +35,10 @@ namespace Movies.VerticalSlice.Api.Blazor.Services
             return await _httpClient.DeleteAsync($"api/ratings/{id}");
         }
 
-
+        public async Task<List<MovieNameDto>?> GetAllMovieNamesAsync(string title)
+        {
+            var result = await _httpClient.GetFromJsonAsync<List<MovieNameDto>>("api/movies/names/");
+            return result ?? new List<MovieNameDto>();
+        }
     }
 }

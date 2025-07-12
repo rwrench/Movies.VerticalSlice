@@ -5,7 +5,12 @@ public record MovieRatingWithNameDto(
     Guid Id,
     Guid MovieId,
     float Rating,
-    string UserId,
+    string? UserId,
     DateTime? DateUpdated,
     string MovieName,
-    string Genres);
+    string Genres)
+{
+    public MovieRatingWithNameDto() : this(default, default, 0, default, default, string.Empty, string.Empty)
+    {
+    }
+}
