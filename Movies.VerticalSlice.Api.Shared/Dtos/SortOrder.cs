@@ -1,5 +1,5 @@
 ﻿
-namespace Movies.VerticalSlice.Api.Features.Movies.GetAll;
+namespace Movies.VerticalSlice.Api.Shared.Dtos;
 public enum SortOrder
 {
     Unsorted,

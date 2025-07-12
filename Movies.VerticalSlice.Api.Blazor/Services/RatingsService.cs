@@ -32,7 +32,7 @@ namespace Movies.VerticalSlice.Api.Blazor.Services
 
         public async Task<HttpResponseMessage> DeleteAsync(Guid id)
         {
-            return await _httpClient.DeleteAsync($"api/ratings/{id}");
+            return await _httpClient.DeleteAsync($"api/movies/ratings/{id}");
         }
 
         public async Task<List<MovieNameDto>?> GetAllMovieNamesAsync(string title)

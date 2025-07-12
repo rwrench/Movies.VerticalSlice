@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Movies.VerticalSlice.Api.Data.Database;
+using Movies.VerticalSlice.Api.Shared.Dtos;
 
 namespace Movies.VerticalSlice.Api.Features.Ratings.GetAll;
 

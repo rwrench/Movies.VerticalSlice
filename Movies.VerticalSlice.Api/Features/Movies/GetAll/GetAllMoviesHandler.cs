@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Movies.VerticalSlice.Api.Data.Database;
+using Movies.VerticalSlice.Api.Shared.Dtos;
 using System.Linq;
 
 namespace Movies.VerticalSlice.Api.Features.Movies.GetAll;
@@ -35,7 +36,6 @@ public class GetAllMoviesHandler : IRequestHandler<GetAllMoviesQuery, IEnumerabl
             moviesQuery = moviesQuery.Where(m => m.YearOfRelease == query.YearOfRelease.Value);
         }
 
-        // Apply sorting
         if (!string.IsNullOrWhiteSpace(query.SortField) && query.SortOrder.HasValue)
         {
             moviesQuery = query.SortField.ToLowerInvariant() switch
@@ -54,19 +54,12 @@ public class GetAllMoviesHandler : IRequestHandler<GetAllMoviesQuery, IEnumerabl
             moviesQuery = moviesQuery.OrderBy(m => m.Title);
         }
 
-        // Apply pagination
         if (query.Page.HasValue && query.PageSize.HasValue)
         {
             moviesQuery = moviesQuery
                 .Skip((query.Page.Value - 1) * query.PageSize.Value)
                 .Take(query.PageSize.Value);
         }
-        //else
-        //{
-        //    moviesQuery = moviesQuery
-        //        .Skip(0)
-        //        .Take(100); // Default to first 100 if no pagination is specified
-        //}
 
         var movies = await moviesQuery.AsNoTracking().ToListAsync(token);
 
