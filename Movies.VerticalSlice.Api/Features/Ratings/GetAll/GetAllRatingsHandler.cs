@@ -26,8 +26,12 @@ public class GetAllRatingsHandler :
         var ratingsWithMovies = await _context.Ratings
             .Join(_context.Movies,
                 rating => rating.MovieId,
-                movie => movie.MovieId,
-                (rating, movie) => new { Rating = rating, Movie = movie })
+                movie => movie.MovieId
+                , (rating, movie) => new { Rating = rating, Movie = movie })
+            .Join(_context.Users,
+                rm => rm.Rating.UserId,
+                user => user.Id,
+                (rm, user) => new { Rating = rm.Rating, Movie = rm.Movie, User = user })
             .ToListAsync(cancellationToken);
 
         var result = ratingsWithMovies.Select(x => new MovieRatingWithNameDto(
@@ -37,7 +41,8 @@ public class GetAllRatingsHandler :
                 x.Rating.UserId,
                 x.Rating.DateUpdated,
                 x.Movie.Title,
-                x.Movie.Genres)).AsEnumerable();
+                x.Movie.Genres,
+                x.User.UserName!)).AsEnumerable();
 
 
         _logger.LogInformation("Retrieved {Count} movie ratings", result.Count());

@@ -2,6 +2,7 @@
 
 public class MovieRatingWithNameDto
 {
+    public MovieRatingWithNameDto() { }
     public MovieRatingWithNameDto(
         Guid id, 
         Guid movieId, 
@@ -9,7 +10,8 @@ public class MovieRatingWithNameDto
         string userId,
         DateTime? dateUpdated, 
         string movieName, 
-        string genres)
+        string genres,
+        string userName)
     {
         Id = id;
         MovieId = movieId;
@@ -18,14 +20,15 @@ public class MovieRatingWithNameDto
         DateUpdated = dateUpdated;
         MovieName = movieName;
         Genres = genres;
+        UserName = userName;
     }
 
-    public Guid Id { get; set; }
-    public Guid MovieId { get; set; } 
-    public float Rating { get; set; }
-    public string? UserId { get; set; }
-    public DateTime? DateUpdated { get; set; }
+    public Guid Id { get; set; } = Guid.Empty;
+    public Guid MovieId { get; set; } = Guid.Empty;
+    public float Rating { get; set; } = 0.0f;
+    public string? UserId { get; set; } = string.Empty;
+    public DateTime? DateUpdated { get; set; } = null;  
     public string MovieName { get; set; } = string.Empty;
     public string Genres { get; set; } = string.Empty;
-   
+    public string UserName { get; set; } = string.Empty;
 }
