@@ -80,7 +80,8 @@
             filter = currFilter.Value.ToString() ?? string.Empty;    
         }
         movieNames = await RatingsService.GetAllMovieNamesAsync(filter) 
-                ?? new List<MovieNameDto>();
+                
+        ?? new List<MovieNameDto>();
         args.Data = movieNames;
     }
 
