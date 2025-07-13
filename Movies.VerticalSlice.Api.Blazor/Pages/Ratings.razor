@@ -37,6 +37,9 @@
                                              ValueField="Id"
                                              @bind-Value="rating.MovieId"
                                              Filterable="true"
+                                             ScrollMode="DropDownScrollMode.Virtual"
+                                             ItemHeight="30"
+                                             PageSize="20"
                                              OnRead="@OnMovieComboBoxRead"
                                              OnChange="OnMovieComboBoxChange"
                                              Placeholder="Select a movie" />
