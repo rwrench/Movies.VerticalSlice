@@ -19,11 +19,6 @@ namespace Movies.VerticalSlice.Api.Features.Ratings.Create
             RuleFor(x => x.Rating)
                 .InclusiveBetween(0.5f, 5.0f);
 
-            RuleFor(x => x.DateUpdated)
-                .LessThanOrEqualTo(DateTime.Now)
-                .WithMessage("DateUpdated cannot be in the future");
-
-
             RuleFor(x => x)
                 .MustAsync(RatingDoesNotExistForUserAndMovie)
                 .WithMessage("User has already rated this movie.");
