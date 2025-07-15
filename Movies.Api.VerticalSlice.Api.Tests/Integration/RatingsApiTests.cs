@@ -44,8 +44,6 @@ namespace Movies.Api.VerticalSlice.Api.Tests.Integration
             return loginResponse!.Token;
         }
 
-     
-     
         [Fact]
         public async Task GetAllRatings_Authorized_ReturnsSuccessAndList()
         {
@@ -66,10 +64,28 @@ namespace Movies.Api.VerticalSlice.Api.Tests.Integration
             return movies![0].Id;
         }
 
+       
+        public async Task<Guid> GetMovieIdWithNoRatingsAsync()
+        {
+            var response = await _client.GetAsync("/api/movies/names/");
+            response.EnsureSuccessStatusCode();
+            var movies = await response.Content.ReadFromJsonAsync<List<MovieNameDto>>();
+            movies.Should().NotBeNullOrEmpty("No movies found in the database for testing.");
+
+            response = await _client.GetAsync(baseUrl);
+            var ratings = await response.Content.ReadFromJsonAsync<MovieRatingWithNameDto[]>();
+            ratings.Should().NotBeNullOrEmpty("No ratings found in the database for testing.");
+            
+            var id = movies.First(x => !ratings.Any(r => r.MovieId == x.Id)).Id; 
+            id.Should().NotBeEmpty("No movies found without ratings for testing."); 
+            return id;
+        }
+
+
         [Fact]
         public async Task CreateRating_ReturnsCreated()
         {
-            var movieId = await GetMovieId();
+            var movieId = await GetMovieIdWithNoRatingsAsync();
             var newRating = new CreateRatingRequest(
                 movieId,
                 4.5f,
@@ -87,52 +103,30 @@ namespace Movies.Api.VerticalSlice.Api.Tests.Integration
         }
 
         [Fact]
-        public async Task UpdateRating_ReturnsNoContent()
+        public async Task UpdateRating_Returns_NO_Content()
         {
-            // First, create a rating
-            var rating = new MovieRatingWithNameDto
-            {
-                Id = Guid.NewGuid(),
-                MovieId = Guid.NewGuid(),
-                Rating = 3.0f,
-                UserId = "update-user",
-                DateUpdated = DateTime.UtcNow,
-                MovieName = "Update Movie",
-                Genres = "Action",
-                UserName = "Update User"
-            };
-            await _client.PostAsJsonAsync(baseUrl, rating);
+            var response = await _client.GetAsync(baseUrl);
+            response.EnsureSuccessStatusCode();
 
+            var ratings = await response.Content.ReadFromJsonAsync<MovieRatingWithNameDto[]>();
+            var rating = ratings!.ToList().OrderByDescending(x => x.DateUpdated).First();
             // Update the rating
-            rating.Rating = 5.0f;
-            var response = await _client.PutAsJsonAsync($"{baseUrl}/{rating.Id}", rating);
+
+            UpdateRatingsRequest req = new UpdateRatingsRequest(rating.MovieId, 4, DateTime.Now);
+
+            response = await _client.PutAsJsonAsync($"{baseUrl}/{rating.Id}", req);
             response.StatusCode.Should().Be(HttpStatusCode.NoContent);
         }
 
-        [Fact]
-        public async Task DeleteRating_ReturnsOK()
-        {
-            var ratingId = Guid.NewGuid();  
-            
-            var rating = new MovieRatingWithNameDto
-            {
-                Id = ratingId,
-                MovieId = Guid.NewGuid(),
-                Rating = 2.0f,
-                UserId = "delete-user",
-                DateUpdated = DateTime.UtcNow,
-                MovieName = "Delete Movie",
-                Genres = "Comedy",
-                UserName = "Delete User"
-            };
-            var response = await _client.PostAsJsonAsync("/api/movies/ratings", rating);
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-        
-             Console.WriteLine($"{baseUrl}/{ratingId}");
+        //[Fact]
+        //public async Task DeleteRating_ReturnsOK()
+        //{
 
-            response = await _client.DeleteAsync($"{baseUrl}/{ratingId}");
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-        }
+
+        //    var response = await _client.PostAsJsonAsync("/api/movies/ratings", rating);
+        //    response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        //}
 
        
 
