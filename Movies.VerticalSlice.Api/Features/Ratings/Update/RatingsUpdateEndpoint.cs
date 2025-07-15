@@ -26,12 +26,12 @@ public static class RatingsUpdateEndpoint
                 userId);
             var ratingsId = await mediator.Send(command, token);
 
-            return Results.Created();
+            return Results.NoContent();
         })
         .WithName("UpdateRating")
         .WithTags("Ratings")
         .RequireAuthorization()
-        .Produces(StatusCodes.Status201Created)
+        .Produces(StatusCodes.Status204NoContent)
         .Produces(StatusCodes.Status401Unauthorized)
         .Produces(StatusCodes.Status400BadRequest)
         .WithOpenApi();

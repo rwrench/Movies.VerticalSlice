@@ -10,12 +10,12 @@ using System.Net.Http.Json;
 namespace Movies.Api.VerticalSlice.Api.Tests.Integration
 {
     public class RatingsApiTests :
-        IClassFixture<WebApplicationFactory<Program>>, IAsyncLifetime
+        IClassFixture<CustomWebApplicationFactory<Program>>, IAsyncLifetime
     {
         private readonly HttpClient _client;
         string baseUrl = "/api/movies/ratings";
         private string? _token;
-        public RatingsApiTests(WebApplicationFactory<Program> factory)
+        public RatingsApiTests(CustomWebApplicationFactory<Program> factory)
         {
             _client = factory.CreateClient();
             
@@ -47,14 +47,11 @@ namespace Movies.Api.VerticalSlice.Api.Tests.Integration
         [Fact]
         public async Task GetAllRatings_Authorized_ReturnsSuccessAndList()
         {
-            var response = await _client.GetAsync(baseUrl);
-            response.EnsureSuccessStatusCode();
-
-            var ratings = await response.Content.ReadFromJsonAsync<MovieRatingWithNameDto[]>();
+            MovieRatingWithNameDto[]? ratings = await GivenWeHaveRatings();
             ratings.Should().NotBeNull();
         }
 
-        
+
         public async Task<Guid> GetMovieId()
         {
             var response = await _client.GetAsync("/api/movies/names/");
@@ -118,17 +115,34 @@ namespace Movies.Api.VerticalSlice.Api.Tests.Integration
             response.StatusCode.Should().Be(HttpStatusCode.NoContent);
         }
 
-        //[Fact]
-        //public async Task DeleteRating_ReturnsOK()
-        //{
+        [Fact]
+        public async Task DeleteRating_ReturnsOK()
+        {
+            MovieRatingWithNameDto[]? ratings = await GivenWeHaveRatings();
+            var id = ratings!.First().Id;
+            HttpResponseMessage response = await WhenWeDeleteARating(id);
+            ThenTheRatingShouldDelete(response);
 
+        }
 
-        //    var response = await _client.PostAsJsonAsync("/api/movies/ratings", rating);
-        //    response.StatusCode.Should().Be(HttpStatusCode.OK);
+        void ThenTheRatingShouldDelete(HttpResponseMessage response)
+        {
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
 
-        //}
+        async Task<HttpResponseMessage> WhenWeDeleteARating(Guid id)
+        {
+            return await _client.DeleteAsync($"/api/movies/ratings/{id}");
+        }
 
-       
+        async Task<MovieRatingWithNameDto[]?> GivenWeHaveRatings()
+        {
+            var response = await _client.GetAsync(baseUrl);
+            response.EnsureSuccessStatusCode();
+
+            var ratings = await response.Content.ReadFromJsonAsync<MovieRatingWithNameDto[]>();
+            return ratings;
+        }
 
         public class LoginResponseDto
         {

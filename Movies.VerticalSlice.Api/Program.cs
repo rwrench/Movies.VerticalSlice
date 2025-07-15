@@ -1,16 +1,14 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Json;
+using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Movies.VerticalSlice.Api.Configuration;
 using Movies.VerticalSlice.Api.Data.Database;
 using Movies.VerticalSlice.Api.Features.Movies;
-using Movies.VerticalSlice.Api.Features.Movies.GetAll;
 using Movies.VerticalSlice.Api.Features.Ratings;
-using Movies.VerticalSlice.Api.Features.Ratings.GetAll;
 using Movies.VerticalSlice.Api.Features.Users;
-using Movies.VerticalSlice.Api.Features.Users.Login;
 using Movies.VerticalSlice.Api.Services;
 using System.Text;
 
@@ -97,6 +95,14 @@ builder.Services.Configure<JsonOptions>(options =>
     options.SerializerOptions.PropertyNamingPolicy = null;
 });
 
+builder.Services.AddHttpLogging(options =>
+{
+    //options.LoggingFields = HttpLoggingFields.Request | HttpLoggingFields.Response;
+    options.LoggingFields =
+       HttpLoggingFields.RequestPath |    // Logs the request URL path
+       HttpLoggingFields.ResponseStatusCode; // 
+});
+
 var app = builder.Build();
 
 // Ensure database is created
@@ -122,7 +128,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseHttpLogging();
 // Add authentication and authorization middleware
 app.UseCors("AllowBlazorClient");
 app.UseAuthentication();
@@ -132,6 +138,7 @@ app.UseAuthorization();
 app.MapMovieEndpoints();
 app.MapRatingsEndpoints();
 app.MapUserEndpoints();
+
 
 
 
