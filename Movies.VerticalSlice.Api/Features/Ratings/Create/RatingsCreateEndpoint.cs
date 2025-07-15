@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Movies.VerticalSlice.Api.Services;
 using Movies.VerticalSlice.Api.Shared.Requests;
+using Movies.VerticalSlice.Api.Shared.Responses;
 
 
 namespace Movies.VerticalSlice.Api.Features.Ratings.Create;
@@ -24,8 +25,7 @@ public static class RatingsCreateEndpoint
                 request.DateUpdated ?? DateTime.Now,
                 userId);
             var ratingsId = await mediator.Send(command, token);
-
-            return Results.Created();
+            return Results.Created($"/api/movies/ratings", new { id = ratingsId });
         })
         .WithName("CreateRating")
         .WithTags("Ratings")

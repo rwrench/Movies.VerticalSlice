@@ -8,7 +8,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Movies.VerticalSlice.Api.Features.Ratings.Create;
 
-public class RatingsCreateHandler : IRequestHandler<RatingsCreateCommand, bool>
+public class RatingsCreateHandler : IRequestHandler<RatingsCreateCommand, Guid>
 {
     private readonly MoviesDbContext _context;
     private readonly IValidator<RatingsCreateCommand> _validator;
@@ -24,7 +24,7 @@ public class RatingsCreateHandler : IRequestHandler<RatingsCreateCommand, bool>
         _logger = logger;
     }
 
-    public async Task<bool> Handle(
+    public async Task<Guid> Handle(
         RatingsCreateCommand command, 
         CancellationToken cancellationToken)
     {
@@ -43,7 +43,7 @@ public class RatingsCreateHandler : IRequestHandler<RatingsCreateCommand, bool>
         _logger.LogInformation("Created new rating for user: {UserId}, movie: {MovieId}",
             command.UserId, command.MovieId);
         
-        var affectedRows = await _context.SaveChangesAsync(cancellationToken);
-        return affectedRows > 0;
+        await _context.SaveChangesAsync(cancellationToken);
+        return newRating.Id;
     }
 }

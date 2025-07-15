@@ -1,8 +1,8 @@
 ﻿using FluentAssertions;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Movies.VerticalSlice.Api;
 using Movies.VerticalSlice.Api.Shared.Dtos;
 using Movies.VerticalSlice.Api.Shared.Requests;
+using Movies.VerticalSlice.Api.Shared.Responses;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -26,14 +26,75 @@ namespace Movies.Api.VerticalSlice.Api.Tests.Integration
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
         }
 
+      
+      
+        [Fact]
+        public async Task GetAllRatings_Authorized_ReturnsSuccessAndList()
+        {
+            var movieId = await GivenWeHaveMovies();
+            var newRating = new CreateRatingRequest(
+                movieId,
+                4.5f,
+                DateTime.UtcNow
+            );
+            var response = await _client.PostAsJsonAsync(baseUrl, newRating);
+            response.StatusCode.Should().Be(HttpStatusCode.Created);
+            response = await _client.GetAsync(baseUrl);
+            response.EnsureSuccessStatusCode();
+
+            var ratings = await response.Content.ReadFromJsonAsync<MovieRatingWithNameDto[]>();
+            ratings.Should().NotBeNull();
+        }
+
+        [Fact]
+        public async Task CreateRating_ReturnsCreated()
+        {
+            var movieId = await GivenWeHaveMovies();
+            var newRating = new CreateRatingRequest(
+                movieId,
+                4.5f,
+                DateTime.UtcNow
+            );
+            var response = await _client.PostAsJsonAsync(baseUrl, newRating);
+            response.StatusCode.Should().Be(HttpStatusCode.Created);
+        }
+
+        [Fact]
+        public async Task UpdateRating_Returns_NO_Content()
+        {
+            var movieId = await GivenWeHaveMovies();
+            var createdRating = await GivenWeHaveRatings();
+            var updateRequest = new UpdateRatingsRequest(movieId, 4, DateTime.UtcNow);
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+            var response = await _client.PutAsJsonAsync($"{baseUrl}/{createdRating!.Id}", updateRequest);
+            response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+        }
+
+        [Fact]
+        public async Task DeleteRating_ReturnsOK()
+        {
+            CreatedIdResponse createdRating = await GivenWeHaveRatings();
+            var response = await _client.DeleteAsync($"{baseUrl}/{createdRating!.Id}");
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
+
+        private async Task<CreatedIdResponse> GivenWeHaveRatings()
+        {
+            var movieId = await GivenWeHaveMovies();
+            var newRating = new CreateRatingRequest(movieId, 2.0f, DateTime.UtcNow);
+            var createResponse = await _client.PostAsJsonAsync(baseUrl, newRating);
+            var createdRating = await createResponse.Content.ReadFromJsonAsync<CreatedIdResponse>();
+            return createdRating!;
+        }
+
         public Task DisposeAsync() => Task.CompletedTask;
 
         public async Task<string> GetJwtTokenAsync()
         {
             var loginRequest = new
             {
-                Email = "rwrench@gmail.com",
-                Password = "Kerry!1234"
+                Email = "testuser@email.com",
+                Password = "TestPassword123!"
             };
 
             var response = await _client.PostAsJsonAsync("/api/users/login", loginRequest);
@@ -44,109 +105,22 @@ namespace Movies.Api.VerticalSlice.Api.Tests.Integration
             return loginResponse!.Token;
         }
 
-        [Fact]
-        public async Task GetAllRatings_Authorized_ReturnsSuccessAndList()
-        {
-            MovieRatingWithNameDto[]? ratings = await GivenWeHaveRatings();
-            ratings.Should().NotBeNull();
-        }
-
-
-        public async Task<Guid> GetMovieId()
-        {
-            var response = await _client.GetAsync("/api/movies/names/");
-            response.EnsureSuccessStatusCode();
-            var movies = await response.Content.ReadFromJsonAsync<List<MovieNameDto>>();
-            movies.Should().NotBeNullOrEmpty("No movies found in the database for testing.");
-            return movies![0].Id;
-        }
-
-       
-        public async Task<Guid> GetMovieIdWithNoRatingsAsync()
-        {
-            var response = await _client.GetAsync("/api/movies/names/");
-            response.EnsureSuccessStatusCode();
-            var movies = await response.Content.ReadFromJsonAsync<List<MovieNameDto>>();
-            movies.Should().NotBeNullOrEmpty("No movies found in the database for testing.");
-
-            response = await _client.GetAsync(baseUrl);
-            var ratings = await response.Content.ReadFromJsonAsync<MovieRatingWithNameDto[]>();
-            ratings.Should().NotBeNullOrEmpty("No ratings found in the database for testing.");
-            
-            var id = movies.First(x => !ratings.Any(r => r.MovieId == x.Id)).Id; 
-            id.Should().NotBeEmpty("No movies found without ratings for testing."); 
-            return id;
-        }
-
-
-        [Fact]
-        public async Task CreateRating_ReturnsCreated()
-        {
-            var movieId = await GetMovieIdWithNoRatingsAsync();
-            var newRating = new CreateRatingRequest(
-                movieId,
-                4.5f,
-                DateTime.UtcNow
-            );
-
-
-            var response = await _client.PostAsJsonAsync(baseUrl, newRating);
-            if (response.StatusCode != HttpStatusCode.Created)
-            {
-                var errorContent = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"Error: {errorContent}");
-            }
-            response.StatusCode.Should().Be(HttpStatusCode.Created);
-        }
-
-        [Fact]
-        public async Task UpdateRating_Returns_NO_Content()
-        {
-            var response = await _client.GetAsync(baseUrl);
-            response.EnsureSuccessStatusCode();
-
-            var ratings = await response.Content.ReadFromJsonAsync<MovieRatingWithNameDto[]>();
-            var rating = ratings!.ToList().OrderByDescending(x => x.DateUpdated).First();
-            // Update the rating
-
-            UpdateRatingsRequest req = new UpdateRatingsRequest(rating.MovieId, 4, DateTime.Now);
-
-            response = await _client.PutAsJsonAsync($"{baseUrl}/{rating.Id}", req);
-            response.StatusCode.Should().Be(HttpStatusCode.NoContent);
-        }
-
-        [Fact]
-        public async Task DeleteRating_ReturnsOK()
-        {
-            MovieRatingWithNameDto[]? ratings = await GivenWeHaveRatings();
-            var id = ratings!.First().Id;
-            HttpResponseMessage response = await WhenWeDeleteARating(id);
-            ThenTheRatingShouldDelete(response);
-
-        }
-
-        void ThenTheRatingShouldDelete(HttpResponseMessage response)
-        {
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-        }
-
-        async Task<HttpResponseMessage> WhenWeDeleteARating(Guid id)
-        {
-            return await _client.DeleteAsync($"/api/movies/ratings/{id}");
-        }
-
-        async Task<MovieRatingWithNameDto[]?> GivenWeHaveRatings()
-        {
-            var response = await _client.GetAsync(baseUrl);
-            response.EnsureSuccessStatusCode();
-
-            var ratings = await response.Content.ReadFromJsonAsync<MovieRatingWithNameDto[]>();
-            return ratings;
-        }
 
         public class LoginResponseDto
         {
             public required string Token { get; set; }
         }
+
+        async Task<Guid> GivenWeHaveMovies()
+        {
+            var uniqueTitle = $"TestMovie_{Guid.NewGuid()}";
+            var createMovieRequest = new CreateMovieRequest(uniqueTitle, 2025, "Test");
+            var response = await _client.PostAsJsonAsync("/api/movies", createMovieRequest);
+            response.EnsureSuccessStatusCode();
+            var created = await response.Content.ReadFromJsonAsync<MovieNameDto>();
+            return created!.Id;
+        }
+
+
     }
 }

@@ -6,6 +6,6 @@ public record RatingsCreateCommand(
     Guid MovieId, 
     float Rating, 
     DateTime DateUpdated,
-    string UserId) : IRequest<bool>;
+    string UserId) : IRequest<Guid>;
 
 
