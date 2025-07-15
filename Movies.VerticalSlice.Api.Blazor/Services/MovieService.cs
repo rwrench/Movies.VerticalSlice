@@ -18,10 +18,10 @@ namespace Movies.VerticalSlice.Api.Blazor.Services
             return await _httpClient.GetFromJsonAsync<List<MovieDto>>("api/movies");
         }
 
-        public async Task<MovieDto?> GetByIdAsync(Guid id)
-        {
-            return await _httpClient.GetFromJsonAsync<MovieDto>($"api/movies/{id}");
-        }
+        //public async Task<MovieDto?> GetByIdAsync(Guid id)
+        //{
+        //    return await _httpClient.GetFromJsonAsync<MovieDto>($"api/movies/{id}");
+        //}
 
         public async Task<HttpResponseMessage> CreateAsync(MovieDto movie)
         {

@@ -27,14 +27,12 @@ public static class UpdateMovieEndpoint
 
             var result = await mediator.Send(command, token);
 
-            return result
-                ? Results.Ok(new { success = true, message = "Movie updated successfully" })
-                : Results.NotFound(new { success = false, message = "Movie not found" });
+            return Results.NoContent();
         })
         .WithName("UpdateMovie")
         .WithTags("Movies")
         .WithOpenApi()
-        .Produces(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status204NoContent)
         .Produces(StatusCodes.Status401Unauthorized)
         .Produces(StatusCodes.Status404NotFound)
         .RequireAuthorization();
