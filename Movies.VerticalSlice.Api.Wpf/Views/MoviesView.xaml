@@ -1,0 +1,13 @@
+﻿<UserControl x:Class="Movies.VerticalSlice.Api.Wpf.Views.MoviesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True">
+    <DataGrid ItemsSource="{Binding Movies}" AutoGenerateColumns="False" IsReadOnly="True">
+        <DataGrid.Columns>
+            <DataGridTextColumn Header="Title" Binding="{Binding Title}" />
+            <DataGridTextColumn Header="Year" Binding="{Binding YearOfRelease}" />
+            <DataGridTextColumn Header="Genres" Binding="{Binding Genres}" />
+        </DataGrid.Columns>
+    </DataGrid>
+</UserControl>

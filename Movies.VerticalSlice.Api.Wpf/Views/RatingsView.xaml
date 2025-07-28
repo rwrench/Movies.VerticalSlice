@@ -1,0 +1,11 @@
+﻿<UserControl x:Class="Movies.VerticalSlice.Api.Wpf.Views.RatingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <DataGrid ItemsSource="{Binding Ratings}" AutoGenerateColumns="False" IsReadOnly="True">
+        <DataGrid.Columns>
+            <DataGridTextColumn Header="Movie" Binding="{Binding MovieTitle}" />
+            <DataGridTextColumn Header="User" Binding="{Binding UserName}" />
+            <DataGridTextColumn Header="Score" Binding="{Binding Score}" />
+        </DataGrid.Columns>
+    </DataGrid>
+</UserControl>
