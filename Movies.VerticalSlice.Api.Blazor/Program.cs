@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Movies.VerticalSlice.Api.Blazor;
 using Movies.VerticalSlice.Api.Blazor.Authentication;
-using Movies.VerticalSlice.Api.Blazor.Services;
+using Movies.VerticalSlice.Api.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

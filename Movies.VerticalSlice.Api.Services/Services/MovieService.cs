@@ -3,7 +3,7 @@ using Movies.VerticalSlice.Api.Shared.Requests;
 using System.Net.Http;
 using System.Net.Http.Json;
 
-namespace Movies.VerticalSlice.Api.Blazor.Services
+namespace Movies.VerticalSlice.Api.Services
 {
     public class MovieService
     {
