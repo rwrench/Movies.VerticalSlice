@@ -1,5 +1,6 @@
 ﻿using Movies.VerticalSlice.Api.Shared.Dtos;
 using Movies.VerticalSlice.Api.Shared.Requests;
+using System.Net.Http;
 using System.Net.Http.Json;
 
 namespace Movies.VerticalSlice.Api.Blazor.Services
@@ -17,11 +18,6 @@ namespace Movies.VerticalSlice.Api.Blazor.Services
         {
             return await _httpClient.GetFromJsonAsync<List<MovieDto>>("api/movies");
         }
-
-        //public async Task<MovieDto?> GetByIdAsync(Guid id)
-        //{
-        //    return await _httpClient.GetFromJsonAsync<MovieDto>($"api/movies/{id}");
-        //}
 
         public async Task<HttpResponseMessage> CreateAsync(MovieDto movie)
         {

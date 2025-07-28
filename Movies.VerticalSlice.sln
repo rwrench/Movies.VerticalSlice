@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movies.VerticalSlice.Api.Sh
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movies.Api.VerticalSlice.Api.Tests", "Movies.Api.VerticalSlice.Api.Tests\Movies.Api.VerticalSlice.Api.Tests.csproj", "{0D4E5CD3-FE6A-4148-A1B5-A0C31A8B95AD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movies.VerticalSlice.Api.Services", "Movies.VerticalSlice.Api.Services\Movies.VerticalSlice.Api.Services.csproj", "{427CA238-27EB-48A7-8BAF-B26B5508D5AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{0D4E5CD3-FE6A-4148-A1B5-A0C31A8B95AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D4E5CD3-FE6A-4148-A1B5-A0C31A8B95AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D4E5CD3-FE6A-4148-A1B5-A0C31A8B95AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{427CA238-27EB-48A7-8BAF-B26B5508D5AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{427CA238-27EB-48A7-8BAF-B26B5508D5AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{427CA238-27EB-48A7-8BAF-B26B5508D5AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{427CA238-27EB-48A7-8BAF-B26B5508D5AA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
