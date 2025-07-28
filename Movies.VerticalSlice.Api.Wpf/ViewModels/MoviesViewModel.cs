@@ -22,10 +22,6 @@ namespace Movies.VerticalSlice.Api.Wpf.ViewModels
             LoadMovies();
         }
 
-        public MoviesViewModel()
-        {
-        }
-
         private async void LoadMovies()
         {
             var movies = await _movieService.GetAllAsync();

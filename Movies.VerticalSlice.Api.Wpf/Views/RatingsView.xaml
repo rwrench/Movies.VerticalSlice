@@ -1,6 +1,8 @@
 ﻿<UserControl x:Class="Movies.VerticalSlice.Api.Wpf.Views.RatingsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True">
     <DataGrid ItemsSource="{Binding Ratings}" AutoGenerateColumns="False" IsReadOnly="True">
         <DataGrid.Columns>
             <DataGridTextColumn Header="Movie" Binding="{Binding MovieTitle}" />
