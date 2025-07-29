@@ -24,8 +24,8 @@ namespace Movies.VerticalSlice.Api.Wpf
             containerRegistry.RegisterSingleton<RatingsService>();
             containerRegistry.RegisterForNavigation<MoviesView>();
             containerRegistry.RegisterForNavigation<RatingsView>();
-
-
+            containerRegistry.RegisterSingleton<LoginWindow>();
+            containerRegistry.RegisterSingleton<TokenStore>();
             var services = new ServiceCollection();
             services.AddHttpClient("AuthorizedClient", client =>
             {

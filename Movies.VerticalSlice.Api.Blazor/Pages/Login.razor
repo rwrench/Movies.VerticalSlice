@@ -1,5 +1,6 @@
 ﻿@page "/login"
 @using global::Movies.VerticalSlice.Api.Blazor.Authentication
+@using global::Movies.VerticalSlice.Api.Shared.Responses
 @inject IHttpClientFactory HttpClientFactory
 @inject JwtAuthenticationStateProvider AuthProvider
 @inject NavigationManager Nav
@@ -30,5 +31,4 @@
         }
     }
 
-    private class LoginResult { public string? Token { get; set; } }
 }

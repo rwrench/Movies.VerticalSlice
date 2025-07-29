@@ -2,6 +2,7 @@
 using Movies.VerticalSlice.Api.Shared.Dtos;
 using Prism.Mvvm;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace Movies.VerticalSlice.Api.Wpf.ViewModels;
 
@@ -14,10 +15,9 @@ public class RatingsViewModel : BindableBase
     public RatingsViewModel(RatingsService ratingservice)
     {
         _ratingsService = ratingservice;
-        LoadRatings();
     }
 
-    async void LoadRatings()
+    public async Task LoadRatingsAsync()
     {
         var ratings = await _ratingsService.GetAllAsync();
         if (ratings != null)

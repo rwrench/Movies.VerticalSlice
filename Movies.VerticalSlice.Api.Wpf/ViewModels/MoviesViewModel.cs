@@ -1,12 +1,7 @@
 ﻿using Movies.VerticalSlice.Api.Services;
 using Movies.VerticalSlice.Api.Shared.Dtos;
 using Prism.Mvvm;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Movies.VerticalSlice.Api.Wpf.ViewModels
 {
@@ -19,10 +14,10 @@ namespace Movies.VerticalSlice.Api.Wpf.ViewModels
         public MoviesViewModel(MovieService movieService)
         {
             _movieService = movieService;
-            LoadMovies();
+            LoadMoviesAsync();
         }
 
-        private async void LoadMovies()
+        private async void LoadMoviesAsync()
         {
             var movies = await _movieService.GetAllAsync();
             if (movies != null)
