@@ -2,6 +2,7 @@
 using Movies.VerticalSlice.Api.Features.Users.Delete;
 using Movies.VerticalSlice.Api.Features.Users.Update;
 using Movies.VerticalSlice.Api.Features.Users.Login;
+using Movies.VerticalSlice.Api.Features.Users.GetAll;
 
 namespace Movies.VerticalSlice.Api.Features.Users;
 
@@ -13,5 +14,6 @@ public static class UserEndpoints
         app.MapUpdateUser();
         app.MapDeleteUser();
         app.MapLoginEndpoint();
+        app.MapGetAllUsers();
     }
 }

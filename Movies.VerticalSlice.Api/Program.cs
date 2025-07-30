@@ -1,5 +1,7 @@
 using FluentValidation;
+using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.EntityFrameworkCore;
@@ -15,8 +17,8 @@ using Movies.VerticalSlice.Api.Services;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddHealthChecks()
-   .AddDbContextCheck<MoviesDbContext>("Database");
+//builder.Services.AddHealthChecks()
+//   .AddDbContextCheck<MoviesDbContext>("Database");
 
 // Configure JWT settings
 builder.Services.Configure<JwtSettings>(
@@ -92,6 +94,8 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials());
+
+
 });
 
 builder.Services.Configure<JsonOptions>(options =>
@@ -109,7 +113,7 @@ builder.Services.AddHttpLogging(options =>
 var app = builder.Build();
 
 // Use custom DB health check middleware
-app.UseDbHealthCheck();
+//app.UseDbHealthCheck();
 
 // Now add Swagger, etc.
 if (app.Environment.IsDevelopment())
@@ -117,6 +121,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+//app.MapHealthChecks("health", new HealthCheckOptions
+//{
+//    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+//});
+
 
 app.UseHttpsRedirection();
 app.UseHttpLogging();
