@@ -1,4 +1,5 @@
-﻿using Movies.VerticalSlice.Api.Wpf.Views;
+﻿using Movies.VerticalSlice.Api.Services;
+using Movies.VerticalSlice.Api.Wpf.Views;
 using Prism.Commands;
 using Prism.Ioc;
 using Prism.Mvvm;
@@ -22,6 +23,7 @@ namespace Movies.VerticalSlice.Api.Wpf.ViewModels
 
         private readonly IContainerProvider _containerProvider;
         private readonly RatingsViewModel _ratingsViewModel;
+        private readonly TokenStore _tokenStore;
 
         public MainWindowViewModel(IContainerProvider containerProvider)
         {
@@ -30,12 +32,13 @@ namespace Movies.VerticalSlice.Api.Wpf.ViewModels
             LoadRatingsCommand = new DelegateCommand(async () => await OnLoadRatingsAsync());
             _containerProvider = containerProvider;
             _ratingsViewModel = _containerProvider.Resolve<RatingsViewModel>();
+            _tokenStore = _containerProvider.Resolve<TokenStore>();
         }
 
         async void OnLogin()
         {
             var loginWindow = _containerProvider.Resolve<LoginWindow>();
-            if (loginWindow.ShowDialog() == true && loginWindow.IsAuthenticated)
+            if (loginWindow.ShowDialog() == true && _tokenStore.IsAuthenticated)
             {
                 MessageBox.Show("Login successful!", 
                     "Info", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -45,6 +48,12 @@ namespace Movies.VerticalSlice.Api.Wpf.ViewModels
 
         async Task OnLoadRatingsAsync()
         {
+            if (!_tokenStore.IsAuthenticated)
+            {
+                MessageBox.Show("You must be logged in to load ratings.",
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
             await _ratingsViewModel.LoadRatingsAsync();
         }
         void OnExit()
