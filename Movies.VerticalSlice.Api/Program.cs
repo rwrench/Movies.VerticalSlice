@@ -6,13 +6,17 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Movies.VerticalSlice.Api.Configuration;
 using Movies.VerticalSlice.Api.Data.Database;
+using Movies.VerticalSlice.Api.Endpoints;
 using Movies.VerticalSlice.Api.Features.Movies;
 using Movies.VerticalSlice.Api.Features.Ratings;
 using Movies.VerticalSlice.Api.Features.Users;
+using Movies.VerticalSlice.Api.Middleware;
 using Movies.VerticalSlice.Api.Services;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddHealthChecks()
+   .AddDbContextCheck<MoviesDbContext>("Database");
 
 // Configure JWT settings
 builder.Services.Configure<JwtSettings>(
@@ -97,30 +101,17 @@ builder.Services.Configure<JsonOptions>(options =>
 
 builder.Services.AddHttpLogging(options =>
 {
-    //options.LoggingFields = HttpLoggingFields.Request | HttpLoggingFields.Response;
     options.LoggingFields =
-       HttpLoggingFields.RequestPath |    // Logs the request URL path
-       HttpLoggingFields.ResponseStatusCode; // 
+       HttpLoggingFields.RequestPath |   
+       HttpLoggingFields.ResponseStatusCode; 
 });
 
 var app = builder.Build();
 
-// Ensure database is created
-using (var scope = app.Services.CreateScope())
-{
-    var context = scope.ServiceProvider.GetRequiredService<MoviesDbContext>();
-    try
-    {
-        context.Database.EnsureCreated();
-    }
-    catch (Exception ex)
-    {
-        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred while creating the database.");
-    }
-}
+// Use custom DB health check middleware
+app.UseDbHealthCheck();
 
-// Configure the HTTP request pipeline.
+// Now add Swagger, etc.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -129,17 +120,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseHttpLogging();
-// Add authentication and authorization middleware
 app.UseCors("AllowBlazorClient");
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Map endpoints
 app.MapMovieEndpoints();
 app.MapRatingsEndpoints();
 app.MapUserEndpoints();
-
-
 
 
 app.Run();
