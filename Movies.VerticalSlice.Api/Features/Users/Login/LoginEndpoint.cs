@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Movies.VerticalSlice.Api.Shared.Constants;
 
 namespace Movies.VerticalSlice.Api.Features.Users.Login;
 
@@ -7,7 +8,7 @@ public static class LoginEndpoint
 {
     public static IEndpointRouteBuilder MapLoginEndpoint(this IEndpointRouteBuilder app)
     {
-        app.MapPost("/api/users/login", async (
+        app.MapPost(ApiEndpoints.Users.Login, async (
             [FromBody] LoginCommand command,
             IMediator mediator) =>
         {

@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Movies.VerticalSlice.Api.Shared.Constants;
 
 namespace Movies.VerticalSlice.Api.Features.Users.Register;
 
@@ -7,7 +8,7 @@ public static class RegisterUserEndpoint
 {
     public static void MapRegisterUser(this IEndpointRouteBuilder app)
     {
-        app.MapPost("/api/users/register", async (
+        app.MapPost(ApiEndpoints.Users.Register, async (
             [FromBody] RegisterUserRequest request,
             IMediator mediator,
             CancellationToken token) =>
@@ -21,7 +22,7 @@ public static class RegisterUserEndpoint
 
                 var userId = await mediator.Send(command, token);
 
-                return Results.Created($"/api/users/{userId}", new { id = userId });
+                return Results.Created(ApiEndpoints.Users.Register, new { id = userId });
             }
             catch (InvalidOperationException ex)
             {

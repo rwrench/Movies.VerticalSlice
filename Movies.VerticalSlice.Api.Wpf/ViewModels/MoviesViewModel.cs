@@ -1,11 +1,13 @@
 ﻿using Movies.VerticalSlice.Api.Services;
 using Movies.VerticalSlice.Api.Shared.Dtos;
 using Prism.Mvvm;
+using Prism.Regions;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace Movies.VerticalSlice.Api.Wpf.ViewModels
 {
-    public class MoviesViewModel : BindableBase
+    public class MoviesViewModel : BindableBase, INavigationAware
     {
         private readonly MovieService _movieService;
 
@@ -14,10 +16,9 @@ namespace Movies.VerticalSlice.Api.Wpf.ViewModels
         public MoviesViewModel(MovieService movieService)
         {
             _movieService = movieService;
-            LoadMoviesAsync();
         }
 
-        private async void LoadMoviesAsync()
+        public async Task LoadMoviesAsync()
         {
             var movies = await _movieService.GetAllAsync();
             if (movies != null)
@@ -26,5 +27,16 @@ namespace Movies.VerticalSlice.Api.Wpf.ViewModels
                     Movies.Add(movie);
             }
         }
+
+        public async void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            await LoadMoviesAsync();
+        }
+
+        public bool IsNavigationTarget(NavigationContext navigationContext) => true;
+
+
+        public void OnNavigatedFrom(NavigationContext navigationContext) { }
+        
     }
 }

@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Movies.VerticalSlice.Api;
+using Movies.VerticalSlice.Api.Shared.Constants;
 using Movies.VerticalSlice.Api.Shared.Dtos;
 using Movies.VerticalSlice.Api.Shared.Requests;
 using Movies.VerticalSlice.Api.Shared.Responses;
@@ -14,7 +15,7 @@ namespace Movies.Api.VerticalSlice.Api.Tests.Integration
     {
         private readonly HttpClient _client;
         private string? _token;
-        private readonly string baseUrl = "/api/movies";
+        private readonly string baseUrl = ApiEndpoints.Movies.Base;
 
         public MoviesApiTests(CustomWebApplicationFactory<Program> factory)
         {

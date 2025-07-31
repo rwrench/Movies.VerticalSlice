@@ -1,4 +1,5 @@
-﻿using Movies.VerticalSlice.Api.Shared.Dtos;
+﻿using Movies.VerticalSlice.Api.Shared.Constants;
+using Movies.VerticalSlice.Api.Shared.Dtos;
 using Movies.VerticalSlice.Api.Shared.Requests;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -16,7 +17,7 @@ namespace Movies.VerticalSlice.Api.Services
 
         public async Task<List<MovieDto>?> GetAllAsync()
         {
-            return await _httpClient.GetFromJsonAsync<List<MovieDto>>("api/movies");
+            return await _httpClient.GetFromJsonAsync<List<MovieDto>>(ApiEndpoints.Movies.GetAll);
         }
 
         public async Task<HttpResponseMessage> CreateAsync(MovieDto movie)
@@ -27,7 +28,7 @@ namespace Movies.VerticalSlice.Api.Services
                 movie.Genres
             );  
            
-            return await _httpClient.PostAsJsonAsync("api/movies", movieToCreate);
+            return await _httpClient.PostAsJsonAsync(ApiEndpoints.Movies.Create, movieToCreate);
         }
 
         public async Task<HttpResponseMessage> UpdateAsync(Guid id, MovieDto movieToUpdate)
@@ -36,12 +37,12 @@ namespace Movies.VerticalSlice.Api.Services
               movieToUpdate.YearOfRelease,
               movieToUpdate.Genres  
             );
-            return await _httpClient.PutAsJsonAsync($"api/movies/{id}", updateRequest);
+            return await _httpClient.PutAsJsonAsync(ApiEndpoints.Movies.Update, updateRequest);
         }
 
         public async Task<HttpResponseMessage> DeleteAsync(Guid id)
         {
-            return await _httpClient.DeleteAsync($"api/movies/{id}");
+            return await _httpClient.DeleteAsync(ApiEndpoints.Movies.Delete);
         }
 
       

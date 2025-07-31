@@ -1,7 +1,5 @@
 ﻿using MediatR;
-using Movies.VerticalSlice.Api.Features.Ratings.GetAll;
-using Movies.VerticalSlice.Api.Services;
-using Movies.VerticalSlice.Api.Shared.Requests;
+using Movies.VerticalSlice.Api.Shared.Constants;
 
 namespace Movies.VerticalSlice.Api.Features.Movies.Names;
 
@@ -10,7 +8,7 @@ public static class GetNamesEndpoint
 {
     public static void MapGetNames(this IEndpointRouteBuilder app)
     {
-        app.MapGet("/api/movies/names", async (
+        app.MapGet(ApiEndpoints.Movies.Names, async (
             IMediator mediator,
             CancellationToken token,
             string title = "") =>

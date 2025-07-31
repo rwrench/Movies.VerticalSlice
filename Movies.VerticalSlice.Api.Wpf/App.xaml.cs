@@ -1,7 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 using Movies.VerticalSlice.Api.Services;
+using Movies.VerticalSlice.Api.Wpf.ViewModels;
 using Movies.VerticalSlice.Api.Wpf.Views;
 using Prism.Ioc;
+using Prism.Services.Dialogs;
 using System;
 using System.Net.Http;
 using System.Windows;
@@ -24,8 +27,10 @@ namespace Movies.VerticalSlice.Api.Wpf
             containerRegistry.RegisterSingleton<RatingsService>();
             containerRegistry.RegisterForNavigation<MoviesView>();
             containerRegistry.RegisterForNavigation<RatingsView>();
-            containerRegistry.RegisterSingleton<LoginWindow>();
             containerRegistry.RegisterSingleton<TokenStore>();
+            containerRegistry.RegisterDialog<LoginWindow, LoginViewModel>("LoginWindow");
+            containerRegistry.Register<IValidator<LoginViewModel>, LoginViewModelValidator>();
+
             var services = new ServiceCollection();
             services.AddHttpClient("AuthorizedClient", client =>
             {

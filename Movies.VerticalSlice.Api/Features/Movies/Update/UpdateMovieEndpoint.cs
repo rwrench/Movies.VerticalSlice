@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Movies.VerticalSlice.Api.Services;
+using Movies.VerticalSlice.Api.Shared.Constants;
 using Movies.VerticalSlice.Api.Shared.Requests;
 
 namespace Movies.VerticalSlice.Api.Features.Movies.Update;
@@ -9,7 +10,7 @@ public static class UpdateMovieEndpoint
 {
     public static void MapUpdateMovie(this IEndpointRouteBuilder app)
     {
-        app.MapPut("/api/movies/{id:guid}", async (
+        app.MapPut(ApiEndpoints.Movies.Update, async (
             Guid id,
             [FromBody] UpdateMovieRequest request,
             IMediator mediator,

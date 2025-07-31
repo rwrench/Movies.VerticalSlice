@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Movies.VerticalSlice.Api.Data.Models;
 using Movies.VerticalSlice.Api.Services;
+using Movies.VerticalSlice.Api.Shared.Constants;
 
 namespace Movies.VerticalSlice.Api.Features.Movies.Delete
 {
@@ -8,7 +9,7 @@ namespace Movies.VerticalSlice.Api.Features.Movies.Delete
     {
         public static void MapDeleteMovie(this IEndpointRouteBuilder app)
         {
-            app.MapDelete("/api/movies/{id:guid}", async (
+            app.MapDelete(ApiEndpoints.Movies.Delete, async (
                 Guid id,
                 IMediator mediator,
                 UserContextService userContextService,

@@ -94,8 +94,6 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials());
-
-
 });
 
 builder.Services.Configure<JsonOptions>(options =>

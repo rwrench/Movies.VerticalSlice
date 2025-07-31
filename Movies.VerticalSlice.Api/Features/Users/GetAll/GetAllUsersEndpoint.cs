@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Movies.VerticalSlice.Api.Features.Movies.GetAll;
+using Movies.VerticalSlice.Api.Shared.Constants;
 using Movies.VerticalSlice.Api.Shared.Dtos;
 
 
@@ -9,7 +10,7 @@ public static class GetAllUsersEndpoint
 {
     public static void MapGetAllUsers(this IEndpointRouteBuilder app)
     {
-        app.MapGet("/api/users/", async (
+        app.MapGet(ApiEndpoints.Users.GetAll, async (
             IMediator mediator,
             CancellationToken token) =>
         {

@@ -6,20 +6,14 @@
          xmlns:views="clr-namespace:Movies.VerticalSlice.Api.Wpf.Views"
         Title="{Binding Title}" Height="350" Width="525" >
     <DockPanel>
-        <Menu DockPanel.Dock="Top">
-            <MenuItem Header="_File">
-                <MenuItem Header="Exit" Command="{Binding ExitCommand}" />
-                
-            </MenuItem>
-            <MenuItem Header="_Login" Command="{Binding LoginCommand}" />
-        </Menu>
-        <TabControl>
-            <TabItem Header="Movies">
-                <views:MoviesView />
-            </TabItem>
-            <TabItem Header="Ratings">
-                <views:RatingsView />
-            </TabItem>
-        </TabControl>
+        <!-- Sidebar Menu -->
+        <StackPanel DockPanel.Dock="Left" Width="Auto" Background="#EEE">
+            <Button Content="Login" Command="{Binding LoginCommand}" IsDefault="True" Margin="5"/>
+            <Button Content="Movies" Command="{Binding NavigateCommand}" CommandParameter="MoviesView" Margin="5"/>
+            <Button Content="Ratings" Command="{Binding NavigateCommand}" CommandParameter="RatingsView" Margin="5"/>
+            <Button Content="Exit" Command="{Binding ExitCommand}" Margin="5"/>
+        </StackPanel>
+        <!-- Main Content -->
+        <ContentControl prism:RegionManager.RegionName="MainRegion" />
     </DockPanel>
 </Window>

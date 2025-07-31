@@ -7,6 +7,8 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Prism.Services.Dialogs;
 using System;
+using FluentValidation;
+using System.Linq;
 
 namespace Movies.VerticalSlice.Api.Wpf.ViewModels;
 
@@ -25,7 +27,12 @@ public class LoginViewModel : BindableBase, IDialogAware
     public string? Email
     {
         get => _email;
-        set => SetProperty(ref _email, value);
+        set
+        {
+            SetProperty(ref _email, value);
+            Validate();
+        }
+
     }
 
     private string? _password;
@@ -55,21 +62,30 @@ public class LoginViewModel : BindableBase, IDialogAware
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly TokenStore _tokenStore;
     private readonly IDialogService _dialogService;
+    private readonly IValidator _validator;
 
     public LoginViewModel(
         IHttpClientFactory httpClientFactory, 
         TokenStore tokenStore,
-        IDialogService dialogService)
+        IDialogService dialogService,
+        IValidator<LoginViewModel> validator)
     {
         _httpClientFactory = httpClientFactory;
         _tokenStore = tokenStore;
         _dialogService = dialogService;
+        _validator = validator;
         
         LoginCommand = new DelegateCommand(async () => await LoginAsync());
         ForgotCommand = new DelegateCommand(Forgot);
         CancelCommand = new DelegateCommand(Cancel);
     }
 
+    private void Validate()
+    {
+        var context = new FluentValidation.ValidationContext<LoginViewModel>(this);
+        var result = _validator.Validate(context);
+        ErrorMessage = result.IsValid ? string.Empty : result.Errors.FirstOrDefault()?.ErrorMessage;
+    }
     async Task LoginAsync()
     {
         var http = _httpClientFactory.CreateClient("AuthorizedClient");

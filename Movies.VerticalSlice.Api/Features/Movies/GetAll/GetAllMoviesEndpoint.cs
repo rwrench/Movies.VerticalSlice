@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Movies.VerticalSlice.Api.Shared.Constants;
 using Movies.VerticalSlice.Api.Shared.Dtos;
 
 
@@ -8,7 +9,7 @@ public static class GetAllMoviesEndpoint
 {
     public static void MapGetAllMovies(this IEndpointRouteBuilder app)
     {
-        app.MapGet("/api/movies", async (
+        app.MapGet(ApiEndpoints.Movies.GetAll, async (
             string? title,
             int? yearOfRelease,
             string? sortField,

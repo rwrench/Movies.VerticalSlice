@@ -1,6 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Movies.VerticalSlice.Api.Features.Users.Register;
+using Movies.VerticalSlice.Api.Shared.Constants;
 
 namespace Movies.VerticalSlice.Api.Features.Users.Update;
 
@@ -8,7 +8,7 @@ public static class UpdateUserEndpoint
 {
     public static void MapUpdateUser(this IEndpointRouteBuilder app)
     {
-        app.MapPut("/api/users/{userName}", async (
+        app.MapPut(ApiEndpoints.Users.Update, async (
             string userName,
             [FromBody] UpdateUserRequest request,
             IMediator mediator,

@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Movies.VerticalSlice.Api;
+using Movies.VerticalSlice.Api.Shared.Constants;
 using Movies.VerticalSlice.Api.Shared.Dtos;
 using Movies.VerticalSlice.Api.Shared.Requests;
 using Movies.VerticalSlice.Api.Shared.Responses;
@@ -13,7 +14,7 @@ namespace Movies.Api.VerticalSlice.Api.Tests.Integration
         IClassFixture<CustomWebApplicationFactory<Program>>, IAsyncLifetime
     {
         private readonly HttpClient _client;
-        string baseUrl = "/api/movies/ratings";
+        string baseUrl = ApiEndpoints.Ratings.Base;
         private string? _token;
         public RatingsApiTests(CustomWebApplicationFactory<Program> factory)
         {
@@ -97,7 +98,7 @@ namespace Movies.Api.VerticalSlice.Api.Tests.Integration
                 Password = "TestPassword123!"
             };
 
-            var response = await _client.PostAsJsonAsync("/api/users/login", loginRequest);
+            var response = await _client.PostAsJsonAsync(ApiEndpoints.Users.Login, loginRequest);
             response.EnsureSuccessStatusCode();
 
             // Adjust the property name to match your actual response
@@ -115,7 +116,7 @@ namespace Movies.Api.VerticalSlice.Api.Tests.Integration
         {
             var uniqueTitle = $"TestMovie_{Guid.NewGuid()}";
             var createMovieRequest = new CreateMovieRequest(uniqueTitle, 2025, "Test");
-            var response = await _client.PostAsJsonAsync("/api/movies", createMovieRequest);
+            var response = await _client.PostAsJsonAsync(ApiEndpoints.Movies.Create, createMovieRequest);
             response.EnsureSuccessStatusCode();
             var created = await response.Content.ReadFromJsonAsync<MovieNameDto>();
             return created!.Id;
