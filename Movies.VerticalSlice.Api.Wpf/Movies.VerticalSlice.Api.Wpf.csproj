@@ -6,10 +6,10 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="12.0.0" />
-    <PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
     <PackageReference Include="Prism.DryIoc" Version="8.1.97" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <PackageReference Include="System.Net.Http.Json" Version="9.0.7" />
+    <PackageReference Include="Telerik.Windows.Controls.GridView.for.Wpf.Xaml" Version="2025.2.707" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Movies.VerticalSlice.Api.Services\Movies.VerticalSlice.Api.Services.csproj" />

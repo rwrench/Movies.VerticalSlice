@@ -3,13 +3,18 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
-             Height="500" Width="Auto">
-    <DataGrid ItemsSource="{Binding Ratings}" AutoGenerateColumns="False" IsReadOnly="True">
-        <DataGrid.Columns>
-            <DataGridTextColumn Header="Movie" Binding="{Binding MovieName}"   />
-            <DataGridTextColumn Header="Rating" Binding="{Binding Rating}" />
-            <DataGridTextColumn Header="User" Binding="{Binding UserName}" />
-            <DataGridTextColumn Header="DateUpdated" Binding="{Binding DateUpdated}" />
-        </DataGrid.Columns>
-    </DataGrid>
+             xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+             Height="Auto" Width="Auto">
+    <Grid>
+        <telerik:RadGridView ItemsSource="{Binding Ratings}" AutoGenerateColumns="False" IsReadOnly="True" 
+                             CanUserFreezeColumns="False" CanUserReorderColumns="False" GroupRenderMode="Flat"
+                             CanUserDeleteRows="True" CanUserInsertRows="True" ShowGroupPanel="False">
+            <telerik:RadGridView.Columns>
+                <telerik:GridViewDataColumn Header="Movie" DataMemberBinding="{Binding MovieName}" Width="*" />
+                <telerik:GridViewDataColumn Header="Rating" DataMemberBinding="{Binding Rating}" Width="*" />
+                <telerik:GridViewDataColumn Header="User" DataMemberBinding="{Binding UserName}" Width="*" />
+                <telerik:GridViewDataColumn Header="Date Updated" DataMemberBinding="{Binding DateUpdated}" Width="*" />
+            </telerik:RadGridView.Columns>
+        </telerik:RadGridView>
+    </Grid>
 </UserControl>

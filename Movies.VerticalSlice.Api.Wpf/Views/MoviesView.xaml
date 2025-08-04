@@ -3,12 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
-             Height="500" Width="Auto">
-    <DataGrid ItemsSource="{Binding Movies}" AutoGenerateColumns="False" IsReadOnly="True">
-        <DataGrid.Columns>
-            <DataGridTextColumn Header="Title" Binding="{Binding Title}" />
-            <DataGridTextColumn Header="Year" Binding="{Binding YearOfRelease}" />
-            <DataGridTextColumn Header="Genres" Binding="{Binding Genres}" />
-        </DataGrid.Columns>
-    </DataGrid>
+             xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+             Height="Auto" Width="Auto">
+    <Grid>
+        <telerik:RadGridView ItemsSource="{Binding Movies}" AutoGenerateColumns="False"
+                             CanUserFreezeColumns="False" CanUserReorderColumns="False" GroupRenderMode="Flat"
+                             CanUserDeleteRows="True" CanUserInsertRows="True" ShowGroupPanel="False">
+            <telerik:RadGridView.Columns>
+                <telerik:GridViewDataColumn Header="Title" DataMemberBinding="{Binding Title}" Width="Auto" />
+                <telerik:GridViewDataColumn Header="Release Year" DataMemberBinding="{Binding YearOfRelease}" />
+                <telerik:GridViewDataColumn Header="Genres" DataMemberBinding="{Binding Genres}" />
+            </telerik:RadGridView.Columns>
+        </telerik:RadGridView>
+    </Grid>
 </UserControl>
