@@ -24,6 +24,10 @@ namespace Movies.VerticalSlice.Api.Services
             var response = await _httpClient.GetAsync(ApiEndpoints.Ratings.GetAll);
             if (response.IsSuccessStatusCode)
                 return await response.Content.ReadFromJsonAsync<List<MovieRatingWithNameDto>>();
+            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                throw new UnauthorizedAccessException("User is not authorized.");
+            }
             return null;
         }
 
