@@ -6,13 +6,28 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="12.0.0" />
-    <PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
     <PackageReference Include="Prism.DryIoc" Version="8.1.97" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <PackageReference Include="System.Net.Http.Json" Version="9.0.7" />
+    <PackageReference Include="Telerik.Licensing" Version="1.6.8" />
+    <PackageReference Include="Telerik.UI.for.Wpf.80.Xaml" Version="2025.2.707" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Movies.VerticalSlice.Api.Services\Movies.VerticalSlice.Api.Services.csproj" />
     <ProjectReference Include="..\Movies.VerticalSlice.Api.Shared\Movies.VerticalSlice.Api.Shared.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Telerik.Windows.Controls">
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Progress\Telerik UI for WPF 2025 Q2\Binaries\WPF80\Telerik.Windows.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.GridView">
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Progress\Telerik UI for WPF 2025 Q2\Binaries\WPF80\Telerik.Windows.Controls.GridView.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.Input">
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Progress\Telerik UI for WPF 2025 Q2\Binaries\WPF80\Telerik.Windows.Controls.Input.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Data">
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Progress\Telerik UI for WPF 2025 Q2\Binaries\WPF80\Telerik.Windows.Data.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>

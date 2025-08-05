@@ -4,14 +4,15 @@
         xmlns:prism="http://prismlibrary.com/"
         prism:ViewModelLocator.AutoWireViewModel="True"
          xmlns:views="clr-namespace:Movies.VerticalSlice.Api.Wpf.Views"
+        xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
         Title="{Binding Title}" Height="350" Width="525" >
     <DockPanel>
         <!-- Sidebar Menu -->
-        <StackPanel DockPanel.Dock="Left" Width="Auto" Background="#EEE">
-            <Button Content="Login" Command="{Binding LoginCommand}" IsDefault="True" Margin="5"/>
-            <Button Content="Movies" Command="{Binding NavigateCommand}" CommandParameter="MoviesView" Margin="5"/>
-            <Button Content="Ratings" Command="{Binding NavigateCommand}" CommandParameter="RatingsView" Margin="5"/>
-            <Button Content="Exit" Command="{Binding ExitCommand}" Margin="5"/>
+        <StackPanel DockPanel.Dock="Left" Width="Auto" Background="DarkBlue">
+            <telerik:RadButton Content="Login" Command="{Binding LoginCommand}" IsDefault="True" Margin="5" telerik:StyleManager.Theme="Summer"/>
+            <telerik:RadButton Content="Movies" Command="{Binding NavigateCommand}" CommandParameter="MoviesView" Margin="5" telerik:StyleManager.Theme="Summer"/>
+            <telerik:RadButton Content="Ratings" Command="{Binding NavigateCommand}" CommandParameter="RatingsView" Margin="5" telerik:StyleManager.Theme="Summer"/>
+            <telerik:RadButton Content="Exit" Command="{Binding ExitCommand}" Margin="5" telerik:StyleManager.Theme="Summer"/>
         </StackPanel>
         <!-- Main Content -->
         <ContentControl prism:RegionManager.RegionName="MainRegion" />
