@@ -2,7 +2,16 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Movies.VerticalSlice.Api.Wpf"
+             xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
              xmlns:prism="http://prismlibrary.com/">
     <Application.Resources>
+        <Style TargetType="telerik:RadButton">
+            <Setter Property="Background" Value="DarkGray"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="4"/>
+        </Style>
     </Application.Resources>
 </prism:PrismApplication>
