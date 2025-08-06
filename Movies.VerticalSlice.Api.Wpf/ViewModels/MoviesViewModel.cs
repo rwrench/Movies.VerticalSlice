@@ -3,11 +3,11 @@ using Movies.VerticalSlice.Api.Shared.Dtos;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
-using System;
 using System.Collections;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
-using Telerik.Windows.Documents.RichTextBoxCommands;
+using System.Windows;
 
 namespace Movies.VerticalSlice.Api.Wpf.ViewModels
 {
@@ -28,15 +28,25 @@ namespace Movies.VerticalSlice.Api.Wpf.ViewModels
         public DelegateCommand<MovieDto> AddMovieCommand { get; }
         public DelegateCommand<MovieDto> EditMovieCommand { get; }
         public DelegateCommand<IList> DeleteMovieCommand { get; }
-        
+
+        private MovieDto _selectedMovie;
+        public MovieDto SelectedMovie
+        {
+            get => _selectedMovie;
+            set
+            {
+                SetProperty(ref _selectedMovie, value);
+                EditMovieCommand.RaiseCanExecuteChanged();
+            }
+        }
 
         public MoviesViewModel(MovieService movieService, TokenStore tokenStore)
         {
             _movieService = movieService;
             _tokenStore = tokenStore;
-            _movieService.AuthToken = tokenStore.Token;
-            AddMovieCommand = new DelegateCommand<MovieDto>(OnAddMovie);
-            EditMovieCommand = new DelegateCommand<MovieDto>(OnEditMovie);
+           
+            AddMovieCommand = new DelegateCommand<MovieDto>(_ => StartAddMovie());
+            EditMovieCommand = new DelegateCommand<MovieDto>(OnEditMovie, CanEditMovie);
             DeleteMovieCommand = new DelegateCommand<IList>(OnDeleteMovie);
         }
 
@@ -46,24 +56,43 @@ namespace Movies.VerticalSlice.Api.Wpf.ViewModels
             {
                 return;
             }
-            foreach (var item in selectedItems)
+            var itemsToDelete = selectedItems.Cast<MovieDto>().ToList();
+            foreach (var dto in itemsToDelete)
             {
-                if (item is MovieDto dto)
+                _movieService.AuthToken = _tokenStore.Token;
+                var response = await _movieService.DeleteAsync(dto.MovieId);
+                if (response.IsSuccessStatusCode)
                 {
-                    
-                    await _movieService.DeleteAsync(dto.MovieId);
+                    MessageBox.Show($"Movie '{dto.Title}' deleted successfully.");  
+                    Movies.Remove(dto);
                 }
             }
         }
 
+        bool CanEditMovie(MovieDto dto)
+        {
+
+            return dto != null;
+        }
+
         async void OnEditMovie(MovieDto dto)
         {
-            await _movieService.UpdateAsync(dto.MovieId, dto);
+            if (dto == null)
+            {
+                return;
+            }
+            _movieService.AuthToken = _tokenStore.Token;
+            var response = await _movieService.UpdateAsync(dto.MovieId, dto);
+            if (response.IsSuccessStatusCode)
+            {
+                MessageBox.Show($"Movie updated successfully.");
+            }
         }
 
         async void OnAddMovie(MovieDto dto)
         {
-           await _movieService.CreateAsync(dto);
+            _movieService.AuthToken = _tokenStore.Token;
+            await _movieService.CreateAsync(dto);
         }
         public async Task LoadMoviesAsync()
         {
@@ -87,6 +116,12 @@ namespace Movies.VerticalSlice.Api.Wpf.ViewModels
 
 
         public void OnNavigatedFrom(NavigationContext navigationContext) { }
-        
+
+        public void StartAddMovie()
+        {
+            var newMovie = new MovieDto(); // Defaults, or set as needed
+            Movies.Add(newMovie);
+            SelectedMovie = newMovie;
+        }
     }
 }

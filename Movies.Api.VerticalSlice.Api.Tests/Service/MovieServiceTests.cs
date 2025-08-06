@@ -36,8 +36,10 @@ namespace Movies.Api.VerticalSlice.Api.Tests.Service
             await Assert.ThrowsAsync<UnauthorizedAccessException>(() => service.DeleteAsync(Guid.NewGuid()));
         }
         [Fact]
-        public async Task DeleteAsync_ReturnsBadRequest_ThrowsException()
+        public async Task DeleteAsync_Returns_OK_WhenAuthHeaderIsSet()
         {
+            // Arrange
+            HttpRequestMessage? capturedRequest = null;
             var handler = new Mock<HttpMessageHandler>();
             handler
                 .Protected()
@@ -45,7 +47,8 @@ namespace Movies.Api.VerticalSlice.Api.Tests.Service
                     "SendAsync",
                     ItExpr.IsAny<HttpRequestMessage>(),
                     ItExpr.IsAny<CancellationToken>())
-                .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.BadRequest));
+                .Callback<HttpRequestMessage, CancellationToken>((req, ct) => capturedRequest = req)
+                .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK));
 
             var httpClient = new HttpClient(handler.Object)
             {
@@ -54,9 +57,19 @@ namespace Movies.Api.VerticalSlice.Api.Tests.Service
             var factory = new Mock<IHttpClientFactory>();
             factory.Setup(f => f.CreateClient(It.IsAny<string>())).Returns(httpClient);
 
-            var service = new MovieService(factory.Object);
+            var service = new MovieService(factory.Object)
+            {
+                AuthToken = "test-token"
+            };
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() => service.DeleteAsync(Guid.NewGuid()));
+            // Act
+            await service.DeleteAsync(Guid.NewGuid());
+
+            // Assert
+            Assert.NotNull(capturedRequest);
+            Assert.True(capturedRequest.Headers.Authorization != null, "Authorization header should be set.");
+            Assert.Equal("Bearer", capturedRequest.Headers.Authorization!.Scheme);
+            Assert.Equal("test-token", capturedRequest.Headers.Authorization!.Parameter);
         }
     }
 }

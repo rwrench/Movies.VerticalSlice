@@ -44,6 +44,7 @@ namespace Movies.VerticalSlice.Api.Wpf.ViewModels
             _regionManager = regionManager; 
             NavigateCommand = new DelegateCommand<string>(OnNavigate);
             _dialogService = dialogService;
+            OnLogin();
         }
 
         private void OnNavigate(string viewName)
