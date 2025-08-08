@@ -68,7 +68,8 @@ public class GetAllMoviesHandler : IRequestHandler<GetAllMoviesQuery, IEnumerabl
               x.Title,
               x.Slug,
               x.YearOfRelease,
-              x.Genres 
+              x.Genres,
+              x.DateUpdated
           )).AsEnumerable();
         _logger.LogInformation("Retrieved {result} movies", result.Count());
         return result;

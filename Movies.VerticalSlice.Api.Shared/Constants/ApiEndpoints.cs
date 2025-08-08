@@ -9,8 +9,8 @@
             public const string Create = Base; // or null
             public const string Get = "{idOrSlug}";
             public const string GetAll = Base; // or null
-            public const string Update = Base + "{{id:guid}}";
-            public const string Delete = "{id}";
+            public const string Update = Base;
+            public const string Delete = Base;
             public const string Rate = $"{Base}/{{movieId:guid}}/ratings";
             public const string DeleteRating = Rate;
             public const string Names = Base + "/names";
