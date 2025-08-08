@@ -2,6 +2,7 @@
 using Prism.Mvvm;
 using Movies.VerticalSlice.Api.Services;
 using Movies.VerticalSlice.Api.Shared.Responses;
+#nullable enable
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;

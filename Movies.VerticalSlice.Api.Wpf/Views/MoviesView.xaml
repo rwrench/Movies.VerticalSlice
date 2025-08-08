@@ -4,7 +4,8 @@
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
              xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
-             xmlns:telerikGrid="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.GridView">
+             xmlns:telerikGrid="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.GridView"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -19,7 +20,6 @@
                   Margin="0,0,5,0" />
             <telerik:RadButton Width="150" Content="Add Movie"
                  Command="{Binding AddMovieCommand}"
-                 CommandTarget="{Binding ElementName=RadGridView1}"
                  Margin="0,0,5,0" />
             <telerik:RadButton Width="150"
 							   Content="Save insert/edit"
@@ -35,9 +35,22 @@
             <telerik:RadGridView x:Name="RadGridView1" 
                                  ItemsSource="{Binding Movies}"
                                  SelectedItem="{Binding SelectedMovie, Mode=TwoWay}"
-                                 SelectionMode="Extended" AutoGenerateColumns="False"
+                                 SelectionMode="Extended"
+                                 AutoGenerateColumns="False"
                              CanUserFreezeColumns="False" CanUserReorderColumns="False" GroupRenderMode="Flat"
                              CanUserDeleteRows="True" CanUserInsertRows="True" ShowGroupPanel="False" telerik:StyleManager.Theme="Summer">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="BeginningEdit">
+                        <i:InvokeCommandAction Command="{Binding BeginEditCommand}" />
+                    </i:EventTrigger>
+                    <i:EventTrigger EventName="RowEditEnded">
+                        <i:InvokeCommandAction Command="{Binding EndEditCommand}" />
+                    </i:EventTrigger>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding SelectedMoviesCommand}" 
+                                               CommandParameter="{Binding SelectedItems, ElementName=RadGridView1}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
                 <telerik:RadGridView.Columns>
                     <telerik:GridViewDataColumn Header="Title" DataMemberBinding="{Binding Title}" Width="Auto" />
                     <telerik:GridViewDataColumn Header="Release Year" DataMemberBinding="{Binding YearOfRelease}" />

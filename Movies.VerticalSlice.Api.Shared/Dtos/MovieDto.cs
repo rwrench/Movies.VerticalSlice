@@ -9,7 +9,7 @@ public record MovieDto(
     DateTime? DateUpdated
 )
 {
-    public MovieDto() : this(default, string.Empty, string.Empty, default, string.Empty, null)
+    public MovieDto() : this(default, string.Empty, string.Empty, default, string.Empty, DateTime.Now)
     {
     }
 }
