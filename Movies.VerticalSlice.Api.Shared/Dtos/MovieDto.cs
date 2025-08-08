@@ -5,10 +5,11 @@ public record MovieDto(
     string Title,
     string Slug,
     int YearOfRelease,
-    string Genres
+    string Genres,
+    DateTime? DateUpdated
 )
 {
-    public MovieDto() : this(default, string.Empty, string.Empty, default, string.Empty)
+    public MovieDto() : this(default, string.Empty, string.Empty, default, string.Empty, DateTime.Now)
     {
     }
 }

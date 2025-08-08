@@ -6,7 +6,7 @@ using System.Net.Http.Json;
 
 namespace Movies.VerticalSlice.Api.Services
 {
-    public class MovieService
+    public class MovieService : IMovieService
     {
         private readonly HttpClient _httpClient;
 
@@ -26,8 +26,8 @@ namespace Movies.VerticalSlice.Api.Services
                 movie.Title,
                 movie.YearOfRelease,
                 movie.Genres
-            );  
-           
+            );
+
             return await _httpClient.PostAsJsonAsync(ApiEndpoints.Movies.Create, movieToCreate);
         }
 
@@ -35,7 +35,7 @@ namespace Movies.VerticalSlice.Api.Services
         {
             var updateRequest = new UpdateMovieRequest(movieToUpdate.Title,
               movieToUpdate.YearOfRelease,
-              movieToUpdate.Genres  
+              movieToUpdate.Genres
             );
             return await _httpClient.PutAsJsonAsync(ApiEndpoints.Movies.Update, updateRequest);
         }
@@ -45,6 +45,6 @@ namespace Movies.VerticalSlice.Api.Services
             return await _httpClient.DeleteAsync(ApiEndpoints.Movies.Delete);
         }
 
-      
+
     }
 }

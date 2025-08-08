@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movies.VerticalSlice.Api.Se
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movies.VerticalSlice.Api.Wpf", "Movies.VerticalSlice.Api.Wpf\Movies.VerticalSlice.Api.Wpf.csproj", "{918A8AB7-BACD-4CED-95DF-574CCD9170F7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movies.VerticalSlice.Api.Wpf.Tests", "Movies.VerticalSlice.Api.Wpf.Tests\Movies.VerticalSlice.Api.Wpf.Tests.csproj", "{E2E0F31A-66D6-4295-8A22-902A5D0899FF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,10 @@ Global
 		{918A8AB7-BACD-4CED-95DF-574CCD9170F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{918A8AB7-BACD-4CED-95DF-574CCD9170F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{918A8AB7-BACD-4CED-95DF-574CCD9170F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2E0F31A-66D6-4295-8A22-902A5D0899FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2E0F31A-66D6-4295-8A22-902A5D0899FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2E0F31A-66D6-4295-8A22-902A5D0899FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2E0F31A-66D6-4295-8A22-902A5D0899FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

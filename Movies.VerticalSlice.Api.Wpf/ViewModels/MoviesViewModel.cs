@@ -9,11 +9,11 @@ namespace Movies.VerticalSlice.Api.Wpf.ViewModels
 {
     public class MoviesViewModel : BindableBase, INavigationAware
     {
-        private readonly MovieService _movieService;
+        private readonly IMovieService _movieService;
 
         public ObservableCollection<MovieDto> Movies { get; } = new();
 
-        public MoviesViewModel(MovieService movieService)
+        public MoviesViewModel(IMovieService movieService)
         {
             _movieService = movieService;
         }

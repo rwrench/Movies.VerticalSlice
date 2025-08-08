@@ -49,6 +49,7 @@ public class LoginViewModel : BindableBase, IDialogAware
         set => SetProperty(ref _errorMessage, value);
     }
 
+     
     private bool? _dialogResult;
     public bool? DialogResult
     {
@@ -58,6 +59,7 @@ public class LoginViewModel : BindableBase, IDialogAware
     public DelegateCommand LoginCommand { get; }
     public DelegateCommand ForgotCommand { get; }
     public DelegateCommand CancelCommand { get; }
+    public bool IsLoggedIn { get; private set; } = false;
 
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly TokenStore _tokenStore;
@@ -84,16 +86,22 @@ public class LoginViewModel : BindableBase, IDialogAware
     {
         var context = new FluentValidation.ValidationContext<LoginViewModel>(this);
         var result = _validator.Validate(context);
-        ErrorMessage = result.IsValid ? string.Empty : result.Errors.FirstOrDefault()?.ErrorMessage;
+        if (result == null)
+        {
+            ErrorMessage = "Validation failed";
+            return;
+        }   
+        ErrorMessage =  result.IsValid ? string.Empty : result.Errors.FirstOrDefault()?.ErrorMessage;
     }
-    async Task LoginAsync()
+    public async Task LoginAsync()
     {
         var http = _httpClientFactory.CreateClient("AuthorizedClient");
         var response = await http.PostAsJsonAsync("api/users/login", new { Email, Password });
         if (response.IsSuccessStatusCode)
         {
+            IsLoggedIn = true;
             var result = await response.Content.ReadFromJsonAsync<LoginResult>();
-            _tokenStore.Token = result?.Token;
+            _tokenStore.Token = result.Token;
             ErrorMessage = null;
             CloseDialog(true);
         }
