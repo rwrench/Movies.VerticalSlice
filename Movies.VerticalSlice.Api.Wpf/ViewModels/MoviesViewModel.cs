@@ -17,6 +17,7 @@ namespace Movies.VerticalSlice.Api.Wpf.ViewModels
 {
     public class MoviesViewModel : BindableBase, INavigationAware
     {
+        private readonly IMovieService _movieService;
 
         #region "Properties"
         readonly MovieService _movieService;
@@ -32,9 +33,6 @@ namespace Movies.VerticalSlice.Api.Wpf.ViewModels
         public DelegateCommand<MovieDto> EditMovieCommand { get; }
         public DelegateCommand<IList> DeleteMovieCommand { get; }
         public DelegateCommand<IList> SelectedMoviesCommand { get; }
-
-      
-
 
         MovieDto _selectedMovie;
 

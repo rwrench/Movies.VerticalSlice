@@ -7,7 +7,7 @@ using System.Net.Http.Json;
 
 namespace Movies.VerticalSlice.Api.Services
 {
-    public class MovieService
+    public class MovieService : IMovieService
     {
         private readonly HttpClient _httpClient;
         public string? AuthToken;
@@ -43,7 +43,7 @@ namespace Movies.VerticalSlice.Api.Services
 
             var updateRequest = new UpdateMovieRequest(movieToUpdate.Title,
               movieToUpdate.YearOfRelease,
-              movieToUpdate.Genres  
+              movieToUpdate.Genres
             );
 
             var url = $"{ApiEndpoints.Movies.Update}?id={id}";
@@ -81,12 +81,10 @@ namespace Movies.VerticalSlice.Api.Services
             }
         }
 
+
         void SetAuth()
         {
             if (!string.IsNullOrEmpty(AuthToken))
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AuthToken);
         }
-
-
-    }
 }
