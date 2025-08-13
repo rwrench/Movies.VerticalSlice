@@ -17,10 +17,10 @@ namespace Movies.VerticalSlice.Api.Wpf.ViewModels
 {
     public class MoviesViewModel : BindableBase, INavigationAware
     {
-        private readonly IMovieService _movieService;
+
 
         #region "Properties"
-        readonly MovieService _movieService;
+        readonly IMovieService _movieService;
         readonly TokenStore _tokenStore;
         bool _isEditing;
         bool _isLoading;
@@ -66,7 +66,7 @@ namespace Movies.VerticalSlice.Api.Wpf.ViewModels
         }
 
         #endregion
-        public MoviesViewModel(MovieService movieService, TokenStore tokenStore)
+        public MoviesViewModel(IMovieService movieService, TokenStore tokenStore)
         {
             _movieService = movieService;
             _tokenStore = tokenStore;
@@ -123,14 +123,19 @@ namespace Movies.VerticalSlice.Api.Wpf.ViewModels
         }
         async void OnAddMovie(GridViewAddingNewEventArgs args)
         {
-            var newMovie = new MovieDto();
-            Movies.Add(newMovie);
+            MovieDto newMovie = AddNewMovieToCollection();
             SelectedMovie = newMovie;
             _movieService.AuthToken = _tokenStore.Token;
             await _movieService.CreateAsync(newMovie);
         }
 
-      
+        MovieDto AddNewMovieToCollection()
+        {
+            var newMovie = new MovieDto();
+            Movies.Add(newMovie);
+            return newMovie;
+        }
+
         async void OnDeleteMovie(IList selectedItems)
         {
             if (selectedItems == null || selectedItems.Count == 0)
