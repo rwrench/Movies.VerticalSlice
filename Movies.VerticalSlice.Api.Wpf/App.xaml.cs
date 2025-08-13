@@ -23,7 +23,7 @@ namespace Movies.VerticalSlice.Api.Wpf
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry.RegisterSingleton<MovieService>();
+            containerRegistry.RegisterSingleton<IMovieService,MovieService>();
             containerRegistry.RegisterSingleton<RatingsService>();
             containerRegistry.RegisterForNavigation<MoviesView>();
             containerRegistry.RegisterForNavigation<RatingsView>();

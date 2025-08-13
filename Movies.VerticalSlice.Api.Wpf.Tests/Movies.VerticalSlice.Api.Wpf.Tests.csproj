@@ -23,6 +23,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="ArtOfTest.WebAii">
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Progress\Test Studio\Bin\ArtOfTest.WebAii.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
     <Using Include="Xunit" />
   </ItemGroup>
 

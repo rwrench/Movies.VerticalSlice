@@ -14,8 +14,7 @@ public static class GetAllMoviesEndpoint
             int? yearOfRelease,
             string? sortField,
             SortOrder? sortOrder,
-            int? page,
-            int? pageSize,
+            int? limit,
             IMediator mediator,
             CancellationToken token) =>
         {
@@ -24,8 +23,7 @@ public static class GetAllMoviesEndpoint
                 yearOfRelease,
                 sortField,
                 sortOrder,
-                page,
-                pageSize);
+                limit);
 
             var movies = await mediator.Send(query, token);
             return Results.Ok(movies);
