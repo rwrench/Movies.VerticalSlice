@@ -9,6 +9,5 @@ public record GetAllMoviesQuery(
      int? YearOfRelease = null,
      string? SortField = null,
      SortOrder? SortOrder = null,
-     int? Page = null,
-     int? PageSize = null
+     int? Limit = null
 ) : IRequest<IEnumerable<MovieDto>>;

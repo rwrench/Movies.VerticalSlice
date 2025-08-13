@@ -54,12 +54,17 @@ public class GetAllMoviesHandler : IRequestHandler<GetAllMoviesQuery, IEnumerabl
             moviesQuery = moviesQuery.OrderBy(m => m.Title);
         }
 
-        if (query.Page.HasValue && query.PageSize.HasValue)
+        if (query.Limit.HasValue)
         {
             moviesQuery = moviesQuery
-                .Skip((query.Page.Value - 1) * query.PageSize.Value)
-                .Take(query.PageSize.Value);
+                .Take(query.Limit.Value);
         }
+        else         
+        {
+            moviesQuery = moviesQuery
+                .Take(100); // Default limit to prevent excessive data retrieval
+        }
+
 
         var movies = await moviesQuery.AsNoTracking().ToListAsync(token);
 
