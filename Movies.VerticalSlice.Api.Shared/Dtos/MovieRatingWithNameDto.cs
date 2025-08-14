@@ -25,7 +25,7 @@ public class MovieRatingWithNameDto
 
     public Guid Id { get; set; } = Guid.Empty;
     public Guid MovieId { get; set; } = Guid.Empty;
-    public float Rating { get; set; } = 0.0f;
+    public float Rating { get; set; } = 0.5f;
     public string? UserId { get; set; } = string.Empty;
     public DateTime? DateUpdated { get; set; } = null;  
     public string MovieName { get; set; } = string.Empty;

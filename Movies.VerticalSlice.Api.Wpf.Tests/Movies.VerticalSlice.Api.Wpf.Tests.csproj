@@ -26,6 +26,9 @@
     <Reference Include="ArtOfTest.WebAii">
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Progress\Test Studio\Bin\ArtOfTest.WebAii.dll</HintPath>
     </Reference>
+    <Reference Include="ArtOfTest.WebAii.HttpProxy">
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Progress\Test Studio\Bin\ArtOfTest.WebAii.HttpProxy.exe</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>

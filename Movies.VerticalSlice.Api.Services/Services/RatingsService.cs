@@ -5,7 +5,7 @@ using System.Net.Http.Json;
 
 namespace Movies.VerticalSlice.Api.Services
 {
-    public class RatingsService
+    public class RatingsService : IRatingsService
     {
         private readonly HttpClient _httpClient;
         public string? AuthToken { get; set; } // Set this after login
@@ -61,14 +61,13 @@ namespace Movies.VerticalSlice.Api.Services
             return await _httpClient.DeleteAsync($"{ApiEndpoints.Ratings.Base}/{id}");
         }
 
-        public async Task<List<MovieNameDto>?> GetAllMovieNamesAsync(string title)
+        public async Task<List<MovieNameDto>?> GetAllMovieNamesAsync(string title = "")
         {
             var url = string.IsNullOrWhiteSpace(title)
                  ? "api/movies/names/"
                  : $"api/movies/names?title={Uri.EscapeDataString(title)}";
 
-            var result = await _httpClient.GetFromJsonAsync<List<MovieNameDto>>(url);
-            return result ?? new List<MovieNameDto>();
+            return await _httpClient.GetFromJsonAsync<List<MovieNameDto>>(url);
         }
     }
 }

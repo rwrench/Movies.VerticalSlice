@@ -24,7 +24,7 @@ namespace Movies.VerticalSlice.Api.Wpf
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterSingleton<IMovieService,MovieService>();
-            containerRegistry.RegisterSingleton<RatingsService>();
+            containerRegistry.RegisterSingleton<IRatingsService,RatingsService>();
             containerRegistry.RegisterForNavigation<MoviesView>();
             containerRegistry.RegisterForNavigation<RatingsView>();
             containerRegistry.RegisterSingleton<TokenStore>();
