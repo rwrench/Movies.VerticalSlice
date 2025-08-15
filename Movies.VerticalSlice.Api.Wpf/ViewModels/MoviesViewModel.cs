@@ -22,6 +22,7 @@ namespace Movies.VerticalSlice.Api.Wpf.ViewModels
         #region "Properties"
         readonly IMovieService _movieService;
         readonly TokenStore _tokenStore;
+        private readonly IMovieNamesProviderService _namesProviderService;
         bool _isEditing;
         bool _isLoading;
       
@@ -66,11 +67,14 @@ namespace Movies.VerticalSlice.Api.Wpf.ViewModels
         }
 
         #endregion
-        public MoviesViewModel(IMovieService movieService, TokenStore tokenStore)
+        public MoviesViewModel(IMovieService movieService, 
+            TokenStore tokenStore,
+            IMovieNamesProviderService namesProviderService)
         {
             _movieService = movieService;
             _tokenStore = tokenStore;
-           
+            _namesProviderService = namesProviderService;
+
             AddMovieCommand = new DelegateCommand<GridViewAddingNewEventArgs>(OnAddMovie, CanAddMovie)
                 .ObservesProperty(() => IsEditing);
 
@@ -116,8 +120,10 @@ namespace Movies.VerticalSlice.Api.Wpf.ViewModels
         {
             _movieService.AuthToken = _tokenStore.Token;
             var response = await _movieService.UpdateAsync(dto.MovieId, dto);
+
             if (response.IsSuccessStatusCode)
             {
+                await _namesProviderService.RefreshAsync();   
                 MessageBox.Show($"Movie updated successfully.");
             }
         }
@@ -127,6 +133,7 @@ namespace Movies.VerticalSlice.Api.Wpf.ViewModels
             SelectedMovie = newMovie;
             _movieService.AuthToken = _tokenStore.Token;
             await _movieService.CreateAsync(newMovie);
+            await _namesProviderService.RefreshAsync();
         }
 
         MovieDto AddNewMovieToCollection()
@@ -151,6 +158,7 @@ namespace Movies.VerticalSlice.Api.Wpf.ViewModels
                 {
                     MessageBox.Show($"Movie '{dto.Title}' deleted successfully.");  
                     Movies.Remove(dto);
+                    await _namesProviderService.RefreshAsync();
                 }
             }
         }

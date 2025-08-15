@@ -30,6 +30,7 @@ namespace Movies.VerticalSlice.Api.Wpf
             containerRegistry.RegisterSingleton<TokenStore>();
             containerRegistry.RegisterDialog<LoginWindow, LoginViewModel>("LoginWindow");
             containerRegistry.Register<IValidator<LoginViewModel>, LoginViewModelValidator>();
+            containerRegistry.RegisterSingleton<IMovieNamesProviderService, MovieNamesProviderService>();   
 
             var services = new ServiceCollection();
             services.AddHttpClient("AuthorizedClient", client =>

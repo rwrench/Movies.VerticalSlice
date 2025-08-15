@@ -21,11 +21,12 @@ public class RatingsViewModel : BindableBase, INavigationAware
     #region "Properties"
     readonly IRatingsService _ratingsService;
     readonly TokenStore _tokenStore;
+    private readonly IMovieNamesProviderService _namesProviderService;
     bool _isEditing;
     bool _isLoading;
 
     public ObservableCollection<MovieRatingWithNameDto> Ratings { get; } = new();
-    public ObservableCollection<MovieNameDto> MovieNames { get; } = new();
+    public ObservableCollection<MovieNameDto> MovieNames => _namesProviderService.MovieNames;
 
     public DelegateCommand<GridViewAddingNewEventArgs> AddRatingCommand { get; }
     public DelegateCommand<GridViewBeginningEditRoutedEventArgs> BeginEditCommand { get; }
@@ -72,10 +73,11 @@ public class RatingsViewModel : BindableBase, INavigationAware
 
 
     public RatingsViewModel(IRatingsService ratingservice,
-            TokenStore tokenStore)
+            TokenStore tokenStore, IMovieNamesProviderService namesProviderService)
     {
         _ratingsService = ratingservice;
         _tokenStore = tokenStore;
+        _namesProviderService = namesProviderService;
 
         AddRatingCommand = new DelegateCommand<GridViewAddingNewEventArgs>(OnAddRating, CanAddRating)
               .ObservesProperty(() => IsEditing);
@@ -178,7 +180,8 @@ public class RatingsViewModel : BindableBase, INavigationAware
     public async void OnNavigatedTo(NavigationContext navigationContext)
     {
         IsLoading = true;
-        await LoadMovieNamesAsync();
+        _ratingsService.AuthToken = _tokenStore.Token;
+        await _namesProviderService.EnsureLoadedAsync();
         await LoadRatingsAsync();
         IsLoading = false;
     }
@@ -195,17 +198,7 @@ public class RatingsViewModel : BindableBase, INavigationAware
         }
     }
 
-    private async Task LoadMovieNamesAsync()
-    {
-        var movieNames = await _ratingsService.GetAllMovieNamesAsync();
-        if (movieNames != null)
-        {
-            MovieNames.Clear();
-            foreach (var movie in movieNames)
-                MovieNames.Add(movie);
-        }
-        IsLoading = false;
-    }
+   
 
     public bool IsNavigationTarget(NavigationContext navigationContext) => true;
 

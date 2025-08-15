@@ -59,12 +59,7 @@ public class GetAllMoviesHandler : IRequestHandler<GetAllMoviesQuery, IEnumerabl
             moviesQuery = moviesQuery
                 .Take(query.Limit.Value);
         }
-        else         
-        {
-            moviesQuery = moviesQuery
-                .Take(100); // Default limit to prevent excessive data retrieval
-        }
-
+       
 
         var movies = await moviesQuery.AsNoTracking().ToListAsync(token);
 
