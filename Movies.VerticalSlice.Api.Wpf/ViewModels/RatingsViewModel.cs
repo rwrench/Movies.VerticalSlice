@@ -34,7 +34,7 @@ public class RatingsViewModel : BindableBase, INavigationAware
     public DelegateCommand<IList> DeleteRatingCommand { get; }
     public DelegateCommand<IList> SelectedRatingsCommand { get; }
 
-    MovieRatingWithNameDto _selectedrating;
+    MovieRatingWithNameDto _selectedRating;
 
     public bool IsLoading
     {
@@ -43,10 +43,10 @@ public class RatingsViewModel : BindableBase, INavigationAware
     }
     public MovieRatingWithNameDto SelectedRating
     {
-        get => _selectedrating;
+        get => _selectedRating;
         set
         {
-            SetProperty(ref _selectedrating, value);
+            SetProperty(ref _selectedRating, value);
         }
     }
     IList<MovieRatingWithNameDto> _selectedRatings;
@@ -58,6 +58,8 @@ public class RatingsViewModel : BindableBase, INavigationAware
             SetProperty(ref _selectedRatings, value);
         }
     }
+
+
 
     public bool IsEditing
     {
@@ -97,6 +99,7 @@ public class RatingsViewModel : BindableBase, INavigationAware
         if (response.IsSuccessStatusCode)
         {
             MessageBox.Show($"Movie updated successfully.");
+            await LoadRatingsAsync(); // Refresh after edit
         }
     }
 
@@ -125,9 +128,22 @@ public class RatingsViewModel : BindableBase, INavigationAware
         return list != null && list.Count > 0;
     }
 
-    private void OnDeleteRating(IList list)
+    private async void OnDeleteRating(IList selectedItems)
     {
-        throw new NotImplementedException();
+        if (selectedItems == null || selectedItems.Count == 0)
+            return;
+
+        var itemsToDelete = selectedItems.Cast<MovieRatingWithNameDto>().ToList();
+        foreach (var dto in itemsToDelete)
+        {
+            _ratingsService.AuthToken = _tokenStore.Token;
+            var response = await _ratingsService.DeleteAsync(dto.Id);
+            if (response.IsSuccessStatusCode)
+            {
+                MessageBox.Show($"Movie '{dto.MovieName}' deleted successfully.");
+            }
+        }
+        await LoadRatingsAsync(); // Refresh after delete
     }
 
     private bool CanAddRating(GridViewAddingNewEventArgs args)
@@ -141,11 +157,20 @@ public class RatingsViewModel : BindableBase, INavigationAware
         SelectedRating = newRating;
         _ratingsService.AuthToken = _tokenStore.Token;
         await _ratingsService.CreateAsync(newRating);
+        await LoadRatingsAsync(); // Refresh after add
     }
 
-    MovieRatingWithNameDto AddNewRatingToCollection()
+    private MovieRatingWithNameDto AddNewRatingToCollection()
     {
         var newRating = new MovieRatingWithNameDto();
+
+        // Set default MovieId if available
+        if (MovieNames.Any())
+        {
+            newRating.MovieId = MovieNames.First().MovieId; // or .Id, depending on your DTO
+            newRating.MovieName = MovieNames.First().MovieName; // optional, for display
+        }
+
         Ratings.Add(newRating);
         return newRating;
     }
@@ -160,9 +185,9 @@ public class RatingsViewModel : BindableBase, INavigationAware
 
     public async Task LoadRatingsAsync()
     {
-        IsLoading = true;
         _ratingsService.AuthToken = _tokenStore.Token;
         var ratings = await _ratingsService.GetAllAsync();
+        Ratings.Clear(); // <-- Clear before adding new items
         if (ratings != null)
         {
             foreach (var rating in ratings)
