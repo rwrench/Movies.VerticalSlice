@@ -9,12 +9,10 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="0.95*"  />
             <RowDefinition Height="0.05*"/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,5,0,0">
-            <telerik:RadComboBox ItemsSource="{Binding MovieNames}"  SelectedValue="MovieId"  />
             <telerik:RadButton Width="150"
           Content="Delete selected Rows"
           Command="{Binding DeleteRatingCommand}"
@@ -33,29 +31,26 @@
 					   Command="telerikGrid:RadGridViewCommands.CancelRowEdit"
 					   CommandTarget="{Binding ElementName=RadGridView1}" />
         </StackPanel>
-        <telerik:RadGridView x:Name="RadGridView1" Grid.Row="2" 
+        <telerik:RadBusyIndicator Grid.Row="1" IsBusy="{Binding IsLoading}">
+            <telerik:RadGridView x:Name="RadGridView1" Grid.Row="2" 
                              ItemsSource="{Binding Ratings}" 
                              AutoGenerateColumns="False" 
                              CanUserFreezeColumns="False" CanUserReorderColumns="False" GroupRenderMode="Flat"
                              CanUserDeleteRows="True" CanUserInsertRows="True" ShowGroupPanel="False"  IsReadOnly="False"
                                  telerik:StyleManager.Theme="Summer">
-            <telerik:RadGridView.Columns>
-                <telerik:GridViewMultiColumnComboBoxColumn 
-                    Header="Movie"
-                    ItemsSourceBinding="{Binding MovieNames}"
-                    DisplayMemberPath="MovieName"
-                    SelectedValuePath="MovieId"
+                <telerik:RadGridView.Columns>
+                    <telerik:GridViewComboBoxColumn 
+                    Header="Movie" DataMemberBinding="{Binding MovieId,Mode=TwoWay}"
+                    ItemsSourceBinding="{Binding DataContext.MovieNames,RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    DisplayMemberPath="MovieName" SelectedValueMemberPath="MovieId"
                     Width="Auto">
-                    <telerik:GridViewMultiColumnComboBoxColumn.Columns>
-                        <telerik:GridViewDataColumn DataMemberBinding="{Binding MovieId}" />
-                        <telerik:GridViewDataColumn DataMemberBinding="{Binding MovieName}" />
-                    </telerik:GridViewMultiColumnComboBoxColumn.Columns>
-                </telerik:GridViewMultiColumnComboBoxColumn>
-                <telerik:GridViewDataColumn Header="Rating" DataMemberBinding="{Binding Rating}" />
-            <telerik:GridViewDataColumn Header="User" DataMemberBinding="{Binding UserName}"/>
-                <telerik:GridViewDataColumn Header="Date Updated" DataMemberBinding="{Binding DateUpdated}" />
-            </telerik:RadGridView.Columns>
-        </telerik:RadGridView>
-        <telerik:RadDataPager Grid.Row="3" Source="{Binding Ratings}" PageSize="10" />
+                    </telerik:GridViewComboBoxColumn>
+                    <telerik:GridViewDataColumn Header="Rating" DataMemberBinding="{Binding Rating}" />
+                    <telerik:GridViewDataColumn Header="User" DataMemberBinding="{Binding UserName}"/>
+                    <telerik:GridViewDataColumn Header="Date Updated" DataMemberBinding="{Binding DateUpdated}" />
+                </telerik:RadGridView.Columns>
+            </telerik:RadGridView>
+        </telerik:RadBusyIndicator>
+        <telerik:RadDataPager Grid.Row="2" Source="{Binding Ratings}" PageSize="10" />
     </Grid>
 </UserControl>

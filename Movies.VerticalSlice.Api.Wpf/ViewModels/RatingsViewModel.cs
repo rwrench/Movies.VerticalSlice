@@ -152,8 +152,10 @@ public class RatingsViewModel : BindableBase, INavigationAware
 
     public async void OnNavigatedTo(NavigationContext navigationContext)
     {
+        IsLoading = true;
         await LoadMovieNamesAsync();
         await LoadRatingsAsync();
+        IsLoading = false;
     }
 
     public async Task LoadRatingsAsync()
