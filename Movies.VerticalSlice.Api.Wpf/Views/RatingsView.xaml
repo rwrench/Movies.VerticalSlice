@@ -4,22 +4,53 @@
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
              xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+             xmlns:telerikGrid="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.GridView"
              Height="Auto" Width="Auto">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="0.95*"  />
             <RowDefinition Height="0.05*"/>
         </Grid.RowDefinitions>
-        <telerik:RadGridView Grid.Row="0" ItemsSource="{Binding Ratings}" AutoGenerateColumns="False" IsReadOnly="True" 
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,5,0,0">
+            <telerik:RadButton Width="150"
+          Content="Delete selected Rows"
+          Command="{Binding DeleteRatingCommand}"
+          CommandParameter="{Binding SelectedItems,ElementName=RadGridView1}"
+          Margin="0,0,5,0" />
+            <telerik:RadButton Width="150" Content="Add Rating"
+         Command="{Binding AddRatingCommand}"
+         Margin="0,0,5,0" />
+            <telerik:RadButton Width="150"
+					   Content="Save insert/edit"
+					   Margin="0,0,5,0"
+					   Command="{Binding EditRatingCommand}"
+					   CommandParameter="{Binding SelectedRating}" />
+            <telerik:RadButton Width="150"
+					   Content="Cancel insert/edit"
+					   Command="telerikGrid:RadGridViewCommands.CancelRowEdit"
+					   CommandTarget="{Binding ElementName=RadGridView1}" />
+        </StackPanel>
+        <telerik:RadBusyIndicator Grid.Row="1" IsBusy="{Binding IsLoading}">
+            <telerik:RadGridView x:Name="RadGridView1" Grid.Row="2" 
+                             ItemsSource="{Binding Ratings}" 
+                             AutoGenerateColumns="False" 
                              CanUserFreezeColumns="False" CanUserReorderColumns="False" GroupRenderMode="Flat"
-                             CanUserDeleteRows="True" CanUserInsertRows="True" ShowGroupPanel="False" telerik:StyleManager.Theme="Summer">
-            <telerik:RadGridView.Columns>
-                <telerik:GridViewDataColumn Header="Movie" DataMemberBinding="{Binding MovieName}" Width="*" />
-                <telerik:GridViewDataColumn Header="Rating" DataMemberBinding="{Binding Rating}" Width="*" />
-                <telerik:GridViewDataColumn Header="User" DataMemberBinding="{Binding UserName}" Width="*" />
-                <telerik:GridViewDataColumn Header="Date Updated" DataMemberBinding="{Binding DateUpdated}" Width="*" />
-            </telerik:RadGridView.Columns>
-        </telerik:RadGridView>
-        <telerik:RadDataPager Grid.Row="1" Source="{Binding Ratings}" PageSize="10" />
+                             CanUserDeleteRows="True" CanUserInsertRows="True" ShowGroupPanel="False"  IsReadOnly="False"
+                                 telerik:StyleManager.Theme="Summer">
+                <telerik:RadGridView.Columns>
+                    <telerik:GridViewComboBoxColumn 
+                    Header="Movie" DataMemberBinding="{Binding MovieId,Mode=TwoWay}"
+                    ItemsSourceBinding="{Binding DataContext.MovieNames,RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    DisplayMemberPath="MovieName" SelectedValueMemberPath="MovieId"
+                    Width="Auto">
+                    </telerik:GridViewComboBoxColumn>
+                    <telerik:GridViewDataColumn Header="Rating" DataMemberBinding="{Binding Rating}" />
+                    <telerik:GridViewDataColumn Header="User" DataMemberBinding="{Binding UserName}"/>
+                    <telerik:GridViewDataColumn Header="Date Updated" DataMemberBinding="{Binding DateUpdated}" />
+                </telerik:RadGridView.Columns>
+            </telerik:RadGridView>
+        </telerik:RadBusyIndicator>
+        <telerik:RadDataPager Grid.Row="2" Source="{Binding Ratings}" PageSize="10" />
     </Grid>
 </UserControl>
