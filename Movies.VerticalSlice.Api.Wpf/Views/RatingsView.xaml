@@ -34,7 +34,7 @@
         <telerik:RadBusyIndicator Grid.Row="1" IsBusy="{Binding IsLoading}">
             <telerik:RadGridView x:Name="RadGridView1" Grid.Row="2" 
                              ItemsSource="{Binding Ratings}" 
-                             AutoGenerateColumns="False" 
+                             AutoGenerateColumns="False"  SelectedItem="{Binding SelectedRating,Mode=TwoWay}" SelectionMode="Extended"
                              CanUserFreezeColumns="False" CanUserReorderColumns="False" GroupRenderMode="Flat"
                              CanUserDeleteRows="True" CanUserInsertRows="True" ShowGroupPanel="False"  IsReadOnly="False"
                                  telerik:StyleManager.Theme="Summer">
@@ -43,6 +43,7 @@
                     Header="Movie" DataMemberBinding="{Binding MovieId,Mode=TwoWay}"
                     ItemsSourceBinding="{Binding DataContext.MovieNames,RelativeSource={RelativeSource AncestorType=UserControl}}"
                     DisplayMemberPath="MovieName" SelectedValueMemberPath="MovieId"
+                        
                     Width="Auto">
                     </telerik:GridViewComboBoxColumn>
                     <telerik:GridViewDataColumn Header="Rating" DataMemberBinding="{Binding Rating}" />
