@@ -4,7 +4,7 @@
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
              xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
-             xmlns:telerikGrid="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.GridView"
+             xmlns:telerikGrid="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.GridView" xmlns:helpers="clr-namespace:Movies.VerticalSlice.Api.Wpf.Helpers"
              Height="Auto" Width="Auto">
     <Grid>
         <Grid.RowDefinitions>
@@ -39,12 +39,12 @@
                              CanUserDeleteRows="True" CanUserInsertRows="True" ShowGroupPanel="False"  IsReadOnly="False"
                                  telerik:StyleManager.Theme="Summer">
                 <telerik:RadGridView.Columns>
-                    <telerik:GridViewComboBoxColumn 
-                    Header="Movie" DataMemberBinding="{Binding MovieId,Mode=TwoWay}"
-                    ItemsSourceBinding="{Binding DataContext.MovieNames,RelativeSource={RelativeSource AncestorType=UserControl}}"
-                    DisplayMemberPath="MovieName" SelectedValueMemberPath="MovieId" 
-                    Width="Auto">
-                    </telerik:GridViewComboBoxColumn>
+                    <helpers:CustomGridViewComboBoxColumn
+                        Header="Movie" DataMemberBinding="{Binding MovieId,Mode=TwoWay}" IsFilterable="True"
+                        ItemsSourceBinding="{Binding DataContext.MovieNames,RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        DisplayMemberPath="MovieName" SelectedValueMemberPath="MovieId" 
+                        Width="Auto">
+                    </helpers:CustomGridViewComboBoxColumn>
                     <telerik:GridViewDataColumn Header="Rating" DataMemberBinding="{Binding Rating}" />
                     <telerik:GridViewDataColumn Header="User" DataMemberBinding="{Binding UserName}"/>
                     <telerik:GridViewDataColumn Header="Date Updated" DataMemberBinding="{Binding DateUpdated}" />

@@ -14,7 +14,8 @@ namespace Movies.VerticalSlice.Api.Wpf.Tests
         {
             var movieServiceMock = new Mock<IMovieService>();
             TokenStore tokenStore = new TokenStore();
-            var viewModel = new MoviesViewModel(movieServiceMock.Object,tokenStore);
+            var sm = new Mock<IMovieNamesProviderService>();
+            var viewModel = new MoviesViewModel(movieServiceMock.Object,tokenStore,sm.Object);
             Assert.NotNull(viewModel.Movies);
             Assert.Empty(viewModel.Movies);
         }
@@ -32,7 +33,8 @@ namespace Movies.VerticalSlice.Api.Wpf.Tests
             var movieServiceMock = new Mock<IMovieService>();
             movieServiceMock.Setup(s => s.GetAllAsync()).ReturnsAsync(movies);
             TokenStore tokenStore = new TokenStore();
-            var viewModel = new MoviesViewModel(movieServiceMock.Object, tokenStore );
+            var sm = new Mock<IMovieNamesProviderService>();
+            var viewModel = new MoviesViewModel(movieServiceMock.Object, tokenStore, sm.Object);
 
             // Act
             await viewModel.LoadMoviesAsync();
@@ -55,8 +57,9 @@ namespace Movies.VerticalSlice.Api.Wpf.Tests
             var movieServiceMock = new Mock<IMovieService>();
             movieServiceMock.Setup(s => s.GetAllAsync()).ReturnsAsync(movies);
             TokenStore tokenStore = new TokenStore();
-            var viewModel = new MoviesViewModel(movieServiceMock.Object, tokenStore);
-           
+            var sm = new Mock<IMovieNamesProviderService>();
+            var viewModel = new MoviesViewModel(movieServiceMock.Object, tokenStore, sm.Object);
+
 
             var navServiceMock = new Mock<IRegionNavigationService>();
             var uri = new Uri("http://localhost");
