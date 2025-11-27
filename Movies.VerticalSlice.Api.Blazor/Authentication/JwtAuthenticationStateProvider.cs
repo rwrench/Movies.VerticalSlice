@@ -22,7 +22,7 @@ public class JwtAuthenticationStateProvider : AuthenticationStateProvider
         return new AuthenticationState(new ClaimsPrincipal(identity));
     }
 
-    public async Task SetTokenAsync(string token)
+    public virtual async Task SetTokenAsync(string token)
     {
         if (string.IsNullOrWhiteSpace(token))
             await _js.InvokeVoidAsync("localStorage.removeItem", TokenKey);
