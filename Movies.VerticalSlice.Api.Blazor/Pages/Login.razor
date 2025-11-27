@@ -1,5 +1,6 @@
 ﻿@page "/login"
 @using global::Movies.VerticalSlice.Api.Blazor.Authentication
+@using global::Movies.VerticalSlice.Api.Shared.Constants
 @using global::Movies.VerticalSlice.Api.Shared.Responses
 @inject IHttpClientFactory HttpClientFactory
 @inject JwtAuthenticationStateProvider AuthProvider
@@ -17,7 +18,7 @@
     HttpClient Http => HttpClientFactory.CreateClient("AuthorizedClient");
     private async Task LoginAsync()
     {
-        var response = await Http.PostAsJsonAsync("api/users/login", new { Email = email, Password = password });
+        var response = await Http.PostAsJsonAsync(ApiEndpoints.Users.Login, new { Email = email, Password = password });
         if (response.IsSuccessStatusCode)
         {
             var result = await response.Content.ReadFromJsonAsync<LoginResult>();

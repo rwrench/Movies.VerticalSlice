@@ -1,4 +1,5 @@
 ﻿@page "/ratings"  
+@using Microsoft.AspNetCore.Authorization
 @using Telerik.Blazor
 @using Telerik.Blazor.Components  
 @using Telerik.DataSource
@@ -6,6 +7,9 @@
 @using global::Movies.VerticalSlice.Api.Shared.Dtos  
 @inject IHttpClientFactory HttpClientFactory  
 @inject RatingsService RatingsService 
+@attribute [Authorize]
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthStateProvider
 
 <TelerikGrid Data="@ratings"
              Pageable="true"
@@ -112,6 +116,11 @@
     }
     protected override async Task OnInitializedAsync()  
     {  
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        if (authState.User?.Identity == null || !authState.User.Identity.IsAuthenticated)
+        {
+            Navigation.NavigateTo("/login", true);
+        }
         await LoadRatingsAsync();  
     }  
 
