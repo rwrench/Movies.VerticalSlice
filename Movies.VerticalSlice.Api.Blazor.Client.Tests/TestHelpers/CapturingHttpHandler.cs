@@ -1,5 +1,6 @@
-﻿namespace Movies.VerticalSlice.Api.Blazor.Client.Tests.Page;
-public partial class LoginPageTests
+﻿
+
+namespace Movies.VerticalSlice.Api.Blazor.Client.Tests.TestHelpers
 {
     // Capturing handler and factory
     public class CapturingHttpHandler : HttpMessageHandler

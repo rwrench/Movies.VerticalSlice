@@ -11,15 +11,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movies.VerticalSlice.Api.Bl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movies.VerticalSlice.Api.Shared", "Movies.VerticalSlice.Api.Shared\Movies.VerticalSlice.Api.Shared.csproj", "{1969DE29-22CB-4EA0-9DAD-63E84EFFE106}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movies.Api.VerticalSlice.Api.Tests", "Movies.Api.VerticalSlice.Api.Tests\Movies.Api.VerticalSlice.Api.Tests.csproj", "{0D4E5CD3-FE6A-4148-A1B5-A0C31A8B95AD}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movies.VerticalSlice.Api.Services", "Movies.VerticalSlice.Api.Services\Movies.VerticalSlice.Api.Services.csproj", "{427CA238-27EB-48A7-8BAF-B26B5508D5AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movies.VerticalSlice.Api.Wpf", "Movies.VerticalSlice.Api.Wpf\Movies.VerticalSlice.Api.Wpf.csproj", "{918A8AB7-BACD-4CED-95DF-574CCD9170F7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movies.VerticalSlice.Api.Wpf.Tests", "Movies.VerticalSlice.Api.Wpf.Tests\Movies.VerticalSlice.Api.Wpf.Tests.csproj", "{E2E0F31A-66D6-4295-8A22-902A5D0899FF}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movies.VerticalSlice.Api.Blazor.Client.Tests", "Movies.VerticalSlice.Api.Blazor.Client.Tests\Movies.VerticalSlice.Api.Blazor.Client.Tests.csproj", "{6C38932F-123B-446B-A18E-04B7558D9E54}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\ci.yml = .github\workflows\ci.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,22 +42,10 @@ Global
 		{1969DE29-22CB-4EA0-9DAD-63E84EFFE106}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1969DE29-22CB-4EA0-9DAD-63E84EFFE106}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1969DE29-22CB-4EA0-9DAD-63E84EFFE106}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0D4E5CD3-FE6A-4148-A1B5-A0C31A8B95AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0D4E5CD3-FE6A-4148-A1B5-A0C31A8B95AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0D4E5CD3-FE6A-4148-A1B5-A0C31A8B95AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0D4E5CD3-FE6A-4148-A1B5-A0C31A8B95AD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{427CA238-27EB-48A7-8BAF-B26B5508D5AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{427CA238-27EB-48A7-8BAF-B26B5508D5AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{427CA238-27EB-48A7-8BAF-B26B5508D5AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{427CA238-27EB-48A7-8BAF-B26B5508D5AA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{918A8AB7-BACD-4CED-95DF-574CCD9170F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{918A8AB7-BACD-4CED-95DF-574CCD9170F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{918A8AB7-BACD-4CED-95DF-574CCD9170F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{918A8AB7-BACD-4CED-95DF-574CCD9170F7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E2E0F31A-66D6-4295-8A22-902A5D0899FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E2E0F31A-66D6-4295-8A22-902A5D0899FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E2E0F31A-66D6-4295-8A22-902A5D0899FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E2E0F31A-66D6-4295-8A22-902A5D0899FF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6C38932F-123B-446B-A18E-04B7558D9E54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6C38932F-123B-446B-A18E-04B7558D9E54}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C38932F-123B-446B-A18E-04B7558D9E54}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -8,11 +8,15 @@ using Movies.VerticalSlice.Api.Blazor.Pages;
 using Movies.VerticalSlice.Api.Shared.Responses;
 using System.Net;
 using System.Net.Http.Json;
+using System.Reflection.Metadata;
 using Xunit;
 
 namespace Movies.VerticalSlice.Api.Blazor.Client.Tests.Page;
-public partial class LoginPageTests : BunitContext
+public partial class LoginPageTests : BunitContext, IDisposable
 {
+    private CapturingHttpHandler? _handler;
+    
+
     [Fact]
     public void Login_SetsToken()
     {
@@ -25,8 +29,7 @@ public partial class LoginPageTests : BunitContext
     [Fact]
     public void Login_Navigates_to_root()
     {
-        (IRenderedComponent<Pages.Login> cut, TestJwtAuthenticationStateProvider auth)
-            = Given_we_have_a_login_page();
+        (IRenderedComponent<Pages.Login> cut, _) = Given_we_have_a_login_page();
         When_we_click_login(cut);
         Then_we_should_navigate_to_the_root(cut);
     }
@@ -90,8 +93,7 @@ public partial class LoginPageTests : BunitContext
         return auth;
     }
 
-    (
-        IRenderedComponent<Pages.Login> cut,
+    (IRenderedComponent<Pages.Login> cut,
         TestJwtAuthenticationStateProvider auth,
         CapturingHttpHandler handler)
         RenderWithHandler(HttpStatusCode code, LoginResult? result = null)
@@ -104,6 +106,8 @@ public partial class LoginPageTests : BunitContext
             };
             return Task.FromResult(response);
         });
+
+        _handler = handler; // Store for disposal
 
         Services.AddSingleton<IHttpClientFactory>(
             new MockHttpClientFactory(handler, new Uri("https://example.test/")));
@@ -135,6 +139,9 @@ public partial class LoginPageTests : BunitContext
         });
     }
 
-
+    public new void Dispose()
+    {
+        _handler?.Dispose();
+    }
 
 }
