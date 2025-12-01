@@ -21,8 +21,8 @@ builder.Services.AddHttpClient("AuthorizedClient", client =>
     client.BaseAddress = new Uri("https://localhost:7299/");
 }).AddHttpMessageHandler<JwtAuthorizationMessageHandler>();
 
-builder.Services.AddScoped<MovieService>();
-builder.Services.AddScoped<RatingsService>();
+builder.Services.AddScoped<IMovieService, MovieService>();
+builder.Services.AddScoped<IRatingsService, RatingsService>();
 
 // Register Telerik
 builder.Services.AddTelerikBlazor();
