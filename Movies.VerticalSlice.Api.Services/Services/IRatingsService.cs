@@ -4,8 +4,6 @@ namespace Movies.VerticalSlice.Api.Services
 {
     public interface IRatingsService
     {
-        string? AuthToken { get; set; }
-
         Task<HttpResponseMessage> CreateAsync(MovieRatingWithNameDto rating);
         Task<HttpResponseMessage> DeleteAsync(Guid id);
         Task<List<MovieRatingWithNameDto>?> GetAllAsync();

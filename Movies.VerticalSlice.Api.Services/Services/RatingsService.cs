@@ -8,7 +8,6 @@ namespace Movies.VerticalSlice.Api.Services
     public class RatingsService : IRatingsService
     {
         private readonly HttpClient _httpClient;
-        public string? AuthToken { get; set; } // Set this after login
 
         public RatingsService(IHttpClientFactory httpClientFactory)
         {
@@ -18,8 +17,7 @@ namespace Movies.VerticalSlice.Api.Services
 
         public async Task<List<MovieRatingWithNameDto>?> GetAllAsync()
         {
-            if (!string.IsNullOrEmpty(AuthToken))
-                _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthToken);
+         
 
             var response = await _httpClient.GetAsync(ApiEndpoints.Ratings.GetAll);
             if (response.IsSuccessStatusCode)

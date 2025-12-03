@@ -102,7 +102,6 @@ public class LoginViewModel : BindableBase, IDialogAware
         {
             IsLoggedIn = true;
             var result = await response.Content.ReadFromJsonAsync<LoginResult>();
-            _tokenStore.Token = result.Token;
             ErrorMessage = null;
             CloseDialog(true);
         }

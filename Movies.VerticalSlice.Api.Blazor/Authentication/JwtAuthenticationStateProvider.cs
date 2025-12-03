@@ -31,4 +31,9 @@ public class JwtAuthenticationStateProvider : AuthenticationStateProvider
 
         NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
     }
+
+    public async Task<string?> GetTokenAsync()
+    {
+        return await _js.InvokeAsync<string>("localStorage.getItem", TokenKey);
+    }
 }
