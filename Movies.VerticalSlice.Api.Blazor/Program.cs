@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components.Authorization;
+﻿using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Movies.VerticalSlice.Api.Blazor;
@@ -16,10 +16,17 @@ builder.Services.AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredServ
 
 builder.Services.AddScoped<JwtAuthorizationMessageHandler>();
 
+// Register the handler
+builder.Services.AddScoped<AuthorizationMessageHandler>();
+
 builder.Services.AddHttpClient("AuthorizedClient", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7299/");
-}).AddHttpMessageHandler<JwtAuthorizationMessageHandler>();
+    client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"] ?? "https://localhost:7299");
+})
+.AddHttpMessageHandler<AuthorizationMessageHandler>(); // ✅ Auto-attach token to all requests
+
+builder.Services.AddScoped(sp =>
+    sp.GetRequiredService<IHttpClientFactory>().CreateClient("AuthorizedClient"));
 
 builder.Services.AddScoped<IMovieService, MovieService>();
 builder.Services.AddScoped<IRatingsService, RatingsService>();

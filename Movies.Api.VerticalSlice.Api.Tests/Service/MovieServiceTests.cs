@@ -57,10 +57,8 @@ namespace Movies.Api.VerticalSlice.Api.Tests.Service
             var factory = new Mock<IHttpClientFactory>();
             factory.Setup(f => f.CreateClient(It.IsAny<string>())).Returns(httpClient);
 
-            var service = new MovieService(factory.Object)
-            {
-                AuthToken = "test-token"
-            };
+            var service = new MovieService(factory.Object);
+            
 
             // Act
             await service.DeleteAsync(Guid.NewGuid());

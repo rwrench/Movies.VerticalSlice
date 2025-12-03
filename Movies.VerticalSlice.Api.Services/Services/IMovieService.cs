@@ -4,10 +4,9 @@ namespace Movies.VerticalSlice.Api.Services
 {
     public interface IMovieService
     {
-        string? AuthToken { get; set; }
 
         Task<HttpResponseMessage> CreateAsync(MovieDto movie);
-        Task<HttpResponseMessage> DeleteAsync(Guid id);
+        Task<HttpResponseMessage> DeleteAsync(Guid movieId);
         Task<List<MovieDto>?> GetAllAsync();
         Task<HttpResponseMessage> UpdateAsync(Guid id, MovieDto movieToUpdate);
     }

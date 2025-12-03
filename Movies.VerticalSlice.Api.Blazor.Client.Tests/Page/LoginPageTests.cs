@@ -11,7 +11,7 @@ using System.Net.Http.Json;
 using Xunit;
 
 namespace Movies.VerticalSlice.Api.Blazor.Client.Tests.Page;
-public partial class LoginPageTests : BunitContext
+public partial class LoginPageTests : TestContext
 {
     [Fact]
     public void Login_SetsToken()
@@ -108,7 +108,7 @@ public partial class LoginPageTests : BunitContext
         Services.AddSingleton<IHttpClientFactory>(
             new MockHttpClientFactory(handler, new Uri("https://example.test/")));
         var auth = RegisterAuth();
-        var cut = Render<Pages.Login>();
+        var cut = RenderComponent<Pages.Login>();
         return (cut, auth, handler);
     }
 

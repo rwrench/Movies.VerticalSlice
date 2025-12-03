@@ -1,11 +1,15 @@
 ﻿@page "/movies"
+@using Microsoft.AspNetCore.Authorization
 @using Telerik.Blazor
 @using Telerik.Blazor.Components
 @using global::Movies.VerticalSlice.Api.Services
 @using global::Movies.VerticalSlice.Api.Shared.Dtos
+@using Microsoft.AspNetCore.Components.Authorization
 
 @inject IHttpClientFactory HttpClientFactory
 @inject IMovieService MovieService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@attribute [Authorize]
 <PageTitle>Movies</PageTitle>
 
 <h2>Movies</h2>
@@ -33,17 +37,24 @@
              OnCancel="@OnCancelHandler">
 
     <GridToolBarTemplate>
-        <GridCommandButton Command="Add">Add Movie</GridCommandButton>
+        @if (isAuthenticated)
+        {
+            <GridCommandButton Command="Add">Add Movie</GridCommandButton>
+        }
     </GridToolBarTemplate>
     <GridColumns>
         <GridColumn Field="Title" Title="Title" Editable="true" Width="400px" />
         <GridColumn Field="YearOfRelease" Title="Year" Editable="true" Width="100px" />
         <GridColumn Field="Genres" Title="Genres" Editable="true" Width="500px" />
         <GridCommandColumn Width="280px">
+        @if (isAuthenticated)
+        {
             <GridCommandButton Command="Edit" ShowInEdit="false">Edit</GridCommandButton>
             <GridCommandButton Command="Delete" ShowInEdit="false">Delete</GridCommandButton>
             <GridCommandButton Command="Save" ShowInEdit="true">Save</GridCommandButton>
             <GridCommandButton Command="Cancel" ShowInEdit="true">Cancel</GridCommandButton>
+        }
+          
         </GridCommandColumn>
     </GridColumns>
 </TelerikGrid>
@@ -53,70 +64,99 @@
     private TelerikGrid<MovieDto>? gridRef;
     private string statusMessage = "";
     private bool isError = false;
-
-
+    private bool isAuthenticated = false;
 
     protected override async Task OnInitializedAsync()  
     {
+        await GetAuthenticationStateAsync();
         await LoadMoviesAsync();
     }  
 
-    async Task OnUpdateHandler(GridCommandEventArgs args)
-    {
-        if (args.Item is not MovieDto updatedMovie) return;
-        await MovieService.UpdateAsync(updatedMovie.MovieId, updatedMovie);
-        await LoadMoviesAsync();
-    }
-
-    async Task OnDeleteHandler(GridCommandEventArgs args)
-    {
-        if (args.Item is not MovieDto updatedMovie) return;
-        await MovieService.DeleteAsync(updatedMovie.MovieId);
-        await LoadMoviesAsync();
-    }
-
-    async Task OnCreateHandler(GridCommandEventArgs args)
+    public async Task OnCreateHandler(GridCommandEventArgs args)
     {
         if (args.Item is not MovieDto newMovie) return;
-        await MovieService.CreateAsync(newMovie);
+        var response = await MovieService.CreateAsync(newMovie);
+        if (response.IsSuccessStatusCode)
+        {
+            await SetStatusMessage($"Movie {newMovie.Title} created", false);
+
+        }
+        await LoadMoviesAsync();
+
+    }
+    public async Task OnUpdateHandler(GridCommandEventArgs args)
+    {
+        if (args.Item is not MovieDto updatedMovie) return;
+        var response = await MovieService.UpdateAsync(updatedMovie.MovieId, updatedMovie);
+        if (response.IsSuccessStatusCode)
+        {
+            await SetStatusMessage($"Movie {updatedMovie.Title} updated", false);
+
+        }
         await LoadMoviesAsync();
     }
+
+    public async Task OnDeleteHandler(GridCommandEventArgs args)
+    {
+        if (args.Item is not MovieDto updatedMovie) return;
+        var response = await MovieService.DeleteAsync(updatedMovie.MovieId);
+        if (response.IsSuccessStatusCode)
+        {
+            await SetStatusMessage($"Movie {updatedMovie.Title} removed", false);
+
+        }
+        await LoadMoviesAsync();
+    }
+
+    
     Task OnEditHandler(GridCommandEventArgs e)
     {
         return Task.CompletedTask;
     }
 
-    Task OnCancelHandler(GridCommandEventArgs e)
+    async Task OnCancelHandler(GridCommandEventArgs e)
     {
-        ClearStatusMessage();
-        return Task.CompletedTask;
+        await ClearStatusMessage();
+        return;
     }
     async Task LoadMoviesAsync()
     {
         try
         {
             movies = await MovieService.GetAllAsync() ?? new List<MovieDto>();
-            SetStatusMessage($"Loaded {movies.Count} movies", false);
+            await SetStatusMessage($"Loaded {movies.Count} movies", false);
+            return;
         }
         catch (Exception ex)
         {
-            SetStatusMessage($"Error loading movies: {ex.Message}", true);
+            await SetStatusMessage($"Error loading movies: {ex.Message}", true);
         }
     }
 
-    void SetStatusMessage(string message, bool error)
+    async Task SetStatusMessage(string message, bool error)
     {
         statusMessage = message;
         isError = error;
-        StateHasChanged();
+        await InvokeAsync(StateHasChanged);
 
-        Task.Delay(5000).ContinueWith(_ => ClearStatusMessage());
+        _ = ClearStatusMessageAfterDelayAsync();
     }
 
-    void ClearStatusMessage()
+    private async Task ClearStatusMessageAfterDelayAsync()
+    {
+        await Task.Delay(5000);
+        await ClearStatusMessage();
+    }
+
+    async Task ClearStatusMessage()
     {
         statusMessage = "";
-        StateHasChanged();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task GetAuthenticationStateAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        isAuthenticated = authState?.User.Identity?.IsAuthenticated ?? false;
     }
 }
- 

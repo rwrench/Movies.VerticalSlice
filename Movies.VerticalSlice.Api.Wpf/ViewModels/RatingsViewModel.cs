@@ -96,7 +96,6 @@ public class RatingsViewModel : BindableBase, INavigationAware
 
     async void OnEditRating(MovieRatingWithNameDto dto)
     {
-        _ratingsService.AuthToken = _tokenStore.Token;
         var response = await _ratingsService.UpdateAsync(dto);
         if (response.IsSuccessStatusCode)
         {
@@ -138,7 +137,6 @@ public class RatingsViewModel : BindableBase, INavigationAware
         var itemsToDelete = selectedItems.Cast<MovieRatingWithNameDto>().ToList();
         foreach (var dto in itemsToDelete)
         {
-            _ratingsService.AuthToken = _tokenStore.Token;
             var response = await _ratingsService.DeleteAsync(dto.Id);
             if (response.IsSuccessStatusCode)
             {
@@ -157,7 +155,6 @@ public class RatingsViewModel : BindableBase, INavigationAware
     {
         MovieRatingWithNameDto newRating = AddNewRatingToCollection();
         SelectedRating = newRating;
-        _ratingsService.AuthToken = _tokenStore.Token;
         await _ratingsService.CreateAsync(newRating);
         await LoadRatingsAsync(); // Refresh after add
     }
@@ -180,7 +177,6 @@ public class RatingsViewModel : BindableBase, INavigationAware
     public async void OnNavigatedTo(NavigationContext navigationContext)
     {
         IsLoading = true;
-        _ratingsService.AuthToken = _tokenStore.Token;
         await _namesProviderService.EnsureLoadedAsync();
         await LoadRatingsAsync();
         IsLoading = false;
@@ -188,7 +184,6 @@ public class RatingsViewModel : BindableBase, INavigationAware
 
     public async Task LoadRatingsAsync()
     {
-        _ratingsService.AuthToken = _tokenStore.Token;
         var ratings = await _ratingsService.GetAllAsync();
         Ratings.Clear(); // <-- Clear before adding new items
         if (ratings != null)

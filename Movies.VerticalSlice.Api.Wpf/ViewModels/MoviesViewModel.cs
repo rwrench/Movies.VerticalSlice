@@ -118,7 +118,6 @@ namespace Movies.VerticalSlice.Api.Wpf.ViewModels
         }
         async void OnEditMovie(MovieDto dto)
         {
-            _movieService.AuthToken = _tokenStore.Token;
             var response = await _movieService.UpdateAsync(dto.MovieId, dto);
 
             if (response.IsSuccessStatusCode)
@@ -131,7 +130,6 @@ namespace Movies.VerticalSlice.Api.Wpf.ViewModels
         {
             MovieDto newMovie = AddNewMovieToCollection();
             SelectedMovie = newMovie;
-            _movieService.AuthToken = _tokenStore.Token;
             await _movieService.CreateAsync(newMovie);
             await _namesProviderService.RefreshAsync();
         }
@@ -152,7 +150,6 @@ namespace Movies.VerticalSlice.Api.Wpf.ViewModels
             var itemsToDelete = selectedItems.Cast<MovieDto>().ToList();
             foreach (var dto in itemsToDelete)
             {
-                _movieService.AuthToken = _tokenStore.Token;
                 var response = await _movieService.DeleteAsync(dto.MovieId);
                 if (response.IsSuccessStatusCode)
                 {
