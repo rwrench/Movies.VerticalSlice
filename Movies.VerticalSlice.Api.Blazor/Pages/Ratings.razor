@@ -124,21 +124,21 @@
         await LoadRatingsAsync();  
     }  
 
-    async Task OnUpdateHandler(GridCommandEventArgs args)  
+    public async Task OnUpdateHandler(GridCommandEventArgs args)  
     {  
         if (args.Item is not MovieRatingWithNameDto rating) return;
         await RatingsService.UpdateAsync(rating);
         await LoadRatingsAsync();
     }  
 
-    async Task OnCreateHandler(GridCommandEventArgs args)
+   public async Task OnCreateHandler(GridCommandEventArgs args)
     {
         if (args.Item is not MovieRatingWithNameDto rating) return;
         await RatingsService.CreateAsync(rating);
         await LoadRatingsAsync();
     }
 
-    async Task OnDeleteHandler(GridCommandEventArgs args)  
+    public async Task OnDeleteHandler(GridCommandEventArgs args)  
     {  
         if (args.Item is not MovieRatingWithNameDto rating) return;  
         await RatingsService.DeleteAsync(rating.Id);  

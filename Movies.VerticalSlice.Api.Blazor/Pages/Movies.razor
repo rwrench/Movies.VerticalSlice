@@ -54,7 +54,6 @@
             <GridCommandButton Command="Save" ShowInEdit="true">Save</GridCommandButton>
             <GridCommandButton Command="Cancel" ShowInEdit="true">Cancel</GridCommandButton>
         }
-          
         </GridCommandColumn>
     </GridColumns>
 </TelerikGrid>
@@ -117,7 +116,6 @@
     async Task OnCancelHandler(GridCommandEventArgs e)
     {
         await ClearStatusMessage();
-        return;
     }
     async Task LoadMoviesAsync()
     {
@@ -125,7 +123,6 @@
         {
             movies = await MovieService.GetAllAsync() ?? new List<MovieDto>();
             await SetStatusMessage($"Loaded {movies.Count} movies", false);
-            return;
         }
         catch (Exception ex)
         {

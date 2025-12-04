@@ -13,17 +13,13 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<JwtAuthenticationStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredService<JwtAuthenticationStateProvider>());
-
 builder.Services.AddScoped<JwtAuthorizationMessageHandler>();
-
-// Register the handler
-builder.Services.AddScoped<AuthorizationMessageHandler>();
 
 builder.Services.AddHttpClient("AuthorizedClient", client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"] ?? "https://localhost:7299");
 })
-.AddHttpMessageHandler<AuthorizationMessageHandler>(); // ✅ Auto-attach token to all requests
+.AddHttpMessageHandler<JwtAuthorizationMessageHandler>(); // ✅ Auto-attach token to all requests
 
 builder.Services.AddScoped(sp =>
     sp.GetRequiredService<IHttpClientFactory>().CreateClient("AuthorizedClient"));

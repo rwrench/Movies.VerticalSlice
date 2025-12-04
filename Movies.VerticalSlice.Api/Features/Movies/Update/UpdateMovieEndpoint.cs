@@ -18,7 +18,12 @@ public static class UpdateMovieEndpoint
             CancellationToken token) =>
         {
             var userId = userContextService.GetCurrentUserId();
-            if (userId == null) throw new UnauthorizedAccessException();
+            if (userId == null) 
+                return Results.Unauthorized();
+
+            if (request is null)
+                return Results.BadRequest("Request body cannot be null.");
+
             var command = new UpdateMovieCommand(
                 id,
                 request.Title,
@@ -27,7 +32,8 @@ public static class UpdateMovieEndpoint
                 userId);
 
             var result = await mediator.Send(command, token);
-
+            if (!result)
+                return Results.NotFound();
             return Results.NoContent();
         })
         .WithName("UpdateMovie")
@@ -36,6 +42,7 @@ public static class UpdateMovieEndpoint
         .Produces(StatusCodes.Status204NoContent)
         .Produces(StatusCodes.Status401Unauthorized)
         .Produces(StatusCodes.Status404NotFound)
+         .Produces(StatusCodes.Status400BadRequest)
         .RequireAuthorization();
     }
 }
