@@ -3,6 +3,7 @@
 @using Telerik.Blazor
 @using Telerik.Blazor.Components  
 @using Telerik.DataSource
+@using global::Movies.VerticalSlice.Api.Blazor.Shared
 @using global::Movies.VerticalSlice.Api.Services  
 @using global::Movies.VerticalSlice.Api.Shared.Dtos  
 @inject IHttpClientFactory HttpClientFactory  
@@ -11,6 +12,10 @@
 @inject NavigationManager Navigation
 @inject AuthenticationStateProvider AuthStateProvider
 
+@inherits GridComponentBase
+<h2>Ratings</h2>
+
+<StatusMessage Message="@statusMessage" IsError="@isError" />  
 <TelerikGrid Data="@ratings"
              Pageable="true"
              PageSize="20"
@@ -66,11 +71,11 @@
 </TelerikGrid>  
   
 @code {
+    
     private List<MovieRatingWithNameDto> ratings = new();  
     private HttpClient Http => HttpClientFactory.CreateClient("AuthorizedClient");  
     private TelerikGrid<MovieRatingWithNameDto>? gridRef;
-    private string statusMessage = "";  
-    private bool isError = false;  
+   
     private MovieRatingWithNameDto? selectedMovie = null;
 
     private List<MovieNameDto> movieNames = new();
@@ -151,10 +156,9 @@
         return Task.CompletedTask;  
     }  
 
-    Task OnCancelHandler(GridCommandEventArgs e)  
+    async Task OnCancelHandler(GridCommandEventArgs e)  
     {  
-        ClearStatusMessage();  
-        return Task.CompletedTask;  
+        await ClearStatusMessage();  
     }  
 
 
@@ -163,11 +167,11 @@
         try  
         {  
             ratings = await RatingsService.GetAllAsync() ?? new List<MovieRatingWithNameDto>();  
-            SetStatusMessage($"Loaded {ratings.Count} ratings", false);  
+            await SetStatusMessage($"Loaded {ratings.Count} ratings", false);  
         }  
         catch (Exception ex)  
         {  
-            SetStatusMessage($"Error loading ratings: {ex.Message}", true);  
+            await SetStatusMessage($"Error loading ratings: {ex.Message}", true);  
         }  
     }  
 
@@ -176,28 +180,13 @@
         try
         {
             movieNames = await RatingsService.GetAllMovieNamesAsync("") ?? new List<MovieNameDto>();
-            SetStatusMessage($"Loaded {movieNames.Count}", false);
+            await SetStatusMessage($"Loaded {movieNames.Count}", false);
         }
         catch (Exception ex)
         {
-            SetStatusMessage($"Error loading ratings: {ex.Message}", true);
+            await SetStatusMessage($"Error loading ratings: {ex.Message}", true);
         }
     }
 
-    void SetStatusMessage(string message, bool error)  
-    {  
-        statusMessage = message;  
-        isError = error;  
-        StateHasChanged();  
-
-        Task.Delay(5000).ContinueWith(_ => ClearStatusMessage());  
-    }  
-
-    void ClearStatusMessage()  
-    {  
-        statusMessage = "";  
-        StateHasChanged();  
-    }  
-
- 
+   
 }

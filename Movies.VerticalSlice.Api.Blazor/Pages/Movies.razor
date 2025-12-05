@@ -4,23 +4,20 @@
 @using Telerik.Blazor.Components
 @using global::Movies.VerticalSlice.Api.Services
 @using global::Movies.VerticalSlice.Api.Shared.Dtos
+@using global::Movies.VerticalSlice.Api.Blazor.Shared
 @using Microsoft.AspNetCore.Components.Authorization
 
 @inject IHttpClientFactory HttpClientFactory
 @inject IMovieService MovieService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @attribute [Authorize]
+
+@inherits GridComponentBase
 <PageTitle>Movies</PageTitle>
 
 <h2>Movies</h2>
 
-@if (!string.IsNullOrEmpty(statusMessage))
-{
-    <div class="alert @(isError ? "alert-danger" : "alert-success")" role="alert">
-        @statusMessage
-    </div>
-}
-
+<StatusMessage Message="@statusMessage" IsError="@isError" />
 <TelerikGrid Data="@movies"
              Pageable="true"
              PageSize="20"
@@ -61,8 +58,7 @@
     private HttpClient Http => HttpClientFactory.CreateClient("AuthorizedClient");
     private List<MovieDto> movies = new();
     private TelerikGrid<MovieDto>? gridRef;
-    private string statusMessage = "";
-    private bool isError = false;
+   
     private bool isAuthenticated = false;
 
     protected override async Task OnInitializedAsync()  
@@ -130,28 +126,8 @@
         }
     }
 
-    async Task SetStatusMessage(string message, bool error)
-    {
-        statusMessage = message;
-        isError = error;
-        await InvokeAsync(StateHasChanged);
 
-        _ = ClearStatusMessageAfterDelayAsync();
-    }
-
-    private async Task ClearStatusMessageAfterDelayAsync()
-    {
-        await Task.Delay(5000);
-        await ClearStatusMessage();
-    }
-
-    async Task ClearStatusMessage()
-    {
-        statusMessage = "";
-        await InvokeAsync(StateHasChanged);
-    }
-
-    private async Task GetAuthenticationStateAsync()
+    async Task GetAuthenticationStateAsync()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         isAuthenticated = authState?.User.Identity?.IsAuthenticated ?? false;
