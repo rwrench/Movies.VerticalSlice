@@ -167,7 +167,7 @@ public class MoviePageTests : TelerikTestContext
 
     private MovieDto And_we_have_updated_a_movie(MovieDto dto)
     {
-       dto = dto with { Title = "Updated Movie" };  
+       dto.Title = "Updated Movie";  
        return dto;
     }
 

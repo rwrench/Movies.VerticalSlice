@@ -9,8 +9,6 @@
 @inject IHttpClientFactory HttpClientFactory  
 @inject IRatingsService RatingsService 
 @attribute [Authorize]
-@inject NavigationManager Navigation
-@inject AuthenticationStateProvider AuthStateProvider
 
 @inherits GridComponentBase
 <h2>Ratings</h2>
@@ -79,7 +77,6 @@
     private MovieRatingWithNameDto? selectedMovie = null;
 
     private List<MovieNameDto> movieNames = new();
-
     async Task OnMovieComboBoxRead(ComboBoxReadEventArgs args)
     {
         string filter = args.Request.Filters
@@ -121,11 +118,7 @@
     }
     protected override async Task OnInitializedAsync()  
     {  
-        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
-        if (authState.User?.Identity == null || !authState.User.Identity.IsAuthenticated)
-        {
-            Navigation.NavigateTo("/login", true);
-        }
+        await base.OnInitializedAsync();
         await LoadRatingsAsync();  
     }  
 
@@ -187,6 +180,4 @@
             await SetStatusMessage($"Error loading ratings: {ex.Message}", true);
         }
     }
-
-   
 }
