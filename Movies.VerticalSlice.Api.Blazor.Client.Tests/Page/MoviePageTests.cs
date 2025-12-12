@@ -31,7 +31,7 @@ public class MoviePageTests : TelerikTestContext
     [Fact]
     public void No_Movies_Should_Throw_Exception()
     {
-        Given_we_have_do_not_have_movies();
+        Given_we_do_not_have_movies();
         var cut = When_we_display_the_movies_Page();
         Then_we_should_see_an_error_message(cut);
     }
@@ -51,17 +51,16 @@ public class MoviePageTests : TelerikTestContext
     {
         var movie = Given_we_have_created_a_movie();
         var updatedMovie = And_we_have_updated_a_movie(movie);
-        var mockService = And_we_have_setup_update_movie(movie);
+        var mockService = And_we_have_setup_update_movie(updatedMovie);
         var cut = When_we_display_the_movies_Page();
-        await And_Update_Is_Called(cut, movie);
-        Then_a_movie_is_updated(mockService, cut, movie);
+        await And_Update_Is_Called(cut, updatedMovie);
+        Then_a_movie_is_updated(mockService, cut, updatedMovie);
     }
 
     [Fact]
     public async Task Deleting_Movie_Deletes_and_Reloads_Grid()
     {
         var movie = Given_we_have_created_a_movie();
-        var updatedMovie = And_we_have_updated_a_movie(movie);
         var mockService = And_we_have_setup_delete_movie(movie);
         var cut = When_we_display_the_movies_Page();
         await And_Delete_Is_Called(cut, movie);
@@ -76,8 +75,8 @@ public class MoviePageTests : TelerikTestContext
     {
         cut.WaitForAssertion(() =>
         {
-            cut.Markup.Contains("Loaded 1 movies");
-            cut.Markup.Contains("Unit Test Movie");
+            Assert.Contains("Loaded 1 movies", cut.Markup);
+            Assert.Contains("Unit Test Movie", cut.Markup);
         });
         mockService.Verify(s => s.CreateAsync(It.Is<MovieDto>(m => m.MovieId == movie.MovieId)), Times.Once);
     }
@@ -90,10 +89,10 @@ public class MoviePageTests : TelerikTestContext
     {
         cut.WaitForAssertion(() =>
          {
-             cut.Markup.Contains("Loaded 1 movies");
-             cut.Markup.Contains("Unit Test Movie - Updated");
+             Assert.Contains("Updated Movie", cut.Markup);
          });
-        mockService.Verify(s => s.UpdateAsync(movie.MovieId, It.Is<MovieDto>(m => m.MovieId == movie.MovieId)));
+        mockService.Verify(s => s.UpdateAsync(movie.MovieId, 
+            It.Is<MovieDto>(m => m.MovieId == movie.MovieId)));
     }
 
     void Then_the_movie_is_deleted(
@@ -103,8 +102,7 @@ public class MoviePageTests : TelerikTestContext
     {
         cut.WaitForAssertion(() =>
         {
-            cut.Markup.Contains("Loaded 1 movies");
-            cut.Markup.Contains("Unit Test Movie - Updated");
+            cut.Markup.Contains("Unit Test Movie removed");
         });
         mockService.Verify(s => s.DeleteAsync(movie.MovieId));
     }
@@ -126,13 +124,14 @@ public class MoviePageTests : TelerikTestContext
 
     void Then_we_should_see_an_error_message(IRenderedComponent<Pages.Movies> cut)
     {
-        cut.Markup.Contains("Error loading movies");
+       Assert.Contains("Error loading movies", cut.Markup);
     }
 
      void Then_we_should_see_movies(IRenderedComponent<Pages.Movies> cut)
     {
-        cut.Markup.Contains("Inception");
-        cut.Markup.Contains("Sci-Fi");
+        Assert.Contains("Loaded 1 movies", cut.Markup);
+        Assert.Contains("Inception", cut.Markup);
+        Assert.Contains("Sci-Fi", cut.Markup);
     }
 
     IRenderedComponent<Pages.Movies> When_we_display_the_movies_Page()
@@ -152,7 +151,7 @@ public class MoviePageTests : TelerikTestContext
         Services.AddSingleton(mockService.Object);
     }
 
-     void Given_we_have_do_not_have_movies()
+     void Given_we_do_not_have_movies()
     {
         var mockService = new Mock<IMovieService>();
         mockService.Setup(s => s.GetAllAsync()).Throws(new Exception("No movies available"));   
@@ -168,7 +167,7 @@ public class MoviePageTests : TelerikTestContext
 
     private MovieDto And_we_have_updated_a_movie(MovieDto dto)
     {
-       dto = dto with { Title = "Unit Test Movie - Updated" };  
+       dto.Title = "Updated Movie";  
        return dto;
     }
 
@@ -176,7 +175,7 @@ public class MoviePageTests : TelerikTestContext
     { 
         var mockService = new Mock<IMovieService>();
         mockService.Setup(s => s.CreateAsync(It.Is<MovieDto>(m => m.MovieId == movie.MovieId)))
-           .ReturnsAsync(new HttpResponseMessage(System.Net.HttpStatusCode.Created)); // Or u
+           .ReturnsAsync(new HttpResponseMessage(System.Net.HttpStatusCode.Created)); 
         // After create, GetAllAsync returns the saved movie (simulates reload)
         mockService.Setup(s => s.GetAllAsync()).ReturnsAsync(new List<MovieDto> { movie });
 
@@ -188,7 +187,7 @@ public class MoviePageTests : TelerikTestContext
     {
         var mockService = new Mock<IMovieService>();
         mockService.Setup(s => s.UpdateAsync(movie.MovieId, movie))
-            .ReturnsAsync(new HttpResponseMessage(System.Net.HttpStatusCode.Created)); 
+            .ReturnsAsync(new HttpResponseMessage(System.Net.HttpStatusCode.NoContent));
         mockService.Setup(s => s.GetAllAsync()).ReturnsAsync(new List<MovieDto> { movie });
 
         Services.AddSingleton(mockService.Object);
