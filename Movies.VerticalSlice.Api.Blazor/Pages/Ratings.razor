@@ -40,8 +40,8 @@
                     if (rating != null)
                     {
                         <TelerikComboBox Data="@movieNames"
-                                             TextField="Name"
-                                             ValueField="Id"
+                                             TextField="MovieName"
+                                             ValueField="MovieId"
                                              @bind-Value="rating.MovieId"
                                              Filterable="true"
                                              ScrollMode="DropDownScrollMode.Virtual"
@@ -77,7 +77,7 @@
     private MovieRatingWithNameDto? selectedMovie = null;
 
     private List<MovieNameDto> movieNames = new();
-    async Task OnMovieComboBoxRead(ComboBoxReadEventArgs args)
+    public async Task OnMovieComboBoxRead(ComboBoxReadEventArgs args)
     {
         string filter = args.Request.Filters
             .OfType<FilterDescriptor>()
@@ -93,7 +93,7 @@
         args.Data = movieNames;
     }
 
-    void OnMovieComboBoxChange(object args)
+    public void OnMovieComboBoxChange(object args)
     {
         Guid? selectedMovieId = null;
 
@@ -125,22 +125,43 @@
     public async Task OnUpdateHandler(GridCommandEventArgs args)  
     {  
         if (args.Item is not MovieRatingWithNameDto rating) return;
-        await RatingsService.UpdateAsync(rating);
-        await LoadRatingsAsync();
+        try
+        {
+            await RatingsService.UpdateAsync(rating);
+            await LoadRatingsAsync();
+        }
+        catch (Exception ex)
+        {
+            await SetStatusMessage($"Error updating rating: {ex.Message}", true);
+        }
     }  
 
    public async Task OnCreateHandler(GridCommandEventArgs args)
     {
         if (args.Item is not MovieRatingWithNameDto rating) return;
-        await RatingsService.CreateAsync(rating);
-        await LoadRatingsAsync();
+        try
+        {
+            await RatingsService.CreateAsync(rating);
+            await LoadRatingsAsync();
+        }
+        catch (Exception ex)
+        {
+            await SetStatusMessage($"Error creating rating: {ex.Message}", true);
+        }
     }
 
     public async Task OnDeleteHandler(GridCommandEventArgs args)  
     {  
         if (args.Item is not MovieRatingWithNameDto rating) return;  
-        await RatingsService.DeleteAsync(rating.Id);  
-        await LoadRatingsAsync();  
+        try
+        {
+            await RatingsService.DeleteAsync(rating.Id);  
+            await LoadRatingsAsync();
+        }
+        catch (Exception ex)
+        {
+            await SetStatusMessage($"Error deleting rating: {ex.Message}", true);
+        }
     }  
 
     Task OnEditHandler(GridCommandEventArgs e)  
