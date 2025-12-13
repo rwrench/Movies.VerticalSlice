@@ -82,11 +82,7 @@ public class GetAllRatingsHandlerTests
 
     (GetAllRatingsHandler handler, MoviesDbContext context) And_we_have_a_handler_with_multiple_ratings()
     {
-        var options = new DbContextOptionsBuilder<MoviesDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
-
-        var context = new MoviesDbContext(options);
+        var context = CreateTestContext();
 
         var movie1 = new Movie
         {
@@ -161,33 +157,20 @@ public class GetAllRatingsHandlerTests
         context.Ratings.AddRange(rating1, rating2, rating3);
         context.SaveChanges();
 
-        var mockLogger = new Mock<ILogger<GetAllRatingsHandler>>();
-        var handler = new GetAllRatingsHandler(context, mockLogger.Object);
-
+        var handler = CreateHandler(context);
         return (handler, context);
     }
 
     (GetAllRatingsHandler handler, MoviesDbContext context) And_we_have_a_handler_without_ratings()
     {
-        var options = new DbContextOptionsBuilder<MoviesDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
-
-        var context = new MoviesDbContext(options);
-
-        var mockLogger = new Mock<ILogger<GetAllRatingsHandler>>();
-        var handler = new GetAllRatingsHandler(context, mockLogger.Object);
-
+        var context = CreateTestContext();
+        var handler = CreateHandler(context);
         return (handler, context);
     }
 
     (GetAllRatingsHandler handler, MoviesDbContext context) And_we_have_a_handler_with_single_rating()
     {
-        var options = new DbContextOptionsBuilder<MoviesDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
-
-        var context = new MoviesDbContext(options);
+        var context = CreateTestContext();
 
         var movie = new Movie
         {
@@ -219,20 +202,14 @@ public class GetAllRatingsHandlerTests
         context.Ratings.Add(rating);
         context.SaveChanges();
 
-        var mockLogger = new Mock<ILogger<GetAllRatingsHandler>>();
-        var handler = new GetAllRatingsHandler(context, mockLogger.Object);
-
+        var handler = CreateHandler(context);
         return (handler, context);
     }
 
     (GetAllRatingsHandler handler, MoviesDbContext context, Mock<ILogger<GetAllRatingsHandler>> mockLogger) 
         And_we_have_a_handler_with_ratings_and_logger()
     {
-        var options = new DbContextOptionsBuilder<MoviesDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
-
-        var context = new MoviesDbContext(options);
+        var context = CreateTestContext();
 
         var movie = new Movie
         {
@@ -331,5 +308,21 @@ public class GetAllRatingsHandlerTests
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Once);
+    }
+
+    // Helper methods to reduce duplication
+    private MoviesDbContext CreateTestContext()
+    {
+        var options = new DbContextOptionsBuilder<MoviesDbContext>()
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .Options;
+
+        return new MoviesDbContext(options);
+    }
+
+    private GetAllRatingsHandler CreateHandler(MoviesDbContext context)
+    {
+        var mockLogger = new Mock<ILogger<GetAllRatingsHandler>>();
+        return new GetAllRatingsHandler(context, mockLogger.Object);
     }
 }

@@ -89,11 +89,7 @@ public class RatingsUpdateHandlerTests
         Guid ratingId,
         Guid movieId)
     {
-        var options = new DbContextOptionsBuilder<MoviesDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
-
-        var context = new MoviesDbContext(options);
+        var context = CreateTestContext();
 
         var movie = new Movie
         {
@@ -125,38 +121,21 @@ public class RatingsUpdateHandlerTests
         context.Ratings.Add(rating);
         context.SaveChanges();
 
-        var validator = new RatingsUpdateValidator(context);
-        var mockLogger = new Mock<ILogger<RatingsUpdateHandler>>();
-
-        var handler = new RatingsUpdateHandler(context, validator, mockLogger.Object);
-
+        var handler = CreateHandler(context);
         return (handler, context);
     }
 
     (RatingsUpdateHandler handler, MoviesDbContext context) And_we_have_a_handler_without_rating()
     {
-        var options = new DbContextOptionsBuilder<MoviesDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
-
-        var context = new MoviesDbContext(options);
-
-        var validator = new RatingsUpdateValidator(context);
-        var mockLogger = new Mock<ILogger<RatingsUpdateHandler>>();
-
-        var handler = new RatingsUpdateHandler(context, validator, mockLogger.Object);
-
+        var context = CreateTestContext();
+        var handler = CreateHandler(context);
         return (handler, context);
     }
 
     (RatingsUpdateHandler handler, MoviesDbContext context) And_we_have_a_handler_with_rating_but_no_movie(
         Guid ratingId)
     {
-        var options = new DbContextOptionsBuilder<MoviesDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
-
-        var context = new MoviesDbContext(options);
+        var context = CreateTestContext();
 
         var user = new ApplicationUser
         {
@@ -178,11 +157,7 @@ public class RatingsUpdateHandlerTests
         context.Ratings.Add(rating);
         context.SaveChanges();
 
-        var validator = new RatingsUpdateValidator(context);
-        var mockLogger = new Mock<ILogger<RatingsUpdateHandler>>();
-
-        var handler = new RatingsUpdateHandler(context, validator, mockLogger.Object);
-
+        var handler = CreateHandler(context);
         return (handler, context);
     }
 
@@ -217,7 +192,7 @@ public class RatingsUpdateHandlerTests
     {
         var updatedRating = context.Ratings.FirstOrDefault(r => r.Id == ratingId);
         updatedRating.Should().NotBeNull();
-        updatedRating!.DateUpdated.Should().BeCloseTo(DateTime.Now, TimeSpan.FromSeconds(5));
+        updatedRating!.DateUpdated.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
     }
 
     async Task Then_validation_exception_should_be_thrown(
@@ -226,5 +201,22 @@ public class RatingsUpdateHandlerTests
     {
         await Assert.ThrowsAsync<ValidationException>(
             () => handler.Handle(command, CancellationToken.None));
+    }
+
+    // Helper methods to reduce duplication
+    private MoviesDbContext CreateTestContext()
+    {
+        var options = new DbContextOptionsBuilder<MoviesDbContext>()
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .Options;
+
+        return new MoviesDbContext(options);
+    }
+
+    private RatingsUpdateHandler CreateHandler(MoviesDbContext context)
+    {
+        var validator = new RatingsUpdateValidator(context);
+        var mockLogger = new Mock<ILogger<RatingsUpdateHandler>>();
+        return new RatingsUpdateHandler(context, validator, mockLogger.Object);
     }
 }

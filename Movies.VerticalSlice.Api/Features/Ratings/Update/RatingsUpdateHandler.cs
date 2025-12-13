@@ -35,7 +35,7 @@ public class RatingsUpdateHandler : IRequestHandler<RatingsUpdateCommand, bool>
         {
             existingRating.MovieId = command.MovieId;
             existingRating.Rating = command.Rating;
-            existingRating.DateUpdated = DateTime.Now;
+            existingRating.DateUpdated = DateTime.UtcNow;
            
         }
         var affectedRows = await _context.SaveChangesAsync(cancellationToken);

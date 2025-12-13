@@ -144,11 +144,7 @@ public class RatingsUpdateValidatorTests
 
     RatingsUpdateValidator And_we_have_a_validator_with_valid_rating_and_movie()
     {
-        var options = new DbContextOptionsBuilder<MoviesDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
-
-        var context = new MoviesDbContext(options);
+        var context = CreateTestContext();
 
         var movie = new Movie
         {
@@ -177,11 +173,7 @@ public class RatingsUpdateValidatorTests
 
     RatingsUpdateValidator And_we_have_a_validator_without_rating()
     {
-        var options = new DbContextOptionsBuilder<MoviesDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
-
-        var context = new MoviesDbContext(options);
+        var context = CreateTestContext();
 
         var movie = new Movie
         {
@@ -200,11 +192,7 @@ public class RatingsUpdateValidatorTests
 
     RatingsUpdateValidator And_we_have_a_validator_with_rating_but_no_movie()
     {
-        var options = new DbContextOptionsBuilder<MoviesDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
-
-        var context = new MoviesDbContext(options);
+        var context = CreateTestContext();
 
         var rating = new MovieRating
         {
@@ -223,11 +211,7 @@ public class RatingsUpdateValidatorTests
 
     RatingsUpdateValidator And_we_have_a_validator_with_rating_and_multiple_movies()
     {
-        var options = new DbContextOptionsBuilder<MoviesDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
-
-        var context = new MoviesDbContext(options);
+        var context = CreateTestContext();
 
         var movie1 = new Movie
         {
@@ -292,5 +276,15 @@ public class RatingsUpdateValidatorTests
     {
         result.IsValid.Should().BeFalse();
         result.Errors.Should().Contain(e => e.PropertyName == "Rating");
+    }
+
+    // Helper method to reduce duplication
+    private MoviesDbContext CreateTestContext()
+    {
+        var options = new DbContextOptionsBuilder<MoviesDbContext>()
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .Options;
+
+        return new MoviesDbContext(options);
     }
 }
