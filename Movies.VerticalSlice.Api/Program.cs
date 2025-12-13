@@ -12,6 +12,7 @@ using Movies.VerticalSlice.Api.Endpoints;
 using Movies.VerticalSlice.Api.Features.Movies;
 using Movies.VerticalSlice.Api.Features.Ratings;
 using Movies.VerticalSlice.Api.Features.Users;
+using Movies.VerticalSlice.Api.Features.Logging.Create;
 using Movies.VerticalSlice.Api.Middleware;
 using Movies.VerticalSlice.Api.Services;
 using System.Text;
@@ -125,7 +126,6 @@ if (app.Environment.IsDevelopment())
 //    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 //});
 
-
 app.UseHttpsRedirection();
 app.UseHttpLogging();
 app.UseCors("AllowBlazorClient");
@@ -135,8 +135,9 @@ app.UseAuthorization();
 app.MapMovieEndpoints();
 app.MapRatingsEndpoints();
 app.MapUserEndpoints();
-
+app.MapCreateLog();
 
 app.Run();
+
 
 
