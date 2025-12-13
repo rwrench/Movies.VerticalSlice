@@ -7,6 +7,7 @@ public class MovieDto
     public Guid MovieId { get; set; }
     [Required]
     public string Title { get; set; } = string.Empty;
+    [Required]
     public string Slug { get; set; } = string.Empty;
     [Required]
     [Range(1900, 2100)]

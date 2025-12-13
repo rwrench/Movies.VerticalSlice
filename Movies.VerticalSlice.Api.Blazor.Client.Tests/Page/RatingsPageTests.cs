@@ -99,9 +99,7 @@ namespace Movies.VerticalSlice.Api.Blazor.Client.Tests.Page
         {
             cut.WaitForState(() => cut.Markup.Contains("Error loading")
               || cut.Markup.Contains("No ratings"), TimeSpan.FromSeconds(5));
-            Assert.Contains("Error loading", cut.Markup);
             cut.WaitForAssertion(() => cut.Markup.ShouldContain("Error loading"), TimeSpan.FromSeconds(20));
-            cut.Markup.ShouldContain("Error loading");
         }
 
         void Given_we_do_not_have_ratings()

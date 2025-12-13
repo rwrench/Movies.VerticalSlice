@@ -136,7 +136,7 @@
         }
     }  
 
-   public async Task OnCreateHandler(GridCommandEventArgs args)
+    public async Task OnCreateHandler(GridCommandEventArgs args)
     {
         if (args.Item is not MovieRatingWithNameDto rating) return;
         try
@@ -194,11 +194,11 @@
         try
         {
             movieNames = await RatingsService.GetAllMovieNamesAsync("") ?? new List<MovieNameDto>();
-            await SetStatusMessage($"Loaded {movieNames.Count}", false);
+            await SetStatusMessage($"Loaded {movieNames.Count} movie names", false);
         }
         catch (Exception ex)
         {
-            await SetStatusMessage($"Error loading ratings: {ex.Message}", true);
+            await SetStatusMessage($"Error loading movie names: {ex.Message}", true);
         }
     }
 }
