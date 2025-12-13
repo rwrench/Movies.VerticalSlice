@@ -42,24 +42,8 @@ public class MovieServiceTests
 
     MovieService And_we_have_a_service_that_returns_unauthorized()
     {
-        var handler = new Mock<HttpMessageHandler>();
-        handler
-            .Protected()
-            .Setup<Task<HttpResponseMessage>>(
-                "SendAsync",
-                ItExpr.IsAny<HttpRequestMessage>(),
-                ItExpr.IsAny<CancellationToken>())
-            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.Unauthorized));
-
-        var httpClient = new HttpClient(handler.Object)
-        {
-            BaseAddress = new Uri("https://localhost:7299")
-        };
-        
-        var factory = new Mock<IHttpClientFactory>();
-        factory.Setup(f => f.CreateClient("AuthorizedClient")).Returns(httpClient);
-
-        return new MovieService(factory.Object);
+        var handler = CreateMockHttpHandler(HttpStatusCode.Unauthorized);
+        return CreateMovieService(handler);
     }
 
     (MovieService service, RequestCapture requestCapture) And_we_have_a_service_with_request_capture()
@@ -76,39 +60,15 @@ public class MovieServiceTests
             .Callback<HttpRequestMessage, CancellationToken>((req, ct) => requestCapture.CapturedRequest = req)
             .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK));
 
-        var httpClient = new HttpClient(handler.Object)
-        {
-            BaseAddress = new Uri("https://localhost:7299")
-        };
-        
-        var factory = new Mock<IHttpClientFactory>();
-        factory.Setup(f => f.CreateClient("AuthorizedClient")).Returns(httpClient);
-
-        var service = new MovieService(factory.Object);
+        var service = CreateMovieService(handler);
         
         return (service, requestCapture);
     }
 
     MovieService And_we_have_a_service_that_returns_ok()
     {
-        var handler = new Mock<HttpMessageHandler>();
-        handler
-            .Protected()
-            .Setup<Task<HttpResponseMessage>>(
-                "SendAsync",
-                ItExpr.IsAny<HttpRequestMessage>(),
-                ItExpr.IsAny<CancellationToken>())
-            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK));
-
-        var httpClient = new HttpClient(handler.Object)
-        {
-            BaseAddress = new Uri("https://localhost:7299")
-        };
-        
-        var factory = new Mock<IHttpClientFactory>();
-        factory.Setup(f => f.CreateClient("AuthorizedClient")).Returns(httpClient);
-
-        return new MovieService(factory.Object);
+        var handler = CreateMockHttpHandler(HttpStatusCode.OK);
+        return CreateMovieService(handler);
     }
 
     async Task<HttpResponseMessage> When_we_delete_the_movie(
@@ -139,6 +99,34 @@ public class MovieServiceTests
     {
         response.Should().NotBeNull();
         response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+
+    // Helper methods to reduce duplication
+    private Mock<HttpMessageHandler> CreateMockHttpHandler(HttpStatusCode statusCode)
+    {
+        var handler = new Mock<HttpMessageHandler>();
+        handler
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage(statusCode));
+        
+        return handler;
+    }
+
+    private MovieService CreateMovieService(Mock<HttpMessageHandler> handler)
+    {
+        var httpClient = new HttpClient(handler.Object)
+        {
+            BaseAddress = new Uri("http://localhost")
+        };
+        
+        var factory = new Mock<IHttpClientFactory>();
+        factory.Setup(f => f.CreateClient("AuthorizedClient")).Returns(httpClient);
+
+        return new MovieService(factory.Object);
     }
 
     // Helper class to capture the request by reference

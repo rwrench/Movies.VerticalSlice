@@ -74,11 +74,7 @@ public class DeleteRatingHandlerTests
     (DeleteRatingHandler handler, MoviesDbContext context) And_we_have_a_handler_with_existing_rating(
         Guid ratingId)
     {
-        var options = new DbContextOptionsBuilder<MoviesDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
-
-        var context = new MoviesDbContext(options);
+        var context = CreateTestContext();
 
         var movie = new Movie
         {
@@ -102,20 +98,14 @@ public class DeleteRatingHandlerTests
         context.Ratings.Add(rating);
         context.SaveChanges();
 
-        var mockLogger = new Mock<ILogger<DeleteRatingHandler>>();
-        var handler = new DeleteRatingHandler(context, mockLogger.Object);
-
+        var handler = CreateHandler(context);
         return (handler, context);
     }
 
     (DeleteRatingHandler handler, MoviesDbContext context, Mock<ILogger<DeleteRatingHandler>> mockLogger) 
         And_we_have_a_handler_with_existing_rating_and_logger(Guid ratingId)
     {
-        var options = new DbContextOptionsBuilder<MoviesDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
-
-        var context = new MoviesDbContext(options);
+        var context = CreateTestContext();
 
         var movie = new Movie
         {
@@ -147,26 +137,15 @@ public class DeleteRatingHandlerTests
 
     (DeleteRatingHandler handler, MoviesDbContext context) And_we_have_a_handler_without_rating()
     {
-        var options = new DbContextOptionsBuilder<MoviesDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
-
-        var context = new MoviesDbContext(options);
-
-        var mockLogger = new Mock<ILogger<DeleteRatingHandler>>();
-        var handler = new DeleteRatingHandler(context, mockLogger.Object);
-
+        var context = CreateTestContext();
+        var handler = CreateHandler(context);
         return (handler, context);
     }
 
     (DeleteRatingHandler handler, MoviesDbContext context, Mock<ILogger<DeleteRatingHandler>> mockLogger) 
         And_we_have_a_handler_without_rating_and_logger()
     {
-        var options = new DbContextOptionsBuilder<MoviesDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
-
-        var context = new MoviesDbContext(options);
+        var context = CreateTestContext();
 
         var mockLogger = new Mock<ILogger<DeleteRatingHandler>>();
         var handler = new DeleteRatingHandler(context, mockLogger.Object);
@@ -177,11 +156,7 @@ public class DeleteRatingHandlerTests
     (DeleteRatingHandler handler, MoviesDbContext context, Guid otherRatingId) 
         And_we_have_a_handler_with_multiple_ratings(Guid targetRatingId)
     {
-        var options = new DbContextOptionsBuilder<MoviesDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
-
-        var context = new MoviesDbContext(options);
+        var context = CreateTestContext();
 
         var movie = new Movie
         {
@@ -217,9 +192,7 @@ public class DeleteRatingHandlerTests
         context.Ratings.Add(otherRating);
         context.SaveChanges();
 
-        var mockLogger = new Mock<ILogger<DeleteRatingHandler>>();
-        var handler = new DeleteRatingHandler(context, mockLogger.Object);
-
+        var handler = CreateHandler(context);
         return (handler, context, otherRatingId);
     }
 
@@ -289,5 +262,21 @@ public class DeleteRatingHandlerTests
 
         var otherRating = context.Ratings.FirstOrDefault(r => r.Id == otherRatingId);
         otherRating.Should().NotBeNull();
+    }
+
+    // Helper methods to reduce duplication
+    private MoviesDbContext CreateTestContext()
+    {
+        var options = new DbContextOptionsBuilder<MoviesDbContext>()
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .Options;
+
+        return new MoviesDbContext(options);
+    }
+
+    private DeleteRatingHandler CreateHandler(MoviesDbContext context)
+    {
+        var mockLogger = new Mock<ILogger<DeleteRatingHandler>>();
+        return new DeleteRatingHandler(context, mockLogger.Object);
     }
 }

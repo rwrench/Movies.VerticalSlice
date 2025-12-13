@@ -12,12 +12,12 @@ public class RatingsCreateHandler : IRequestHandler<RatingsCreateCommand, Guid>
 {
     private readonly MoviesDbContext _context;
     private readonly IValidator<RatingsCreateCommand> _validator;
-    private readonly ILogger<UpdateMovieHandler> _logger;
+    private readonly ILogger<RatingsCreateHandler> _logger;
 
     public RatingsCreateHandler(
         MoviesDbContext context, 
         IValidator<RatingsCreateCommand> validator, 
-        ILogger<UpdateMovieHandler> logger)
+        ILogger<RatingsCreateHandler> logger)
     {
         _context = context;
         _validator = validator;
