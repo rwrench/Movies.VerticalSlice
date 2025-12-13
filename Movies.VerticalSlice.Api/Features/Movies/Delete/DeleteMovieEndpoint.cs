@@ -9,7 +9,7 @@ namespace Movies.VerticalSlice.Api.Features.Movies.Delete
     {
         public static void MapDeleteMovie(this IEndpointRouteBuilder app)
         {
-            app.MapDelete(ApiEndpoints.Movies.Delete,async (
+            app.MapDelete(ApiEndpoints.Movies.Delete, async (
                 Guid id,
                 IMediator mediator,
                 UserContextService userContextService,

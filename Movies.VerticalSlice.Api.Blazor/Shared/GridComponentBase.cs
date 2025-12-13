@@ -4,7 +4,7 @@ using Telerik.Blazor.Components;
 
 namespace Movies.VerticalSlice.Api.Blazor.Shared
 {
-    public abstract class GridComponentBase : OwningComponentBase, IDisposable
+    public abstract class GridComponentBase : OwningComponentBase
     {
         // Protected fields so derived components can access them in Razor markup
         protected string statusMessage = "";
@@ -13,7 +13,7 @@ namespace Movies.VerticalSlice.Api.Blazor.Shared
         [Inject] protected NavigationManager Navigation { get; set; } = default!;
         [Inject] protected AuthenticationStateProvider AuthStateProvider { get; set; } = default!;
 
-       protected override async Task OnInitializedAsync()
+        protected override async Task OnInitializedAsync()
         {
             AuthStateProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
             await base.OnInitializedAsync();
@@ -21,10 +21,19 @@ namespace Movies.VerticalSlice.Api.Blazor.Shared
 
         private async void OnAuthenticationStateChanged(Task<AuthenticationState> task)
         {
-            var authState = await task;
-            if (authState.User?.Identity == null || !authState.User.Identity.IsAuthenticated)
+            try
             {
-                Navigation.NavigateTo("/login", true);
+                var authState = await task;
+                if (authState.User?.Identity == null || !authState.User.Identity.IsAuthenticated)
+                {
+                    Navigation.NavigateTo("/login", true);
+                }
+            }
+            catch (Exception ex)
+            {
+                statusMessage = "Authentication error: " + ex.Message;
+                isError = true;
+                await InvokeAsync(StateHasChanged);
             }
         }
 
@@ -46,8 +55,22 @@ namespace Movies.VerticalSlice.Api.Blazor.Shared
             // StateHasChanged is invoked here to update the derived component's UI
             await InvokeAsync(StateHasChanged);
 
-            // Fire-and-forget: you might consider the safe wrapper discussed earlier
-            _ = ClearStatusMessageAfterDelayAsync();
+            // Fire-and-forget with exception handling to avoid unobserved exceptions
+            FireAndForgetSafeAsync(ClearStatusMessageAfterDelayAsync());
+        }
+
+        // Helper to safely fire-and-forget a Task with exception handling
+        private async void FireAndForgetSafeAsync(Task task)
+        {
+            try
+            {
+                await task;
+            }
+            catch (Exception ex)
+            {
+                // Optionally log the exception or handle it as needed
+                Console.Error.WriteLine($"Exception in fire-and-forget task: {ex}");
+            }
         }
 
         private async Task ClearStatusMessageAfterDelayAsync()
@@ -61,7 +84,5 @@ namespace Movies.VerticalSlice.Api.Blazor.Shared
             statusMessage = "";
             await InvokeAsync(StateHasChanged);
         }
-
-       
     }
 }

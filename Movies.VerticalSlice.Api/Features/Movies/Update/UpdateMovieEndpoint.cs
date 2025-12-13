@@ -21,9 +21,6 @@ public static class UpdateMovieEndpoint
             if (userId == null) 
                 return Results.Unauthorized();
 
-            if (request is null)
-                return Results.BadRequest("Request body cannot be null.");
-
             var command = new UpdateMovieCommand(
                 id,
                 request.Title,
@@ -42,7 +39,7 @@ public static class UpdateMovieEndpoint
         .Produces(StatusCodes.Status204NoContent)
         .Produces(StatusCodes.Status401Unauthorized)
         .Produces(StatusCodes.Status404NotFound)
-         .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status400BadRequest)
         .RequireAuthorization();
     }
 }
