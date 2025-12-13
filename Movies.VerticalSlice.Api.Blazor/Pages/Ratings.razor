@@ -132,6 +132,7 @@
         }
         catch (Exception ex)
         {
+            Logger.LogError(ex, "Error updating rating for movie {MovieName}", rating.MovieName);
             await SetStatusMessage($"Error updating rating: {ex.Message}", true);
         }
     }  
@@ -146,6 +147,7 @@
         }
         catch (Exception ex)
         {
+            Logger.LogError(ex, "Error creating rating for movie {MovieName}", rating.MovieName);
             await SetStatusMessage($"Error creating rating: {ex.Message}", true);
         }
     }
@@ -160,6 +162,7 @@
         }
         catch (Exception ex)
         {
+            Logger.LogError(ex, "Error deleting rating {Id} for movie {MovieName}", rating.Id, rating.MovieName);
             await SetStatusMessage($"Error deleting rating: {ex.Message}", true);
         }
     }  
@@ -185,6 +188,7 @@
         }  
         catch (Exception ex)  
         {  
+            Logger.LogError(ex, "Error loading ratings");
             await SetStatusMessage($"Error loading ratings: {ex.Message}", true);  
         }  
     }  
@@ -198,6 +202,7 @@
         }
         catch (Exception ex)
         {
+            Logger.LogError(ex, "Error loading movie names");
             await SetStatusMessage($"Error loading movie names: {ex.Message}", true);
         }
     }

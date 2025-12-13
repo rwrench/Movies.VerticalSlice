@@ -16,6 +16,7 @@ public class MoviesDbContext : IdentityDbContext<ApplicationUser>
 
     public DbSet<Movie> Movies { get; set; }
     public DbSet<MovieRating> Ratings { get; set; }
+    public DbSet<ApplicationLog> ApplicationLogs { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -47,5 +48,17 @@ public class MoviesDbContext : IdentityDbContext<ApplicationUser>
             .HasIndex(m => new { m.YearOfRelease, m.Title })
             .HasDatabaseName("IX_Movies_Year_Title");
 
+        // Add indexes for ApplicationLogs table
+        modelBuilder.Entity<ApplicationLog>()
+            .HasIndex(l => l.Timestamp)
+            .HasDatabaseName("IX_ApplicationLogs_Timestamp");
+
+        modelBuilder.Entity<ApplicationLog>()
+            .HasIndex(l => l.Level)
+            .HasDatabaseName("IX_ApplicationLogs_Level");
+
+        modelBuilder.Entity<ApplicationLog>()
+            .HasIndex(l => l.UserId)
+            .HasDatabaseName("IX_ApplicationLogs_UserId");
     }
 }

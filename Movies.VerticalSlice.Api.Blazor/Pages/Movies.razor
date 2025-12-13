@@ -63,48 +63,78 @@
     public async Task OnCreateHandler(GridCommandEventArgs args)
     {
         if (args.Item is not MovieDto newMovie) return;
-        var response = await MovieService.CreateAsync(newMovie);
-        if (response.IsSuccessStatusCode)
+        try
         {
-            await SetStatusMessage($"Movie {newMovie.Title} created", false);
-            await LoadMoviesAsync();
+            var response = await MovieService.CreateAsync(newMovie);
+            if (response.IsSuccessStatusCode)
+            {
+                await SetStatusMessage($"Movie {newMovie.Title} created", false);
+                await LoadMoviesAsync();
+            }
+            else
+            {
+                Logger.LogWarning("Failed to create movie {Title}. Status: {StatusCode}", 
+                    newMovie.Title, response.StatusCode);
+                await SetStatusMessage("Failed to create movie", true);
+            }
         }
-        else
+        catch (Exception ex)
         {
-            await SetStatusMessage("Failed to create movie", true);
+            Logger.LogError(ex, "Exception creating movie {Title}", newMovie.Title);
+            await SetStatusMessage($"Error creating movie: {ex.Message}", true);
         }
     }
+
     public async Task OnUpdateHandler(GridCommandEventArgs args)
     {
         if (args.Item is not MovieDto movie) return;
-        var response = await MovieService.UpdateAsync(movie.MovieId, movie);
-        if (response.IsSuccessStatusCode)
+        try
         {
-            await SetStatusMessage($"Movie {movie.Title} updated", false);
-            await LoadMoviesAsync();
+            var response = await MovieService.UpdateAsync(movie.MovieId, movie);
+            if (response.IsSuccessStatusCode)
+            {
+                await SetStatusMessage($"Movie {movie.Title} updated", false);
+                await LoadMoviesAsync();
+            }
+            else
+            {
+                Logger.LogWarning("Failed to update movie {Title}. Status: {StatusCode}", 
+                    movie.Title, response.StatusCode);
+                await SetStatusMessage("Failed to update movie", true);
+            }
         }
-        else
+        catch (Exception ex)
         {
-            await SetStatusMessage("Failed to update movie", true);
+            Logger.LogError(ex, "Exception updating movie {Title}", movie.Title);
+            await SetStatusMessage($"Error updating movie: {ex.Message}", true);
         }
     }
 
     public async Task OnDeleteHandler(GridCommandEventArgs args)
     {
         if (args.Item is not MovieDto movie) return;
-        var response = await MovieService.DeleteAsync(movie.MovieId);
-        if (response.IsSuccessStatusCode)
+        try
         {
-            await SetStatusMessage($"Movie {movie.Title} removed", false);
-            await LoadMoviesAsync();
+            var response = await MovieService.DeleteAsync(movie.MovieId);
+            if (response.IsSuccessStatusCode)
+            {
+                await SetStatusMessage($"Movie {movie.Title} removed", false);
+                await LoadMoviesAsync();
+            }
+            else
+            {
+                Logger.LogWarning("Failed to delete movie {Title}. Status: {StatusCode}", 
+                    movie.Title, response.StatusCode);
+                await SetStatusMessage("Failed to delete movie", true);
+            }
         }
-        else
+        catch (Exception ex)
         {
-            await SetStatusMessage("Failed to delete movie", true);
+            Logger.LogError(ex, "Exception deleting movie {Title}", movie.Title);
+            await SetStatusMessage($"Error deleting movie: {ex.Message}", true);
         }
     }
 
-    
     Task OnEditHandler(GridCommandEventArgs e)
     {
         return Task.CompletedTask;
@@ -123,6 +153,7 @@
         }
         catch (Exception ex)
         {
+            Logger.LogError(ex, "Error loading movies");
             await SetStatusMessage($"Error loading movies: {ex.Message}", true);
         }
     }

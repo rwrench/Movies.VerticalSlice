@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.Extensions.Logging;
 using Telerik.Blazor.Components;
 
 namespace Movies.VerticalSlice.Api.Blazor.Shared
@@ -12,6 +13,7 @@ namespace Movies.VerticalSlice.Api.Blazor.Shared
 
         [Inject] protected NavigationManager Navigation { get; set; } = default!;
         [Inject] protected AuthenticationStateProvider AuthStateProvider { get; set; } = default!;
+        [Inject] protected ILogger<GridComponentBase> Logger { get; set; } = default!;
 
         protected override async Task OnInitializedAsync()
         {
@@ -31,6 +33,7 @@ namespace Movies.VerticalSlice.Api.Blazor.Shared
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex, "Authentication error occurred");
                 statusMessage = "Authentication error: " + ex.Message;
                 isError = true;
                 await InvokeAsync(StateHasChanged);
@@ -68,8 +71,7 @@ namespace Movies.VerticalSlice.Api.Blazor.Shared
             }
             catch (Exception ex)
             {
-                // Optionally log the exception or handle it as needed
-                Console.Error.WriteLine($"Exception in fire-and-forget task: {ex}");
+                Logger.LogError(ex, "Exception in fire-and-forget task");
             }
         }
 
