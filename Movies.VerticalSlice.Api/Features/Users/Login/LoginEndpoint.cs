@@ -26,6 +26,7 @@ public static class LoginEndpoint
                 return Results.BadRequest(ex.Message);
             }
         })
+        .AllowAnonymous()
         .WithName("LoginUser")
         .WithTags("Users")
         .WithSummary("Login user")

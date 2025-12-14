@@ -3,7 +3,6 @@ using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Http.Json;
-using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Movies.VerticalSlice.Api.Configuration;
@@ -13,6 +12,7 @@ using Movies.VerticalSlice.Api.Features.Movies;
 using Movies.VerticalSlice.Api.Features.Ratings;
 using Movies.VerticalSlice.Api.Features.Users;
 using Movies.VerticalSlice.Api.Features.Logging.Create;
+using Movies.VerticalSlice.Api.Features.Logging.GetAll;
 using Movies.VerticalSlice.Api.Middleware;
 using Movies.VerticalSlice.Api.Services;
 using System.Text;
@@ -62,23 +62,13 @@ builder.Services.AddSwaggerGen(c =>
         Name = "Authorization",
         In = Microsoft.OpenApi.Models.ParameterLocation.Header,
         Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
+        Scheme = "Bearer",
+        BearerFormat = "JWT"
     });
 
-    c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
-    {
-        {
-            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
-            {
-                Reference = new Microsoft.OpenApi.Models.OpenApiReference
-                {
-                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>()
-        }
-    });
+    // Don't apply security globally - let endpoints control their own auth requirements
+    // This way only endpoints with .RequireAuthorization() will show the padlock
+    c.OperationFilter<SecurityRequirementsOperationFilter>();
 });
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
@@ -102,13 +92,6 @@ builder.Services.Configure<JsonOptions>(options =>
     options.SerializerOptions.PropertyNamingPolicy = null;
 });
 
-builder.Services.AddHttpLogging(options =>
-{
-    options.LoggingFields =
-       HttpLoggingFields.RequestPath |   
-       HttpLoggingFields.ResponseStatusCode; 
-});
-
 var app = builder.Build();
 
 // Use custom DB health check middleware
@@ -127,17 +110,24 @@ if (app.Environment.IsDevelopment())
 //});
 
 app.UseHttpsRedirection();
-app.UseHttpLogging();
+
 app.UseCors("AllowBlazorClient");
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Add custom API request logging middleware (logs to database)
+// MUST be after UseAuthentication() to have access to authenticated user
+app.UseMiddleware<ApiRequestLoggingMiddleware>();
 
 app.MapMovieEndpoints();
 app.MapRatingsEndpoints();
 app.MapUserEndpoints();
 app.MapCreateLog();
+app.MapGetAllLogs();
 
 app.Run();
+
+
 
 
 
