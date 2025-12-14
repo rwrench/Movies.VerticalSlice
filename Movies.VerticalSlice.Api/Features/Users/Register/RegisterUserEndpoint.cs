@@ -29,8 +29,13 @@ public static class RegisterUserEndpoint
                 return Results.BadRequest(new { success = false, message = ex.Message });
             }
         })
+        .AllowAnonymous()
         .WithName("RegisterUser")
         .WithTags("Users")
-        .WithOpenApi();
+        .WithSummary("Register new user")
+        .WithDescription("Create a new user account")
+        .WithOpenApi()
+        .Produces(StatusCodes.Status201Created)
+        .Produces(StatusCodes.Status400BadRequest);
     }
 }
