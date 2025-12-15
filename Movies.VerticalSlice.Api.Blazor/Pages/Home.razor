@@ -1,11 +1,15 @@
 ﻿@page "/"
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
 
 <PageTitle>Home</PageTitle>
 
-@* <h1>Hello, world!</h1>
+<h1>Welcome to Movies & Ratings</h1>
 
-<div class="alert alert-warning" role="alert">
-    Before authentication will function correctly, you must configure your provider details in <code>Program.cs</code>
+<div class="alert alert-info" role="alert">
+    <p>You are now logged in. Use the navigation menu to:</p>
+    <ul>
+        <li><a href="/movies">Manage Movies</a></li>
+        <li><a href="/ratings">Manage Ratings</a></li>
+    </ul>
 </div>
-
-Welcome to your new app. *@
