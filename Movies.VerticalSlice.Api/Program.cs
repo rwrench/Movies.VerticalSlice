@@ -50,7 +50,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    // Add Admin policy for administrative endpoints like logs
+    // Note: This currently just requires authentication. In a production environment,
+    // you should implement role-based or claim-based authorization to restrict
+    // access to admin users only (e.g., by adding role claims to JWT tokens)
+    options.AddPolicy("AdminOnly", policy => 
+        policy.RequireAuthenticatedUser());
+});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -126,6 +134,10 @@ app.MapCreateLog();
 app.MapGetAllLogs();
 
 app.Run();
+
+
+
+
 
 
 
