@@ -18,6 +18,10 @@ public static class GetAllLogsEndpoint
             [FromQuery] DateTime? startDate = null,
             [FromQuery] DateTime? endDate = null) =>
         {
+            // Validate parameters
+            page = Math.Max(page, 1);
+            pageSize = Math.Clamp(pageSize, 1, 100);
+
             var query = db.ApplicationLogs.AsQueryable();
 
             // Apply filters
@@ -76,7 +80,7 @@ public static class GetAllLogsEndpoint
         .WithName("GetAllLogs")
         .WithTags("Logging")
         .WithOpenApi()
-        .RequireAuthorization()
+        .RequireAuthorization("AdminOnly")
         .Produces<object>(StatusCodes.Status200OK);
     }
 }

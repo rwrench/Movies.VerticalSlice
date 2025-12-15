@@ -43,6 +43,7 @@ public class ApiRequestLoggingMiddleware
         {
             // Capture request details
             var requestBody = await ReadRequestBodyAsync(context.Request);
+            var redactedRequestBody = RedactSensitiveData(requestBody, context.Request.Path);
             
             // Capture authenticated user info (from JWT token)
             var userId = context.User.Identity?.IsAuthenticated == true 
@@ -82,6 +83,7 @@ public class ApiRequestLoggingMiddleware
 
             // Capture response details
             var responseBodyText = await ReadResponseBodyAsync(responseBody);
+            var redactedResponseBody = RedactSensitiveData(responseBodyText, context.Request.Path);
             var statusCode = context.Response.StatusCode;
             var duration = stopwatch.ElapsedMilliseconds;
             
@@ -106,8 +108,8 @@ public class ApiRequestLoggingMiddleware
                         queryString,
                         userId,
                         userName,
-                        requestBody,
-                        responseBodyText,
+                        redactedRequestBody,
+                        redactedResponseBody,
                         statusCode,
                         duration,
                         dbContext);
@@ -174,6 +176,7 @@ public class ApiRequestLoggingMiddleware
         
         return pathValue.Contains("/swagger") ||
                pathValue.Contains("/health") ||
+               pathValue.Contains("/api/logs") ||
                pathValue.Contains("/_framework") ||
                pathValue.Contains("/_vs") ||
                pathValue.Contains(".css") ||
@@ -183,6 +186,59 @@ public class ApiRequestLoggingMiddleware
                pathValue.Contains(".png") ||
                pathValue.Contains(".jpg") ||
                pathValue.Contains(".woff");
+    }
+
+    private bool ShouldSkipBodyLogging(PathString path)
+    {
+        var pathValue = path.Value?.ToLower() ?? string.Empty;
+        
+        // Skip body logging for authentication endpoints
+        return pathValue.Contains("/api/users/register") ||
+               pathValue.Contains("/api/users/login") ||
+               pathValue.Contains("/api/auth");
+    }
+
+    private string? RedactSensitiveData(string? body, PathString path)
+    {
+        if (string.IsNullOrEmpty(body))
+            return body;
+
+        try
+        {
+            // For authentication endpoints, return a placeholder instead of actual data
+            if (ShouldSkipBodyLogging(path))
+                return "[REDACTED - Sensitive Authentication Data]";
+
+            // For other endpoints, redact specific sensitive fields
+            var jsonDoc = JsonDocument.Parse(body);
+            var root = jsonDoc.RootElement;
+            
+            var redactedProperties = new Dictionary<string, object?>();
+            foreach (var property in root.EnumerateObject())
+            {
+                var propertyName = property.Name.ToLower();
+                
+                // List of sensitive field names to redact
+                if (propertyName is "password" or "token" or "accesstoken" or "refreshtoken" or 
+                    "secret" or "apikey" or "authorization" or "creditcard" or "ssn")
+                {
+                    redactedProperties[property.Name] = "[REDACTED]";
+                }
+                else
+                {
+                    // Keep the original value for non-sensitive fields
+                    redactedProperties[property.Name] = JsonSerializer.Deserialize<object>(property.Value.GetRawText());
+                }
+            }
+            
+            return JsonSerializer.Serialize(redactedProperties);
+        }
+        catch
+        {
+            // If JSON parsing fails, return the original body
+            // (it might not be JSON, or might be malformed)
+            return body;
+        }
     }
 
     private async Task<string?> ReadRequestBodyAsync(HttpRequest request)
@@ -205,10 +261,11 @@ public class ApiRequestLoggingMiddleware
             request.Body.Position = 0;
 
             // Truncate if too long
-            return body.Length > 4000 ? body.Substring(0, 4000) + "..." : body;
+            return body.Length > 4000 ? body[..4000] + "..." : body;
         }
-        catch
+        catch (Exception ex)
         {
+            _logger.LogDebug(ex, "Failed to read request body");
             return null;
         }
     }
@@ -218,14 +275,16 @@ public class ApiRequestLoggingMiddleware
         try
         {
             responseBody.Seek(0, SeekOrigin.Begin);
-            var text = await new StreamReader(responseBody).ReadToEndAsync();
+            using var reader = new StreamReader(responseBody, leaveOpen: true);
+            var text = await reader.ReadToEndAsync();
             responseBody.Seek(0, SeekOrigin.Begin);
 
             // Truncate if too long
-            return text.Length > 4000 ? text.Substring(0, 4000) + "..." : text;
+            return text.Length > 4000 ? text[..4000] + "..." : text;
         }
-        catch
+        catch (Exception ex)
         {
+            _logger.LogDebug(ex, "Failed to read response body");
             return null;
         }
     }

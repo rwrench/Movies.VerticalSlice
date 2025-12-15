@@ -1,20 +1,22 @@
 # API Request Logging to Database
 
 ## Overview
-All API requests are now automatically logged to the `ApplicationLogs` database table.
+All API requests are automatically logged to the `ApplicationLogs` database table with sensitive data redaction.
 
 ## What Gets Logged
 - ? **Request Method** (GET, POST, PUT, DELETE, etc.)
 - ? **Request Path** (e.g., `/api/movies`)
 - ? **Query String** parameters
-- ? **Request Body** (up to 4000 characters)
+- ? **Request Body** (up to 4000 characters, with sensitive fields redacted)
 - ? **Response Status Code** (200, 404, 500, etc.)
-- ? **Response Body** (up to 4000 characters)
+- ? **Response Body** (up to 4000 characters, with sensitive fields redacted)
 - ? **Duration** (how long the request took in milliseconds)
 - ? **User ID** (from JWT token if authenticated)
 - ? **User Name** (from JWT token if authenticated)
 - ? **Timestamp** (when the request occurred)
 - ? **Exception Details** (if an error occurred)
+
+> **Security Note:** Sensitive fields such as passwords, authentication tokens, API keys, and personally identifiable information (PII) are automatically redacted from logged request and response bodies. Authentication endpoints (e.g., `/api/users/register`, `/api/users/login`) have their entire request/response bodies replaced with `[REDACTED - Sensitive Authentication Data]` to prevent credential exposure.
 
 ## Implementation Details
 
@@ -48,7 +50,9 @@ GET /api/logs?page=1&pageSize=50&level=Error&category=ApiRequest&startDate=2025-
 - `startDate` (optional) - Filter logs from this date
 - `endDate` (optional) - Filter logs up to this date
 
-**Authorization**: Required (JWT token)
+**Authorization**: Required (AdminOnly policy - authenticated users only)
+
+> **Note:** Access to this endpoint is restricted to authenticated users. In a production environment, this should be further restricted to admin/support roles only. Sensitive fields such as passwords, JWT tokens, and secrets are redacted from returned log entries.
 
 ### Create Custom Log
 ```http
@@ -102,7 +106,7 @@ ORDER BY Timestamp DESC
 SELECT 
     RequestPath,
     COUNT(*) as RequestCount,
-    AVG(CAST(JSON_VALUE(Properties, '$.Duration') AS INT)) as AvgDurationMs
+    AVG(CAST(REPLACE(JSON_VALUE(Properties, '$.Duration'), 'ms', '') AS INT)) as AvgDurationMs
 FROM ApplicationLogs
 WHERE Category = 'ApiRequest'
 GROUP BY RequestPath
@@ -114,7 +118,7 @@ ORDER BY RequestCount DESC
 SELECT 
     UserName,
     COUNT(*) as RequestCount,
-    AVG(CAST(JSON_VALUE(Properties, '$.Duration') AS INT)) as AvgDurationMs
+    AVG(CAST(REPLACE(JSON_VALUE(Properties, '$.Duration'), 'ms', '') AS INT)) as AvgDurationMs
 FROM ApplicationLogs
 WHERE Category = 'ApiRequest' AND UserName IS NOT NULL
 GROUP BY UserName
