@@ -41,7 +41,7 @@ public class MovieService : IMovieService
           movieToUpdate.Genres
         );
 
-        var url = $"{ApiEndpoints.Movies.Update}?id={id}";
+        var url = ApiEndpoints.Movies.UpdateWithId(id);
         var response = await _httpClient.PutAsJsonAsync(url, updateRequest);
         CheckResponse(response);
         return response;
@@ -50,7 +50,7 @@ public class MovieService : IMovieService
 
     public async Task<HttpResponseMessage> DeleteAsync(Guid movieId)
     {
-        var url = $"/api/movies/{movieId}";
+        var url = ApiEndpoints.Movies.DeleteWithId(movieId);
         var response = await _httpClient.DeleteAsync(url);
 
         CheckResponse(response);
