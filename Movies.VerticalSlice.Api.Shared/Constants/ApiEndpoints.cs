@@ -6,14 +6,24 @@
         public static class Movies
         {
             public const string Base = $"{ApiBase}/movies";
-            public const string Create = Base; // or null
+            public const string Create = Base;
             public const string Get = "{idOrSlug}";
-            public const string GetAll = Base; // or null
+            public const string GetAll = Base;
             public const string Update = Base;
             public const string Delete = Base + "/{id}";
             public const string Rate = $"{Base}/{{movieId:guid}}/ratings";
             public const string DeleteRating = Rate;
             public const string Names = Base + "/names";
+
+            /// <summary>
+            /// Constructs the URL for updating a movie with query string parameter
+            /// </summary>
+            public static string UpdateWithId(Guid id) => $"{Update}?id={id}";
+
+            /// <summary>
+            /// Constructs the URL for deleting a movie by replacing the route parameter
+            /// </summary>
+            public static string DeleteWithId(Guid id) => $"{Base}/{id}";
         }
 
 
@@ -21,7 +31,7 @@
         {
             public const string Base = $"{ApiBase}/movies/ratings";
             public const string GetUserRatings = $"{Base}/me";
-            public const string GetAll = Base; // or n
+            public const string GetAll = Base;
         }
 
         public static class Users
