@@ -90,7 +90,7 @@ public class LoginAuditLoggingIntegrationTests : IntegrationTestBase
         await When_we_attempt_login(validRequest);
         
         // Assert
-        await And_the_audit_logs_should_show_pattern(user.Email, "Success", "FailedLogin", "Success");
+        await And_the_audit_logs_should_show_pattern(user.Email, "Success", "InvalidCredentials", "Success");
     }
 
     #region Given Methods
