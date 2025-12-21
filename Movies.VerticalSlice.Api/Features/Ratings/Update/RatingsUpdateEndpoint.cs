@@ -16,23 +16,31 @@ public static class RatingsUpdateEndpoint
             UserContextService userContextService,
             CancellationToken token) =>
         {
-            var userId = userContextService.GetCurrentUserId();
-            if (userId == null) throw new UnauthorizedAccessException();
-            var command = new RatingsUpdateCommand(
-                id,
-                request.MovieId,
-                request.Rating,
-                request.DateUpdated ?? DateTime.Now,
-                userId);
-            var ratingsId = await mediator.Send(command, token);
+            try
+            {
+                var userId = userContextService.GetCurrentUserId();
+                if (userId == null) throw new UnauthorizedAccessException();
+                var command = new RatingsUpdateCommand(
+                    id,
+                    request.MovieId,
+                    request.Rating,
+                    request.DateUpdated ?? DateTime.Now,
+                    userId);
+                var ratingsId = await mediator.Send(command, token);
 
-            return Results.NoContent();
+                return Results.NoContent();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Results.Forbid();
+            }
         })
         .WithName("UpdateRating")
         .WithTags("Ratings")
         .RequireAuthorization()
         .Produces(StatusCodes.Status204NoContent)
         .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status403Forbidden)
         .Produces(StatusCodes.Status400BadRequest)
         .WithOpenApi();
     }

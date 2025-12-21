@@ -1,14 +1,9 @@
-using System.Security.Claims;
-using System.Text.Encodings.Web;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Movies.VerticalSlice.Api.Configuration;
 using Movies.VerticalSlice.Api.Data.Database;
 
@@ -16,6 +11,9 @@ namespace Movies.Api.VerticalSlice.Api.Tests.Infrastructure;
 
 public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProgram> where TProgram : class
 {
+    // Use a unique database name per factory instance to prevent test isolation issues
+    private readonly string _databaseName = $"IntegrationTestDb_{Guid.NewGuid()}";
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureAppConfiguration((context, config) =>
@@ -23,22 +21,27 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
             config.AddInMemoryCollection(new Dictionary<string, string>
             {
                 ["ConnectionStrings:DefaultConnection"] = "",
-                ["JwtSettings:Secret"] = "TestSecretKeyForIntegrationTestsThatIsLongEnough123456",
+                ["JwtSettings: Secret"] = "TestSecretKeyForIntegrationTestsThatIsLongEnough123456",
                 ["JwtSettings:Issuer"] = "TestIssuer",
-                ["JwtSettings:Audience"] = "TestAudience",
+                ["JwtSettings: Audience"] = "TestAudience",
                 ["JwtSettings:ExpiryMinutes"] = "60"
             }!);
         });
 
         builder.ConfigureServices(services =>
         {
-            services.RemoveAll<DbContextOptions<MoviesDbContext>>();
-            services.RemoveAll<DbContextOptions>();
-            services.RemoveAll<MoviesDbContext>();
+            // Remove existing DbContext registration
+            var descriptor = services.SingleOrDefault(
+                d => d.ServiceType == typeof(DbContextOptions<MoviesDbContext>));
+            if (descriptor != null)
+            {
+                services.Remove(descriptor);
+            }
 
+            // Add in-memory database with unique name per factory instance
             services.AddDbContext<MoviesDbContext>(options =>
             {
-                options.UseInMemoryDatabase($"InMemoryTestDb_{Guid.NewGuid()}");
+                options.UseInMemoryDatabase(_databaseName);
             });
 
             // Override JWT settings for tests
@@ -51,7 +54,6 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
             });
         });
 
-        // Configure to use HTTPS in tests
-        builder.UseUrls("https://localhost:0");
+        builder.UseEnvironment("Testing");
     }
 }

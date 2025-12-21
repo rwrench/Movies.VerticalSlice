@@ -15,22 +15,30 @@ namespace Movies.VerticalSlice.Api.Features.Rating.Delete
                 UserContextService userContextService,
                 CancellationToken token) =>
             {
-                var userId = userContextService.GetCurrentUserId();
-                if (userId == null) throw new UnauthorizedAccessException();
-                var command = new DeleteRatingCommand(id);
-                var result = await mediator.Send(command, token);
+                try
+                {
+                    var userId = userContextService.GetCurrentUserId();
+                    if (userId == null) throw new UnauthorizedAccessException();
+                    var command = new DeleteRatingCommand(id, userId);
+                    var result = await mediator.Send(command, token);
 
-                return result
-                    ? Results.Ok(new { success = true, 
-                        message = "Rating deleted successfully" })
-                    : Results.NotFound(new { success = false, 
-                        message = "Rating not found" });
+                    return result
+                        ? Results.Ok(new { success = true, 
+                            message = "Rating deleted successfully" })
+                        : Results.NotFound(new { success = false, 
+                            message = "Rating not found" });
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    return Results.Forbid();
+                }
             })
             .WithName("DeleteRating")
             .WithTags("Ratings")
             .RequireAuthorization()
             .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status401Unauthorized)
+            .Produces(StatusCodes.Status403Forbidden)
             .Produces(StatusCodes.Status404NotFound)
             .WithOpenApi();
         }

@@ -30,7 +30,6 @@
         public static class Ratings
         {
             public const string Base = $"{ApiBase}/movies/ratings";
-            public const string GetUserRatings = $"{Base}/me";
             public const string GetAll = Base;
         }
 

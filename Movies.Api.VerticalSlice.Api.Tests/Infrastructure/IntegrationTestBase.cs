@@ -16,6 +16,8 @@ public class IntegrationTestBase : IClassFixture<CustomWebApplicationFactory<Pro
     protected readonly CustomWebApplicationFactory<Program> Factory;
     private readonly IServiceScope _scope;
     protected readonly MoviesDbContext DbContext;
+    protected const string UserId = "3fee2354-5f37-42cf-8799-b54340785433";
+    protected const string UserName = "richardw";
 
     public IntegrationTestBase(CustomWebApplicationFactory<Program> factory)
     {
@@ -25,7 +27,11 @@ public class IntegrationTestBase : IClassFixture<CustomWebApplicationFactory<Pro
         // Create a scope for database access in tests
         _scope = factory.Services.CreateScope();
         DbContext = _scope.ServiceProvider.GetRequiredService<MoviesDbContext>();
+        DbContext.Database.EnsureCreated();
+        ClearDatabase().GetAwaiter().GetResult();
     }
+
+   
 
     /// <summary>
     /// Generate a valid JWT token for authenticated requests
