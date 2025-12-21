@@ -68,7 +68,7 @@ public class DeleteRatingHandlerTests
     (DeleteRatingCommand command, Guid ratingId) Given_we_have_a_valid_delete_command()
     {
         var ratingId = Guid.Parse("33333333-3333-3333-3333-333333333333");
-        return (new DeleteRatingCommand(ratingId), ratingId);
+        return (new DeleteRatingCommand(ratingId, "user-123"), ratingId);
     }
 
     (DeleteRatingHandler handler, MoviesDbContext context) And_we_have_a_handler_with_existing_rating(

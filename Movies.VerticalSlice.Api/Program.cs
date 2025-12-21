@@ -29,9 +29,21 @@ builder.Services.Configure<JwtSettings>(
 builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 
-// Add services to the container.
-builder.Services.AddDbContext<MoviesDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+// Conditionally register database provider based on environment
+if (builder.Environment.IsEnvironment("Testing"))
+{
+    // Tests will configure their own in-memory database
+}
+else
+{
+    // Use SQL Server in production/development
+    builder.Services.AddDbContext<MoviesDbContext>(options =>
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+}
+
+//// Add services to the container.
+//builder.Services.AddDbContext<MoviesDbContext>(options =>
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Configure JWT Authentication
 var jwtSettings = builder.Configuration.GetSection(JwtSettings.SectionName).Get<JwtSettings>();
@@ -112,12 +124,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//app.MapHealthChecks("health", new HealthCheckOptions
-//{
-//    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-//});
-
-app.UseHttpsRedirection();
+if (!app.Environment.IsEnvironment("Testing"))
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseCors("AllowBlazorClient");
 app.UseAuthentication();
@@ -134,6 +144,9 @@ app.MapCreateLog();
 app.MapGetAllLogs();
 
 app.Run();
+
+// Make Program class accessible to integration tests
+public partial class Program { }
 
 
 

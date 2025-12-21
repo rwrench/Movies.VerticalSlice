@@ -35,6 +35,12 @@ public class DeleteRatingHandler : IRequestHandler<DeleteRatingCommand, bool>
             return false;
         }
 
+        // Authorization check: Ensure the user owns this rating
+        if (rating.UserId != command.UserId)
+        {
+            throw new UnauthorizedAccessException("You are not authorized to delete this rating.");
+        }
+
         _context.Ratings.Remove(rating);
         var affectedRows = await _context.SaveChangesAsync(cancellationToken);
 

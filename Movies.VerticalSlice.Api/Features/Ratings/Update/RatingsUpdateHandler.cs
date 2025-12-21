@@ -31,6 +31,12 @@ public class RatingsUpdateHandler : IRequestHandler<RatingsUpdateCommand, bool>
         var existingRating = await _context.Ratings
             .FirstAsync(r => r.Id == command.RatingsId, cancellationToken);
 
+        // Authorization check: Ensure the user owns this rating
+        if (existingRating.UserId != command.UserId)
+        {
+            throw new UnauthorizedAccessException("You are not authorized to update this rating.");
+        }
+
         if (existingRating != null)
         {
             existingRating.MovieId = command.MovieId;
