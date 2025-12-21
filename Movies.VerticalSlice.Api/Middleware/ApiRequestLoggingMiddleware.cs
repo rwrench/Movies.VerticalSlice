@@ -53,6 +53,13 @@ public class ApiRequestLoggingMiddleware
                 ? context.User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value
                 : null;
             
+            // For login requests, try to extract email from request body
+            var isLoginRequest = context.Request.Path.Value?.Contains("/api/users/login") ?? false;
+            if (isLoginRequest && string.IsNullOrEmpty(userName))
+            {
+                userName = ExtractEmailFromLoginRequest(requestBody);
+            }
+            
             // Debug: Log what user info we captured
             if (context.User.Identity?.IsAuthenticated == true)
             {
@@ -66,7 +73,14 @@ public class ApiRequestLoggingMiddleware
             }
             else
             {
-                _logger.LogInformation("ApiRequestLoggingMiddleware: User is NOT authenticated");
+                if (isLoginRequest && !string.IsNullOrEmpty(userName))
+                {
+                    _logger.LogInformation("ApiRequestLoggingMiddleware: Login attempt for email: {Email}", userName);
+                }
+                else
+                {
+                    _logger.LogInformation("ApiRequestLoggingMiddleware: User is NOT authenticated");
+                }
             }
             
             var requestPath = context.Request.Path.Value;
@@ -196,6 +210,30 @@ public class ApiRequestLoggingMiddleware
         return pathValue.Contains("/api/users/register") ||
                pathValue.Contains("/api/users/login") ||
                pathValue.Contains("/api/auth");
+    }
+
+    private string? ExtractEmailFromLoginRequest(string? requestBody)
+    {
+        if (string.IsNullOrEmpty(requestBody))
+            return null;
+
+        try
+        {
+            var jsonDoc = JsonDocument.Parse(requestBody);
+            var root = jsonDoc.RootElement;
+            
+            if (root.TryGetProperty("Email", out var emailElement) ||
+                root.TryGetProperty("email", out emailElement))
+            {
+                return emailElement.GetString();
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogDebug(ex, "Failed to extract email from login request body");
+        }
+
+        return null;
     }
 
     private string? RedactSensitiveData(string? body, PathString path)

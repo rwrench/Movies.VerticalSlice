@@ -13,6 +13,10 @@ using Movies.VerticalSlice.Api.Features.Ratings;
 using Movies.VerticalSlice.Api.Features.Users;
 using Movies.VerticalSlice.Api.Features.Logging.Create;
 using Movies.VerticalSlice.Api.Features.Logging.GetAll;
+using Movies.VerticalSlice.Api.Features.LoginAudit.GetAll;
+using Movies.VerticalSlice.Api.Features.LoginAudit.GetById;
+using Movies.VerticalSlice.Api.Features.LoginAudit.GetByEmail;
+using Movies.VerticalSlice.Api.Features.LoginAudit.GetByStatus;
 using Movies.VerticalSlice.Api.Middleware;
 using Movies.VerticalSlice.Api.Services;
 using System.Text;
@@ -28,6 +32,7 @@ builder.Services.Configure<JwtSettings>(
 // Register services
 builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<ILoginAuditService, LoginAuditService>();
 
 // Conditionally register database provider based on environment
 if (builder.Environment.IsEnvironment("Testing"))
@@ -142,6 +147,10 @@ app.MapRatingsEndpoints();
 app.MapUserEndpoints();
 app.MapCreateLog();
 app.MapGetAllLogs();
+app.MapGetLoginAuditLogs();
+app.MapGetLoginAuditLogById();
+app.MapGetLoginAuditLogsByEmail();
+app.MapGetLoginAuditLogsByStatus();
 
 app.Run();
 

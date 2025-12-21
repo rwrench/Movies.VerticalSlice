@@ -95,6 +95,7 @@ public class IntegrationTestBase : IClassFixture<CustomWebApplicationFactory<Pro
         DbContext.Ratings.RemoveRange(DbContext.Ratings);
         DbContext.Users.RemoveRange(DbContext.Users);
         DbContext.ApplicationLogs.RemoveRange(DbContext.ApplicationLogs);
+        DbContext.LoginAuditLogs.RemoveRange(DbContext.LoginAuditLogs);
         await DbContext.SaveChangesAsync();
     }
 
