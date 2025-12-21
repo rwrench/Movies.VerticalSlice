@@ -17,6 +17,7 @@ public class MoviesDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Movie> Movies { get; set; }
     public DbSet<MovieRating> Ratings { get; set; }
     public DbSet<ApplicationLog> ApplicationLogs { get; set; }
+    public DbSet<LoginAuditLog> LoginAuditLogs { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -60,5 +61,22 @@ public class MoviesDbContext : IdentityDbContext<ApplicationUser>
         modelBuilder.Entity<ApplicationLog>()
             .HasIndex(l => l.UserId)
             .HasDatabaseName("IX_ApplicationLogs_UserId");
+
+        // Add indexes for LoginAuditLogs table
+        modelBuilder.Entity<LoginAuditLog>()
+            .HasIndex(l => l.Timestamp)
+            .HasDatabaseName("IX_LoginAuditLogs_Timestamp");
+
+        modelBuilder.Entity<LoginAuditLog>()
+            .HasIndex(l => l.Email)
+            .HasDatabaseName("IX_LoginAuditLogs_Email");
+
+        modelBuilder.Entity<LoginAuditLog>()
+            .HasIndex(l => l.Status)
+            .HasDatabaseName("IX_LoginAuditLogs_Status");
+
+        modelBuilder.Entity<LoginAuditLog>()
+            .HasIndex(l => l.UserId)
+            .HasDatabaseName("IX_LoginAuditLogs_UserId");
     }
 }

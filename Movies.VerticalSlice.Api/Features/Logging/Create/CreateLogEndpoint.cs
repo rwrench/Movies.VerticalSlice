@@ -22,6 +22,16 @@ public static class CreateLogEndpoint
                 logger.LogInformation("Received log request - Level: {Level}, Category: {Category}, Message: {Message}",
                     request.Level, request.Category, request.Message);
 
+                // Capture user info if authenticated
+                string? userId = null;
+                string? userName = null;
+                
+                if (httpContext.User.Identity?.IsAuthenticated == true)
+                {
+                    userId = userContextService.GetCurrentUserId();
+                    userName = httpContext.User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value;
+                }
+
                 var log = new ApplicationLog
                 {
                     Timestamp = DateTime.UtcNow,
@@ -29,10 +39,8 @@ public static class CreateLogEndpoint
                     Category = request.Category ?? "Unknown",
                     Message = request.Message ?? "No message",
                     Exception = request.Exception,
-                    UserId = httpContext.User.Identity?.IsAuthenticated == true 
-                        ? userContextService.GetCurrentUserId() 
-                        : null,
-                    UserName = httpContext.User.Identity?.Name,
+                    UserId = userId,
+                    UserName = userName,
                     RequestPath = request.RequestPath,
                     Properties = request.Properties
                 };
